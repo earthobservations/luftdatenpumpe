@@ -8,7 +8,6 @@ import logging
 
 from docopt import docopt
 
-from .geo import nominatim_cache_path
 from .util import setup_logging
 from .core import APP_NAME, APP_VERSION, LuftdatenPumpe
 
@@ -69,9 +68,6 @@ def run():
     if debug:
         log_level = logging.DEBUG
     setup_logging(log_level)
-
-    # Run
-    log.info('Nominatim cache path is {}'.format(nominatim_cache_path))
 
     # Optionally, apply filters by sensor id and location id
     filter = {}

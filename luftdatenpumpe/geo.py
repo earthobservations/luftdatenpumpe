@@ -7,7 +7,8 @@ import time
 import logging
 import appdirs
 import Geohash
-from beaker.cache import CacheManager
+from dogpile.cache import make_region
+from dogpile.cache.util import kwarg_function_key_generator
 from geopy.geocoders import Nominatim
 
 from . import __appname__ as APP_NAME
@@ -18,28 +19,23 @@ log = logging.getLogger(__name__)
 
 
 # Configure cache for responses from Nominatim
-nominatim_cache_path = os.path.join(appdirs.user_cache_dir(appname='luftdaten.info', appauthor=False), 'nominatim')
-nominatim_cache_options = {
-    'type': 'file',
-    'data_dir': os.path.join(nominatim_cache_path, 'data'),
-    'lock_dir': os.path.join(nominatim_cache_path, 'lock'),
-}
-nominatim_cache = CacheManager(**nominatim_cache_options)
-
+nominatim_cache = make_region(
+    function_key_generator=kwarg_function_key_generator) \
+    .configure('dogpile.cache.redis')
 
 # Configure Nominatim client
 nominatim_user_agent = APP_NAME + '/' + APP_VERSION
 
 
 # Cache responses from Nominatim for 3 months
-@nominatim_cache.cache(expire=60 * 60 * 24 * 30 * 3)
+@nominatim_cache.cache_on_arguments(expiration_time=60 * 60 * 24 * 30 * 3)
 def reverse_geocode(latitude=None, longitude=None, geohash=None):
     """
     # Done: Use memoization! Maybe cache into MongoDB as well using Beaker.
     # TODO: Or use a local version of Nomatim: https://wiki.openstreetmap.org/wiki/Nominatim/Installation
     """
 
-    log.info('Decoding from Nominatim: {}'.format(locals()))
+    log.debug('Decoding from Nominatim: {}'.format(locals()))
 
     if geohash is not None:
         latitude, longitude = geohash_decode(geohash)
@@ -71,6 +67,12 @@ def reverse_geocode(latitude=None, longitude=None, geohash=None):
         time.sleep(1)
 
     #log.debug(u'Reverse geocoder result: {}'.format(pformat(location.raw)))
+
+    # https://github.com/OpenCageData/address-formatting
+    # https://opencagedata.com/
+    # https://openaddresses.io/
+    # http://results.openaddresses.io/
+    # https://github.com/DenisCarriere/geocoder-geojson
 
     # Be agnostic against city vs. village
     # TODO: Handle Rgbg
@@ -114,6 +116,17 @@ def reverse_geocode(latitude=None, longitude=None, geohash=None):
         - neighbourhood vs. quarter vs. residential vs. suburb vs. city_district vs. city vs. allotments
 
     How to handle "building", "public_building", "residential", "pedestrian", "kindergarten", "clothes"?
+    """
+
+    """
+    What about?
+
+    county          "Kreis Steinfurt"
+    state_district  "Regierungsbezirk Münster"
+    state           "North Rhine-Westphalia"
+    postcode        "48369"
+
+    -- https://nominatim.openstreetmap.org/reverse?lat=48.058&lon=12.57&format=json&addressdetails=1
     """
 
     # Be agnostic against road vs. path

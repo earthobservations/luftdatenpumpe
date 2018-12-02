@@ -56,12 +56,13 @@ setup(name='luftdatenpumpe',
           'docopt==0.6.2',
           'requests==2.20.1',
           'paho-mqtt==1.4.0',
+          'tqdm==4.28.1',
 
           # Geospatial
           'Geohash==1.0',
           'geopy==1.18.0',
-          'Beaker==1.10.0',
-          'tqdm==4.28.1',
+          'dogpile.cache==0.6.8',
+          'redis==3.0.1',
       ],
       dependency_links=[
           'https://github.com/webartifex/geohash/raw/master/dist/Geohash-1.0-py3.6.egg#egg=Geohash-1.0',
