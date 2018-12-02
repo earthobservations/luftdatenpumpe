@@ -145,14 +145,21 @@ class LuftdatenPumpe:
             # Location ID for the reading
             location_id = reading['location_id']
 
-            # Acquire additional sensors from reading
+            # Sensor information from the reading
+            sensor_info = {
+                'sensor_id': reading['sensor_id'],
+                'sensor_type': reading['sensor_type'],
+            }
+
+            # Acquire additional sensors from reading.
+            # This continues with the next loop iteration as location
+            # information has already been transferred.
             if location_id in locations:
                 location = locations[location_id]
                 sensor_id = reading['sensor_id']
                 if sensor_id not in location['sensors']:
-                    location['sensors'].append(sensor_id)
+                    location['sensors'].update({sensor_id: sensor_info})
                 continue
-
 
             # Acquire location information from reading
             location = {}
@@ -162,7 +169,7 @@ class LuftdatenPumpe:
 
             # Acquire first sensor from reading
             sensor_id = reading['sensor_id']
-            location['sensors'] = [sensor_id]
+            location['sensors'] = {sensor_id: sensor_info}
 
             # Collect location if not empty
             if location:
