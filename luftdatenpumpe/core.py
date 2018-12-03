@@ -7,14 +7,13 @@ import logging
 
 import requests
 from tqdm import tqdm
+from munch import Munch
 from pprint import pformat
+from collections import OrderedDict
 
-from .geo import geohash_encode, reverse_geocode
+from .geo import geohash_encode, resolve_location, format_address
 from .mqtt import MQTTAdapter
 from .util import exception_traceback
-
-from . import __appname__ as APP_NAME
-from . import __version__ as APP_VERSION
 
 
 log = logging.getLogger(__name__)
@@ -52,7 +51,6 @@ class LuftdatenPumpe:
             #log.info('item: %s', item)
 
             # Decode JSON item
-            timestamp = item['timestamp']
             location_id = item['location']['id']
             sensor_id = item['sensor']['id']
             sensor_type = item['sensor']['sensor_type']['name']
@@ -68,87 +66,116 @@ class LuftdatenPumpe:
                         continue
 
             # Build reading
-            reading = {}
+            reading = Munch(
+                meta=Munch(),
+                data=Munch(),
+            )
+
+            # Insert timestamp in appropriate format
+            reading.meta.time = self.convert_timestamp(item['timestamp'])
+
+            # Insert baseline metadata information
+            reading.meta.location_id = location_id
+            reading.meta.sensor_id = sensor_id
+            reading.meta.sensor_type = sensor_type
+
+            # Collect location info
+            del item['location']['id']
+            reading.meta.update(item['location'])
+            for key, value in reading.meta.items():
+                if key in ['latitude', 'longitude', 'altitude']:
+                    try:
+                        reading.meta[key] = float(value)
+                    except:
+                        reading.meta[key] = None
 
             # Collect sensor values
             for sensor in item['sensordatavalues']:
                 name = sensor['value_type']
                 value = float(sensor['value'])
-                reading[name] = value
-
-            # Insert timestamp in appropriate format
-            reading['time'] = self.convert_timestamp(timestamp)
-
-            # Insert sensor address information
-            sensor_address = {
-                'location_id': location_id,
-                'sensor_id':   sensor_id,
-                'sensor_type': sensor_type,
-            }
-            reading.update(sensor_address)
+                reading.data[name] = value
 
             # Insert geo data
             if self.geohash:
 
                 # Compute geohash
-                reading['geohash'] = geohash_encode(item['location']['latitude'], item['location']['longitude'])
+                reading.meta['geohash'] = geohash_encode(item['location']['latitude'], item['location']['longitude'])
 
-            try:
-                altitude = item['location']['altitude']
-                reading['altitude'] = float(altitude)
-            except:
-                log.error('Problem reading altitude value')
+            #print('reading:', reading)
 
             # Human readable location name
             if self.reverse_geocode:
                 try:
-                    if 'geohash' in reading:
-                        location_name = reverse_geocode(geohash=reading['geohash'])
-                    else:
-                        location_name = reverse_geocode(
-                            latitude=item['location']['latitude'],
-                            longitude=item['location']['longitude'])
 
-                    # 2018-12-02: Workaround re. charset encoding of cached items wrt. Python3 compatibility
-                    if type(location_name) is bytes:
-                        location_name = location_name.decode('utf-8')
+                    # Reverse-geocode position
+                    location = resolve_location(
+                        latitude=reading.meta['latitude'],
+                        longitude=reading.meta['longitude'],
+                        geohash=reading.meta.geohash
+                    )
 
-                    reading['location_name'] = location_name
+                    # Format address into single label.
+                    location_name = format_address(location)
+
+                    reading.meta.location_info = location
+                    reading.meta.location_name = location_name
 
                 except Exception as ex:
                     reading['location_name'] = u'Location-ID: {}'.format(location_id)
                     log.error(u'Problem with reverse geocoder: {}\n{}'.format(ex, exception_traceback()))
 
-            #reading['__item__'] = item
-            log.debug('Reading: %s', reading)
-
-            yield reading
+            log.debug('Reading:', json.dumps(reading))
 
             # Debugging
             #break
 
-    def request_and_publish(self):
+            yield reading
+
+    def forward_to_mqtt(self):
+        """
+        Will publish these kind of messages to the MQTT bus:
+        {
+            "time": "2018-12-03T01:49:00Z",
+            "location_id": 9564,
+            "sensor_id": 18870,
+            "sensor_type": "DHT22",
+            "geohash": "u3qcs53rp",
+            "altitude": 85.0,
+            "temperature": 2.8,
+            "humidity": 90.5
+        }
+        """
         for reading in self.request():
-            # Publish to MQTT bus
+
+            # Build MQTT message.
+
+            # Metadata fields
+            metadata_fields = ['time', 'location_id', 'sensor_id', 'sensor_type', 'geohash', 'altitude']
+            message = OrderedDict()
+            for fieldname in metadata_fields:
+                message[fieldname] = reading.meta[fieldname]
+
+            # Measurement fields
+            message.update(reading.data)
+
+            # Publish to MQTT bus.
             if self.dry_run:
-                log.info('Dry-run. Would publish record:\n{}'.format(pformat(reading)))
+                log.info('Dry-run. Would publish record:\n{}'.format(pformat(message)))
             else:
-                self.publish_mqtt(reading)
+                self.publish_mqtt(message)
 
     def get_stations(self):
         locations = {}
-        field_candidates = ['location_id', 'location_name', 'geohash', 'altitude']
+        field_candidates = ['location_id', 'location_name', 'location_info', 'geohash', 'latitude', 'longitude', 'altitude']
         for reading in self.request():
 
-            #print('ITEM: %s', reading)
-
             # Location ID for the reading
-            location_id = reading['location_id']
+            location_id = reading.meta.location_id
 
             # Sensor information from the reading
             sensor_info = {
-                'sensor_id': reading['sensor_id'],
-                'sensor_type': reading['sensor_type'],
+                'sensor_id': reading.meta.sensor_id,
+                'sensor_type': reading.meta.sensor_type,
             }
 
             # Acquire additional sensors from reading.
@@ -156,7 +183,7 @@ class LuftdatenPumpe:
             # information has already been transferred.
             if location_id in locations:
                 location = locations[location_id]
-                sensor_id = reading['sensor_id']
+                sensor_id = reading.meta.sensor_id
                 if sensor_id not in location['sensors']:
                     location['sensors'].update({sensor_id: sensor_info})
                 continue
@@ -164,11 +191,11 @@ class LuftdatenPumpe:
             # Acquire location information from reading
             location = {}
             for field in field_candidates:
-                if field in reading:
-                    location[field] = reading[field]
+                if field in reading.meta:
+                    location[field] = reading.meta[field]
 
             # Acquire first sensor from reading
-            sensor_id = reading['sensor_id']
+            sensor_id = reading.meta.sensor_id
             location['sensors'] = {sensor_id: sensor_info}
 
             # Collect location if not empty
@@ -205,5 +232,5 @@ class LuftdatenPumpe:
         # - "P1" and "P2" for "sensor_type": "SDS011"
         # - "temperature" and "humidity" for "sensor_type": "DHT22"
         # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
-        mqtt_message = json.dumps(measurement, sort_keys=True)
+        mqtt_message = json.dumps(measurement)
         self.mqtt.publish(mqtt_message)

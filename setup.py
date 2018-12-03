@@ -55,6 +55,7 @@ setup(name='luftdatenpumpe',
           'appdirs==1.4.3',
           'docopt==0.6.2',
           'requests==2.20.1',
+          'munch==2.3.2',
           'paho-mqtt==1.4.0',
           'tqdm==4.28.1',
 

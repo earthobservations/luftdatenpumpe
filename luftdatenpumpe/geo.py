@@ -2,10 +2,8 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import os
 import time
 import logging
-import appdirs
 import Geohash
 from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator
@@ -23,22 +21,36 @@ nominatim_cache = make_region(
     function_key_generator=kwarg_function_key_generator) \
     .configure('dogpile.cache.redis')
 
+
 # Configure Nominatim client
 nominatim_user_agent = APP_NAME + '/' + APP_VERSION
 
 
+def resolve_location(latitude=None, longitude=None, geohash=None):
+
+    # If only geohash is given, convert back to lat/lon.
+    if latitude is None and longitude is None and geohash is not None:
+        latitude, longitude = geohash_decode(geohash)
+
+    # Run reverse geocoder.
+    location = reverse_geocode(latitude, longitude)
+
+    return location.raw
+
+
 # Cache responses from Nominatim for 3 months
 @nominatim_cache.cache_on_arguments(expiration_time=60 * 60 * 24 * 30 * 3)
-def reverse_geocode(latitude=None, longitude=None, geohash=None):
+def reverse_geocode(latitude, longitude):
     """
-    # Done: Use memoization! Maybe cache into MongoDB as well using Beaker.
-    # TODO: Or use a local version of Nomatim: https://wiki.openstreetmap.org/wiki/Nominatim/Installation
+    Cache responses of the Nominatim reverse geocoding service.
+
+    TODO:
+    - Use a local version of Nomatim to get rid of
+      the 1 request per second fair use policy.
+      https://wiki.openstreetmap.org/wiki/Nominatim/Installation
     """
 
     log.debug('Decoding from Nominatim: {}'.format(locals()))
-
-    if geohash is not None:
-        latitude, longitude = geohash_decode(geohash)
 
     try:
         # 2018-03-24
@@ -51,14 +63,14 @@ def reverse_geocode(latitude=None, longitude=None, geohash=None):
         # FIXME: When using "HTTP_PROXY" from environment, use scheme='http'
         # export HTTP_PROXY=http://weather.hiveeyes.org:8912/
         # See also https://github.com/geopy/geopy/issues/263
-        #geolocator = Nominatim(user_agent=APP_NAME + '/' + APP_VERSION, scheme='http')
+        #geolocator = Nominatim(user_agent=nominatim_user_agent, scheme='http')
 
-        position_string = '{}, {}'.format(float(latitude), float(longitude))
-        location = geolocator.reverse(position_string)
+        position = (latitude, longitude)
+        location = geolocator.reverse(position)
 
     except Exception as ex:
         name = ex.__class__.__name__
-        log.error('Reverse geocoding failed: {}: {}. lat={}, lon={}, hash={}'.format(name, ex, latitude, longitude, geohash))
+        log.error('Reverse geocoding failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
         raise
 
     finally:
@@ -66,7 +78,12 @@ def reverse_geocode(latitude=None, longitude=None, geohash=None):
         # https://operations.osmfoundation.org/policies/nominatim/
         time.sleep(1)
 
-    #log.debug(u'Reverse geocoder result: {}'.format(pformat(location.raw)))
+    return location
+
+
+def format_address(location_info):
+
+    #log.debug(u'Reverse geocoder result: {}'.format(pformat(location_info)))
 
     # https://github.com/OpenCageData/address-formatting
     # https://opencagedata.com/
@@ -76,7 +93,7 @@ def reverse_geocode(latitude=None, longitude=None, geohash=None):
 
     # Be agnostic against city vs. village
     # TODO: Handle Rgbg
-    address = location.raw['address']
+    address = location_info['address']
     if 'city' not in address:
         if 'village' in address:
             address['city'] = address['village']
@@ -158,7 +175,7 @@ def geohash_encode(latitude, longitude):
     # https://en.wikipedia.org/wiki/Geohash
     # Eight characters should be fine
     geohash = Geohash.encode(float(latitude), float(longitude))
-    geohash = geohash[:8]
+    #geohash = geohash[:8]
     return geohash
 
 

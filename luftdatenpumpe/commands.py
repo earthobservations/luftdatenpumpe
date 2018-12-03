@@ -103,4 +103,4 @@ def run():
 
         log.info('Will publish to MQTT at {}'.format(mqtt_uri))
 
-        pump.request_and_publish()
+        pump.forward_to_mqtt()
