@@ -14,7 +14,8 @@ References
 - http://archive.luftdaten.info/
 - http://deutschland.maps.luftdaten.info/
 - https://getkotori.org/docs/applications/luftdaten.info/
-- https://luftdaten.getkotori.org/grafana/dashboard/db/luftdaten-worldmap-prototype
+- https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin
+- https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland
 
 .. seealso::
 
@@ -91,6 +92,14 @@ Subscriber::
     luftdaten/testdrive/earth/42/data.json {"sensor_id": 778,  "location_name": "Alte Landstra\u00dfe, Bludesch, Vorarlberg, AT",          "temperature": 18.9, "time": "2017-03-29T15:29:02", "geohash": "u0qutbdmbb5s", "location_id": 372, "humidity": 43.2}
     luftdaten/testdrive/earth/42/data.json {"sensor_id": 1309, "location_name": "Unterer Rosberg, Waiblingen, Baden-W\u00fcrttemberg, DE", "temperature": 27.7, "time": "2017-03-29T15:29:02", "geohash": "u0wtgfygz1rr", "location_id": 647, "humidity": 1.0}
     # [...]
+
+Now::
+
+    luftdaten.info {"time": "2018-12-03T01:50:31Z", "location_id": 28,   "sensor_id": 658,  "sensor_type": "SDS011", "geohash": "u0wt6pv2qqhz", "altitude": 223.7, "P1": 0.8, "P2": 0.6}
+    luftdaten.info {"time": "2018-12-03T01:50:32Z", "location_id": 28,   "sensor_id": 657,  "sensor_type": "DHT22",  "geohash": "u0wt6pv2qqhz", "altitude": 223.7, "humidity": 99.9, "temperature": 12.4}
+    luftdaten.info {"time": "2018-12-03T01:52:17Z", "location_id": 1071, "sensor_id": 2129, "sensor_type": "SDS011", "geohash": "u33dbm6duz90", "altitude": 38.7,  "P1": 5.62, "P2": 5.05}
+    luftdaten.info {"time": "2018-12-03T01:52:17Z", "location_id": 1071, "sensor_id": 2130, "sensor_type": "DHT22",  "geohash": "u33dbm6duz90", "altitude": 38.7,  "humidity": 97.6, "temperature": 12.4}
+
 
 
 License
