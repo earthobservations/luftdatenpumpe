@@ -6,6 +6,7 @@ import json
 import logging
 
 import requests
+import requests_cache
 from tqdm import tqdm
 from munch import Munch
 from pprint import pformat
@@ -31,6 +32,11 @@ class LuftdatenPumpe:
         self.dry_run = dry_run
         self.progressbar = progressbar
         self.filter = filter
+
+        # Cache responses from the luftdaten.info API for five minutes.
+        # TODO: Make backend configurable.
+        requests_cache.install_cache('api.luftdaten.info', backend='redis', expire_after=300)
+
         if mqtt_uri:
             self.mqtt = MQTTAdapter(mqtt_uri)
 
