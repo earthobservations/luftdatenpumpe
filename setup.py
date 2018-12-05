@@ -59,6 +59,8 @@ setup(name='luftdatenpumpe',
           'munch==2.3.2',
           'paho-mqtt==1.4.0',
           'tqdm==4.28.1',
+          'dataset==1.1.0',
+          'psycopg2-binary==2.7.6.1',
 
           # Geospatial
           'Geohash==1.0',

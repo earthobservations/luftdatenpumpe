@@ -8,8 +8,10 @@ import logging
 
 from docopt import docopt
 
+from . import __appname__, __version__
 from .util import setup_logging
-from .core import APP_NAME, APP_VERSION, LuftdatenPumpe
+from .core import LuftdatenPumpe
+from .adapter.rdbms import RDBMSStorage
 
 log = logging.getLogger(__name__)
 
@@ -58,7 +60,7 @@ def run():
     """
 
     # Parse command line arguments
-    options = docopt(run.__doc__, version=APP_NAME + ' ' + APP_VERSION)
+    options = docopt(run.__doc__, version=__appname__ + ' ' + __version__)
     #print 'options: {}'.format(options)
 
     debug = options.get('--debug')
@@ -93,7 +95,13 @@ def run():
             stations = pump.get_stations_grafana()
         else:
             stations = pump.get_stations()
+
         print(json.dumps(stations, indent=4))
+
+        storage = RDBMSStorage()
+        storage.store_stations(stations)
+        storage.dump_tables()
+        storage.demo_query()
 
     elif options['forward']:
 
