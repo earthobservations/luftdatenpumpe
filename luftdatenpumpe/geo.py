@@ -5,6 +5,7 @@
 import time
 import logging
 import Geohash
+from munch import Munch
 from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator
 from geopy.geocoders import Nominatim
@@ -26,6 +27,14 @@ nominatim_cache = make_region(
 nominatim_user_agent = APP_NAME + '/' + APP_VERSION
 
 
+# Maybe also add building, public_building
+osm_address_fields = \
+    ['city', 'state_district', 'county', 'neighbourhood', 'road', 'postcode', 'house_number', 'city_district',
+     'country_code', 'country', 'suburb', 'state', 'town', 'address29', 'pedestrian', 'residential',
+     'administrative', 'region', 'village', 'industrial', 'footway', 'continent', 'path', 'address26', 'common',
+     'post_box']
+
+
 def resolve_location(latitude=None, longitude=None, geohash=None):
 
     # If only geohash is given, convert back to lat/lon.
@@ -33,9 +42,34 @@ def resolve_location(latitude=None, longitude=None, geohash=None):
         latitude, longitude = geohash_decode(geohash)
 
     # Run reverse geocoder.
-    location = reverse_geocode(latitude, longitude)
+    location = reverse_geocode(latitude, longitude).raw
 
-    return location.raw
+    location = rebundle_location(location)
+
+    return location
+
+
+def rebundle_location(location):
+
+    address = Munch()
+    for field in osm_address_fields:
+        if field in location['address']:
+            address[field] = location['address'][field]
+            del location['address'][field]
+
+    address_more = Munch()
+    for key, value in location['address'].items():
+        address_more[key] = value
+
+    del location['address']
+
+    result = Munch(location)
+    result.address = address
+
+    if address_more:
+        result.address_more = address_more
+
+    return result
 
 
 # Cache responses from Nominatim for 3 months
@@ -120,6 +154,9 @@ def format_address(location_info):
     # Stadtteil FTW
     if 'suburb' not in address and 'residential' in address:
         address['suburb'] = address['residential']
+
+    # FIXME
+    # With a Berlin address, there is ``"state": null``?
 
     """
     Get this sorted: https://wiki.openstreetmap.org/wiki/Key:place !!!

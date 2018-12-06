@@ -7,6 +7,7 @@ import logging
 
 import requests
 import requests_cache
+import types
 from tqdm import tqdm
 from munch import Munch
 from pprint import pformat
@@ -25,9 +26,8 @@ class LuftdatenPumpe:
     # luftdaten.info API URI
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
-    def __init__(self, filter=None, geohash=False, reverse_geocode=False, mqtt_uri=None, progressbar=False, dry_run=False):
+    def __init__(self, filter=None, reverse_geocode=False, mqtt_uri=None, progressbar=False, dry_run=False):
         self.mqtt_uri = mqtt_uri
-        self.geohash = geohash
         self.reverse_geocode = reverse_geocode
         self.dry_run = dry_run
         self.progressbar = progressbar
@@ -57,15 +57,15 @@ class LuftdatenPumpe:
             #log.info('item: %s', item)
 
             # Decode JSON item
-            location_id = item['location']['id']
+            station_id = item['location']['id']
             sensor_id = item['sensor']['id']
             sensor_type = item['sensor']['sensor_type']['name']
 
             # If there is a filter defined, evaluate it
             # For specific location|sensor ids, skip further processing
             if self.filter:
-                if 'locations' in self.filter:
-                    if location_id not in self.filter['locations']:
+                if 'stations' in self.filter:
+                    if station_id not in self.filter['stations']:
                         continue
                 if 'sensors' in self.filter:
                     if sensor_id not in self.filter['sensors']:
@@ -73,27 +73,26 @@ class LuftdatenPumpe:
 
             # Build reading
             reading = Munch(
-                meta=Munch(),
+                station=Munch(),
                 data=Munch(),
             )
 
             # Insert timestamp in appropriate format
-            reading.meta.time = self.convert_timestamp(item['timestamp'])
+            reading.data.time = self.convert_timestamp(item['timestamp'])
 
             # Insert baseline metadata information
-            reading.meta.location_id = location_id
-            reading.meta.sensor_id = sensor_id
-            reading.meta.sensor_type = sensor_type
+            reading.station.station_id = station_id
+            reading.station.sensor_id = sensor_id
+            reading.station.sensor_type = sensor_type
 
-            # Collect location info
+            # Collect position information
             del item['location']['id']
-            reading.meta.update(item['location'])
-            for key, value in reading.meta.items():
+            reading.station.position = Munch()
+            for key, value in item['location'].items():
                 if key in ['latitude', 'longitude', 'altitude']:
-                    try:
-                        reading.meta[key] = float(value)
-                    except:
-                        reading.meta[key] = None
+                    reading.station.position[key] = float(value)
+                else:
+                    reading.station.position[key] = value
 
             # Collect sensor values
             for sensor in item['sensordatavalues']:
@@ -101,41 +100,38 @@ class LuftdatenPumpe:
                 value = float(sensor['value'])
                 reading.data[name] = value
 
-            # Insert geo data
-            if self.geohash:
+            # Add more detailed location information
+            self.enrich_station(reading.station)
 
-                # Compute geohash
-                reading.meta['geohash'] = geohash_encode(item['location']['latitude'], item['location']['longitude'])
-
-            #print('reading:', reading)
-
-            # Human readable location name
-            if self.reverse_geocode:
-                try:
-
-                    # Reverse-geocode position
-                    location = resolve_location(
-                        latitude=reading.meta['latitude'],
-                        longitude=reading.meta['longitude'],
-                        geohash=reading.meta.geohash
-                    )
-
-                    # Format address into single label.
-                    location_name = format_address(location)
-
-                    reading.meta.location_info = location
-                    reading.meta.location_name = location_name
-
-                except Exception as ex:
-                    reading['location_name'] = u'Location-ID: {}'.format(location_id)
-                    log.error(u'Problem with reverse geocoder: {}\n{}'.format(ex, exception_traceback()))
-
-            log.debug('Reading:', json.dumps(reading))
+            log.debug('Reading: %s', json.dumps(reading))
 
             # Debugging
             #break
 
             yield reading
+
+    def enrich_station(self, station):
+
+            # Compute geohash
+            station.position.geohash = geohash_encode(station.position.latitude, station.position.longitude)
+
+            # Compute human readable location name
+            if self.reverse_geocode:
+                try:
+
+                    # Reverse-geocode position
+                    station.location = resolve_location(
+                        latitude=station.position.latitude,
+                        longitude=station.position.longitude,
+                        geohash=station.position.geohash
+                    )
+
+                    # Format address into single label.
+                    station.name = format_address(station.location)
+
+                except Exception as ex:
+                    station.name = u'Station #{}'.format(station.station_id)
+                    log.error(u'Problem with reverse geocoder: {}\n{}'.format(ex, exception_traceback()))
 
     def forward_to_mqtt(self):
         """
@@ -154,12 +150,17 @@ class LuftdatenPumpe:
         for reading in self.request():
 
             # Build MQTT message.
+            message = Munch()
 
-            # Metadata fields
-            metadata_fields = ['time', 'location_id', 'sensor_id', 'sensor_type', 'geohash', 'altitude']
-            message = OrderedDict()
-            for fieldname in metadata_fields:
-                message[fieldname] = reading.meta[fieldname]
+            # Station info
+            for key, value in reading.station.items():
+                if isinstance(value, dict):
+                    message.update(value)
+                else:
+                    message[key] = value
+
+            message['location_id'] = message['station_id']
+            del message['station_id']
 
             # Measurement fields
             message.update(reading.data)
@@ -171,55 +172,59 @@ class LuftdatenPumpe:
                 self.publish_mqtt(message)
 
     def get_stations(self):
-        locations = {}
-        field_candidates = ['location_id', 'location_name', 'location_info', 'geohash', 'latitude', 'longitude', 'altitude']
+        stations = {}
+        field_candidates = ['station_id', 'name', 'position', 'location']
         for reading in self.request():
 
             # Location ID for the reading
-            location_id = reading.meta.location_id
+            station_id = reading.station.station_id
 
             # Sensor information from the reading
             sensor_info = {
-                'sensor_id': reading.meta.sensor_id,
-                'sensor_type': reading.meta.sensor_type,
+                'sensor_id': reading.station.sensor_id,
+                'sensor_type': reading.station.sensor_type,
             }
 
             # Acquire additional sensors from reading.
-            # This continues with the next loop iteration as location
-            # information has already been transferred.
-            if location_id in locations:
-                location = locations[location_id]
-                sensor_id = reading.meta.sensor_id
-                if sensor_id not in location['sensors']:
-                    location['sensors'].update({sensor_id: sensor_info})
+            # This continues with the next loop iteration as
+            # location information has already been transferred.
+            if station_id in stations:
+                station = stations[station_id]
+                sensor_id = reading.station.sensor_id
+                if sensor_id not in station['sensors']:
+                    station['sensors'].update({sensor_id: sensor_info})
                 continue
 
-            # Acquire location information from reading
-            location = {}
+            # Acquire station information from reading
+            station = Munch()
             for field in field_candidates:
-                if field in reading.meta:
-                    location[field] = reading.meta[field]
+                if field in reading.station:
+                    station[field] = reading.station[field]
 
             # Acquire first sensor from reading
-            sensor_id = reading.meta.sensor_id
-            location['sensors'] = {sensor_id: sensor_info}
+            sensor_id = reading.station.sensor_id
+            station['sensors'] = {sensor_id: sensor_info}
 
             # Collect location if not empty
-            if location:
-                locations[location_id] = location
+            if station:
+                stations[station_id] = station
 
-        return locations
+        results = []
+        for key in sorted(stations.keys()):
+            station = stations[key]
+            results.append(station)
+
+        return results
 
     def get_stations_grafana(self):
         stations = self.get_stations()
         entries = []
-        for location_id, location in stations.items():
-            #print(location_id, location)
-            if 'location_name' in location:
-                location_name = location['location_name']
+        for station in stations:
+            if 'name' in station:
+                station_name = station.name
             else:
-                location_name = u'Location: {}'.format(location_id)
-            entry = {'value': location_id, 'text': location_name}
+                station_name = u'Station #{}'.format(station.station_id)
+            entry = {'value': station.station_id, 'text': station_name}
             entries.append(entry)
         return entries
 

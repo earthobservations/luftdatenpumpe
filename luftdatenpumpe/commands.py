@@ -19,16 +19,15 @@ log = logging.getLogger(__name__)
 def run():
     """
     Usage:
-      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info [--sensors=<sensors>] [--locations=<locations>] [--geohash] [--reverse-geocode] [--progress] [--debug] [--dry-run]
-      luftdatenpumpe stations [--sensors=<sensors>] [--locations=<locations>] [--geohash] [--reverse-geocode] [--format=<format>] [--progress] [--debug] [--dry-run]
+      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info [--sensors=<sensors>] [--stations=<stations>] [--reverse-geocode] [--progress] [--debug] [--dry-run]
+      luftdatenpumpe stations [--sensors=<sensors>] [--stations=<stations>] [--reverse-geocode] [--format=<format>] [--progress] [--debug] [--dry-run]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
 
     Options:
       --mqtt-uri=<mqtt-uri>         Use specified MQTT broker
       --sensors=<sensors>           Filter data by given sensor ids, comma-separated.
-      --locations=<locations>       Filter data by given location ids, comma-separated.
-      --geohash                     Compute Geohash from latitude/longitude and add to MQTT message
+      --stations=<stations>       Filter data by given location ids, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder and add to MQTT message
       --format=<format>             Output format
       --progress                    Show progress bar
@@ -43,19 +42,19 @@ def run():
       luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info
 
       # Publish fully enriched data for multiple sensor ids
-      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info --geohash --reverse-geocode --sensors=2115,2116
+      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info --reverse-geocode --sensors=2115,2116
 
       # Publish fully enriched data for multiple location ids
-      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info --geohash --reverse-geocode --locations=1064,1071
+      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten.info --reverse-geocode --stations=1064,1071
 
       # Publish data suitable for displaying in Grafana Worldmap Panel using Kotori
-      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten/testdrive/earth/42/data.json --geohash --reverse-geocode --progress
+      luftdatenpumpe forward --mqtt-uri mqtt://mqtt.example.org/luftdaten/testdrive/earth/42/data.json --reverse-geocode --progress
 
       # Display list of stations in JSON format
-      luftdatenpumpe stations --locations=1064,1071 --geohash --reverse-geocode
+      luftdatenpumpe stations --stations=1064,1071 --reverse-geocode
 
       # Display list of stations in JSON format, suitable for integrating with Grafana
-      luftdatenpumpe stations --locations=1064,1071 --geohash --reverse-geocode --format=grafana
+      luftdatenpumpe stations --stations=1064,1071 --reverse-geocode --format=grafana
 
     """
 
@@ -73,7 +72,7 @@ def run():
 
     # Optionally, apply filters by sensor id and location id
     filter = {}
-    for filter_name in ['locations', 'sensors']:
+    for filter_name in ['stations', 'sensors']:
         filter_option = '--' + filter_name
         if options[filter_option]:
             filter[filter_name] = list(map(int, options[filter_option].replace(' ', '').split(',')))
@@ -82,7 +81,6 @@ def run():
 
     pump = LuftdatenPumpe(
         filter=filter,
-        geohash=options['--geohash'],
         reverse_geocode=options['--reverse-geocode'],
         mqtt_uri=mqtt_uri,
         progressbar=options['--progress'],
@@ -98,10 +96,10 @@ def run():
 
         print(json.dumps(stations, indent=4))
 
-        storage = RDBMSStorage()
-        storage.store_stations(stations)
-        storage.dump_tables()
-        storage.demo_query()
+        #storage = RDBMSStorage()
+        #storage.store_stations(stations)
+        #storage.dump_tables()
+        #storage.demo_query()
 
     elif options['forward']:
 

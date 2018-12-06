@@ -5,6 +5,7 @@
 import json
 import logging
 import dataset
+from munch import Munch
 from copy import deepcopy
 
 log = logging.getLogger(__name__)
@@ -16,50 +17,60 @@ class RDBMSStorage:
 
         # TODO: Make datasource URI configurable.
         #self.db = dataset.connect('sqlite:///:memory:')
-        self.db = dataset.connect('postgres:///weatherbase_dev')
-        #self.db = dataset.connect('postgres:///weatherbase')
+        #self.db = dataset.connect('postgres:///weatherbase_dev')
+        self.db = dataset.connect('postgres:///weatherbase')
 
         # Create tables.
-        self.db.create_table('ldi_stations', primary_id='location_id')
-        self.db.create_table('ldi_osmdata', primary_id='location_id')
-        self.db.create_table('ldi_sensors', primary_id='location_id')
+        self.db.create_table('ldi_stations', primary_id='id')
+        self.db.create_table('ldi_osmdata', primary_id='station_id')
+        self.db.create_table('ldi_sensors', primary_id='sensor_id')
 
         # Assign table handles.
         self.stationtable = self.db['ldi_stations']
-        self.osmtable = self.db['ldi_osmdata']
         self.sensorstable = self.db['ldi_sensors']
+        self.osmtable = self.db['ldi_osmdata']
 
     def store_stations(self, stations):
 
-        for _, station in stations.items():
+        for station in stations:
 
             # Debugging
             #log.info(station)
 
             # Station table
-            stationdata = deepcopy(station)
-            del stationdata['location_info']
-            del stationdata['sensors']
-            self.stationtable.upsert(stationdata, ['location_id'])
+            stationdata = Munch()
+            stationdata.id = station.station_id
+            for key, value in station.items():
+                if key.startswith('name'):
+                    stationdata[key] = value
+            stationdata.update(station.position)
+            self.stationtable.upsert(stationdata, ['id'])
 
             # Sensors table
             for _, sensor in station['sensors'].items():
                 sensordata = {}
-                sensordata['location_id'] = station['location_id']
+                sensordata['station_id'] = station['station_id']
                 sensordata.update(sensor)
-                self.sensorstable.upsert(sensordata, ['location_id'])
+                self.sensorstable.upsert(sensordata, ['sensor_id'])
 
             # OSM table
             osmdata = {}
-            osmdata['location_id'] = station['location_id']
-            location_info = deepcopy(station['location_info'])
-            for key, value in location_info['address'].items():
-                key = 'address_' + key
-                location_info[key] = value
-            del location_info['address']
-            del location_info['boundingbox']
-            osmdata.update(location_info)
-            self.osmtable.upsert(osmdata, ['location_id'])
+            osmdata['station_id'] = station['station_id']
+            location = deepcopy(station['location'])
+            for key, value in location['address'].items():
+                #key = 'address_' + key
+                location[key] = value
+            del location['address']
+
+            if 'address_more' in location:
+                osmdata['address_more'] = json.dumps(location['address_more'])
+                del location['address_more']
+
+            # TODO: Also store bounding box
+            del location['boundingbox']
+
+            osmdata.update(location)
+            self.osmtable.upsert(osmdata, ['station_id'])
 
     def dump_tables(self):
         for table in [self.stationtable, self.sensorstable, self.osmtable]:
@@ -73,7 +84,7 @@ class RDBMSStorage:
         #print(dir(self.stationtable.table))
 
         # https://dataset.readthedocs.io/en/latest/quickstart.html#running-custom-sql-queries
-        expression = 'SELECT * FROM ldi_stations, ldi_osmdata WHERE ldi_stations.location_id = ldi_osmdata.location_id'
+        expression = 'SELECT * FROM ldi_stations, ldi_osmdata WHERE ldi_stations.id = ldi_osmdata.station_id'
         print('### Expression:', expression)
         result = self.db.query(expression)
         for record in result:
