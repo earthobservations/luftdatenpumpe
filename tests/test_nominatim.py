@@ -162,3 +162,16 @@ def test_improved_city_patches():
     assert location.address.city == 'Regensburg'
     name = format_address(location)
     assert name == 'Regerstraße, Galgenberg, Regensburg, Bayern, DE'
+
+
+def test_taiwan_poor():
+    """
+    LDI station #187 does not have good reverse geocoding information.
+    """
+
+    location = resolve_location(latitude=24.074, longitude=120.34)
+    improve_location(location)
+    assert location.address.country_code == 'tw'
+    assert location.address.country == '臺灣'
+    name = format_address(location)
+    assert name == 'TW'

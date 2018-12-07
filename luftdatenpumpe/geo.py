@@ -179,7 +179,7 @@ def improve_location(location):
     # Reverse Stadtstaat improvements.
     # If `state` is missing, use `city` attribute for all known Stadtstaaten.
     # TODO: Add more? Hamburg, Bremen, etc.
-    if 'state' not in address and address.city in ['Berlin']:
+    if 'state' not in address and 'city' in address and address.city in ['Berlin']:
         address.state = address.city
 
     # Improve Stadtteil.

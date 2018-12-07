@@ -115,6 +115,7 @@ class LuftdatenPumpe:
 
             # Compute human readable location name
             if self.reverse_geocode:
+
                 try:
 
                     # Reverse-geocode position
@@ -130,9 +131,21 @@ class LuftdatenPumpe:
                     # Format address into single label.
                     station.name = format_address(station.location)
 
+                    try:
+                        if station.name.lower() == station.position.country.lower():
+                            del station['name']
+                    except:
+                        pass
+
                 except Exception as ex:
-                    station.name = u'Station #{}'.format(station.station_id)
                     log.error(u'Problem with reverse geocoder: {}\n{}'.format(ex, exception_traceback()))
+
+                if 'name' not in station:
+                    station.name = u'Station #{}'.format(station.station_id)
+                    try:
+                        station.name += ', ' + station.position.country
+                    except:
+                        pass
 
     def forward_to_mqtt(self):
         """
@@ -224,7 +237,7 @@ class LuftdatenPumpe:
             if 'name' in station:
                 station_name = station.name
             else:
-                station_name = u'Station #{}'.format(station.station_id)
+                station_name = u'Station #{}, {}'.format(station.station_id, station.position.country)
             entry = {'value': station.station_id, 'text': station_name}
             entries.append(entry)
         return entries
