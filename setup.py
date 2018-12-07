@@ -55,20 +55,25 @@ setup(name='luftdatenpumpe',
           'appdirs==1.4.3',
           'docopt==0.6.2',
           'requests==2.20.1',
-          'requests-cache==0.4.13',
           'munch==2.3.2',
-          'paho-mqtt==1.4.0',
           'tqdm==4.28.1',
+
+          # Caching
+          'requests-cache==0.4.13',
+          'dogpile.cache==0.6.8',
+          'redis==3.0.1',
+
+          # Adapters
+          'paho-mqtt==1.4.0',
           'dataset==1.1.0',
           'psycopg2-binary==2.7.6.1',
 
           # Geospatial
           'Geohash==1.0',
           'geopy==1.18.0',
-          'dogpile.cache==0.6.8',
-          'redis==3.0.1',
       ],
       dependency_links=[
+          # This fork makes the package install on Python 3.x
           'https://github.com/webartifex/geohash/raw/master/dist/Geohash-1.0-py3.6.egg#egg=Geohash-1.0',
       ],
       entry_points={
