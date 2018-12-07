@@ -7,13 +7,11 @@ import logging
 
 import requests
 import requests_cache
-import types
 from tqdm import tqdm
 from munch import Munch
 from pprint import pformat
-from collections import OrderedDict
 
-from .geo import geohash_encode, resolve_location, format_address
+from .geo import geohash_encode, resolve_location, improve_location, format_address
 from .mqtt import MQTTAdapter
 from .util import exception_traceback
 
@@ -125,6 +123,9 @@ class LuftdatenPumpe:
                         longitude=station.position.longitude,
                         geohash=station.position.geohash
                     )
+
+                    # Improve location information
+                    improve_location(station.location)
 
                     # Format address into single label.
                     station.name = format_address(station.location)

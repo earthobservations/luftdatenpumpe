@@ -5,6 +5,7 @@
 import time
 import logging
 import Geohash
+from copy import deepcopy
 from munch import Munch
 from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator
@@ -29,13 +30,21 @@ nominatim_user_agent = APP_NAME + '/' + APP_VERSION
 
 # Maybe also add building, public_building
 osm_address_fields = \
-    ['city', 'state_district', 'county', 'neighbourhood', 'road', 'postcode', 'house_number', 'city_district',
-     'country_code', 'country', 'suburb', 'state', 'town', 'address29', 'pedestrian', 'residential',
-     'administrative', 'region', 'village', 'industrial', 'footway', 'continent', 'path', 'address26', 'common',
-     'post_box']
+    [
+        'continent',
+        'country_code', 'country', 'state', 'state_district', 'county',
+        'postcode',
+        'post_box',
+        'city', 'town', 'village', 'city_district', 'suburb', 'residential',
+        'road', 'pedestrian', 'cycleway', 'footway', 'path',
+        'house_number',
+
+        'administrative', 'region', 'neighbourhood', 'industrial', 'common',
+        'address26', 'address29',
+    ]
 
 
-def resolve_location(latitude=None, longitude=None, geohash=None):
+def resolve_location(latitude=None, longitude=None, geohash=None, improve=True):
 
     # If only geohash is given, convert back to lat/lon.
     if latitude is None and longitude is None and geohash is not None:
@@ -115,87 +124,114 @@ def reverse_geocode(latitude, longitude):
     return location
 
 
-def format_address(location_info):
+def improve_location(location):
+    """
+    Heuristically compensate for anomalies from upstream OSM.
 
-    #log.debug(u'Reverse geocoder result: {}'.format(pformat(location_info)))
+    FIXME:
+    - [x] With a Berlin address, there is ``"state": null``?
+    - [o] Modify suburb with things like "Fhain" => "Friedrichshain"
+    - [o] Handle city==Rgbg
 
-    # https://github.com/OpenCageData/address-formatting
-    # https://opencagedata.com/
-    # https://openaddresses.io/
-    # http://results.openaddresses.io/
-    # https://github.com/DenisCarriere/geocoder-geojson
+    TODO:
+    - Get urban vs. rural sorted out
 
-    # Be agnostic against city vs. village
-    # TODO: Handle Rgbg
-    address = location_info['address']
+        1. country
+        2. state
+        3. "Überregional": "q-region"
+            - county, state_district, state
+        4. "Regional": "q-hood"
+            - neighbourhood vs. quarter vs. residential vs. suburb vs. city_district vs. city vs. allotments
+
+    - How to handle "building", "public_building", "residential", "pedestrian", "kindergarten", "clothes"?
+    - Also check OSM place: https://wiki.openstreetmap.org/wiki/Key:place !!!
+    """
+
+    address = location.address
+
+
+    # Improve `city` attribute.
+    # If `city` is missing, try a number of alternative attributes.
+    city_choices = [
+
+        # Aliases
+        'village', 'town', 'county', 'suburb', 'city_district',
+
+        # Stadtstaat
+        'state',
+    ]
     if 'city' not in address:
-        if 'village' in address:
-            address['city'] = address['village']
-        elif 'town' in address:
-            address['city'] = address['town']
-        elif 'county' in address:
-            address['city'] = address['county']
+        for fieldname in city_choices:
+            if fieldname in address:
+                address.city = address[fieldname]
+                break
+
+    # Improve Stadtstaat.
+    # As the name of the city will already be propagated through the `state` attribute,
+    # we can stuff more details on the lower level into the `city` attribute.
+    if 'city' in address and 'state' in address and address.city == address.state:
+        if 'city_district' in address:
+            address.city = address.city_district
         elif 'suburb' in address:
-            address['city'] = address['suburb']
-        elif 'city_district' in address:
-            address['city'] = address['city_district']
+            address.city = address.suburb
 
-        # Stadtstaat FTW!
-        elif 'state' in address:
-            address['city'] = address['state']
+    # Reverse Stadtstaat improvements.
+    # If `state` is missing, use `city` attribute for all known Stadtstaaten.
+    # TODO: Add more? Hamburg, Bremen, etc.
+    if 'state' not in address and address.city in ['Berlin']:
+        address.state = address.city
 
-    # Add more convenience for handling Stadtstaaten
-    if 'city' in address and 'state' in address and address['city'] == address['state']:
-        if 'suburb' in address:
-            address['city'] = address['suburb']
-        elif 'city_district' in address:
-            address['city'] = address['city_district']
-
-    # Stadtteil FTW
+    # Improve Stadtteil.
+    # Use `residential` for missing `suburb` attribute.
     if 'suburb' not in address and 'residential' in address:
-        address['suburb'] = address['residential']
-
-    # FIXME
-    # With a Berlin address, there is ``"state": null``?
-
-    """
-    Get this sorted: https://wiki.openstreetmap.org/wiki/Key:place !!!
-    Get urban vs. rural sorted out
-
-    1. country
-    2. state
-    3. "Überregional": "q-region"
-        - county, state_district, state
-    4. "Regional": "q-hood"
-        - neighbourhood vs. quarter vs. residential vs. suburb vs. city_district vs. city vs. allotments
-
-    How to handle "building", "public_building", "residential", "pedestrian", "kindergarten", "clothes"?
-    """
-
-    """
-    What about?
-
-    county          "Kreis Steinfurt"
-    state_district  "Regierungsbezirk Münster"
-    state           "North Rhine-Westphalia"
-    postcode        "48369"
-
-    -- https://nominatim.openstreetmap.org/reverse?lat=48.058&lon=12.57&format=json&addressdetails=1
-    """
+        address.suburb = address.residential
 
     # Be agnostic against road vs. path
     if 'road' not in address:
         road_choices = ['path', 'pedestrian', 'cycleway', 'footway']
-        for field in road_choices:
-            if field in address:
-                address['road'] = address[field]
+        for fieldname in road_choices:
+            if fieldname in address:
+                address.road = address[fieldname]
 
-    # Uppercase country code
+
+def format_address(location):
+    """
+    The canonical station ``name`` attribute yields a more compact display
+    name than that already provided by the upstream OSM ``display_name`` attribute.
+
+    References
+    ----------
+    - https://github.com/OpenCageData/address-formatting
+    - https://opencagedata.com/
+    - https://openaddresses.io/
+    - http://results.openaddresses.io/
+    - https://github.com/DenisCarriere/geocoder-geojson
+
+    """
+
+    location = deepcopy(location)
+    address = location.address
+
+    # Uppercase `country_code`.
     address['country_code'] = address['country_code'].upper()
 
-    # Build display location from components
-    # TODO: Modify suburb with things like "Fhain" => "Friedrichshain"
-    address_fields = ['road', 'suburb', 'city', 'state', 'country_code']
+    # Clean up `county` field.
+    blacklist = [
+        # county
+        'Landkreis', 'Kreis', 'Verwaltungsgemeinschaft',
+
+        # suburb
+        'Bezirksteil', 'Bezirk',
+    ]
+    blacklist_fields = ['county', 'suburb']
+    for fieldname in blacklist_fields:
+        if fieldname in address:
+            for black in blacklist:
+                if black in address[fieldname]:
+                    address[fieldname] = address[fieldname].replace(black, '').strip()
+
+    # Build display location from components.
+    address_fields = ['road', 'suburb', 'city', 'county', 'state', 'country_code']
     address_parts = []
     for address_field in address_fields:
         if address_field in address:

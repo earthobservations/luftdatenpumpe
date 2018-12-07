@@ -2,6 +2,13 @@
 import sys
 from setuptools import setup, find_packages
 
+extras = {
+    'test': [
+        'pytest==4.0.1',
+        'pytest-cov==2.6.0',
+    ],
+}
+
 setup(name='luftdatenpumpe',
       version='0.3.0',
       description='Process data from live API of luftdaten.info',
@@ -72,6 +79,8 @@ setup(name='luftdatenpumpe',
           'Geohash==1.0',
           'geopy==1.18.0',
       ],
+      extras_require = extras,
+      tests_require=extras['test'],
       dependency_links=[
           # This fork makes the package install on Python 3.x
           'https://github.com/webartifex/geohash/raw/master/dist/Geohash-1.0-py3.6.egg#egg=Geohash-1.0',
