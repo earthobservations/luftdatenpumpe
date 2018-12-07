@@ -148,6 +148,15 @@ def improve_location(location):
 
 
     # Improve `city` attribute.
+
+    # Stadtstaat handling. For all known Stadtstaaten,
+    # - if `city` is missing, use `state` attribute.
+    # - if `state` is missing, use `city` attribute.
+    # TODO: Add more? Hamburg, Bremen, etc.
+    stadtstaat = address.get('city', address.get('state'))
+    if stadtstaat in ['Berlin', 'Hamburg']:
+        address.state = address.city = stadtstaat
+
     # If `city` is missing, try a number of alternative attributes.
     city_choices = [
 
@@ -175,12 +184,6 @@ def improve_location(location):
             address.city = address.city_district
         elif 'suburb' in address:
             address.city = address.suburb
-
-    # Reverse Stadtstaat improvements.
-    # If `state` is missing, use `city` attribute for all known Stadtstaaten.
-    # TODO: Add more? Hamburg, Bremen, etc.
-    if 'state' not in address and 'city' in address and address.city in ['Berlin']:
-        address.state = address.city
 
     # Improve Stadtteil.
     # Use `residential` or `neighbourhood` for missing `suburb` attribute.

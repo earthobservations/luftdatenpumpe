@@ -54,6 +54,7 @@ def test_improved_stadtstaat():
     location = resolve_location(latitude=53.112, longitude=8.896)
     improve_location(location)
     assert location.address.suburb == 'Horn-Lehe'
+    assert location.address.city_district == 'Stadtbezirk Bremen-Ost'
     assert location.address.city == 'Bremen'
     assert location.address.state == 'Bremen'
     name = format_address(location)
@@ -62,10 +63,20 @@ def test_improved_stadtstaat():
     location = resolve_location(latitude=52.544, longitude=13.374)
     improve_location(location)
     assert location.address.suburb == 'Gesundbrunnen'
+    assert location.address.city_district == 'Mitte'
     assert location.address.city == 'Berlin'
     assert location.address.state == 'Berlin'
     name = format_address(location)
     assert name == 'Gerichtstraße, Gesundbrunnen, Mitte, Berlin, DE'
+
+    location = resolve_location(latitude=53.448, longitude=10.228)
+    improve_location(location)
+    assert location.address.suburb == 'Curslack'
+    assert location.address.city_district == 'Bergedorf'
+    assert location.address.city == 'Hamburg'
+    assert location.address.state == 'Hamburg'
+    name = format_address(location)
+    assert name == 'Curslacker Deich, Curslack, Bergedorf, Hamburg, DE'
 
 
 def test_improved_stadtteil():
