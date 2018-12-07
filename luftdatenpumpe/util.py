@@ -36,3 +36,10 @@ def exception_traceback(exc_info=None):
     exc_type, exc_val, exc_tb = exc_info
     traceback.print_exception(exc_type, exc_val, exc_tb, file=excout)
     return excout.getvalue()
+
+
+def to_list(obj):
+    """Convert an object to a list if it is not already one"""
+    if not isinstance(obj, (list, tuple)):
+        obj = [obj, ]
+    return obj

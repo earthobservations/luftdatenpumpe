@@ -2,13 +2,15 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import re
 import time
 import logging
-import Geohash
 from copy import deepcopy
+
+import Geohash
 from munch import Munch
 from dogpile.cache import make_region
-from dogpile.cache.util import kwarg_function_key_generator
+from dogpile.cache.util import kwarg_function_key_generator, to_list
 from geopy.geocoders import Nominatim
 
 from . import __appname__ as APP_NAME
@@ -128,11 +130,6 @@ def improve_location(location):
     """
     Heuristically compensate for anomalies from upstream OSM.
 
-    FIXME:
-    - [x] With a Berlin address, there is ``"state": null``?
-    - [o] Modify suburb with things like "Fhain" => "Friedrichshain"
-    - [o] Handle city==Rgbg
-
     TODO:
     - Get urban vs. rural sorted out
 
@@ -166,10 +163,14 @@ def improve_location(location):
                 address.city = address[fieldname]
                 break
 
+    # Patch `city` field.
+    if 'city' in address and address.city == 'Rgbg':
+        address.city = 'Regensburg'
+
     # Improve Stadtstaat.
     # As the name of the city will already be propagated through the `state` attribute,
     # we can stuff more details on the lower level into the `city` attribute.
-    if 'city' in address and 'state' in address and address.city == address.state:
+    if False and 'city' in address and 'state' in address and address.city == address.state:
         if 'city_district' in address:
             address.city = address.city_district
         elif 'suburb' in address:
@@ -182,9 +183,11 @@ def improve_location(location):
         address.state = address.city
 
     # Improve Stadtteil.
-    # Use `residential` for missing `suburb` attribute.
+    # Use `residential` or `neighbourhood` for missing `suburb` attribute.
     if 'suburb' not in address and 'residential' in address:
         address.suburb = address.residential
+    if 'suburb' not in address and 'neighbourhood' in address:
+        address.suburb = address.neighbourhood
 
     # Be agnostic against road vs. path
     if 'road' not in address:
@@ -213,17 +216,23 @@ def format_address(location):
     address = location.address
 
     # Uppercase `country_code`.
-    address['country_code'] = address['country_code'].upper()
+    address.country_code = address.country_code.upper()
 
-    # Clean up `county` field.
+    # Clean up `county`, 'city_district` and `suburb` fields.
     blacklist = [
         # county
         'Landkreis', 'Kreis', 'Verwaltungsgemeinschaft',
 
-        # suburb
+        # city_district
+        'Stadtbezirk',
+
+        # suburb: prefixes
         'Bezirksteil', 'Bezirk',
+
+        # suburb: values
+        'Fhain',
     ]
-    blacklist_fields = ['county', 'suburb']
+    blacklist_fields = ['county', 'city_district', 'suburb']
     for fieldname in blacklist_fields:
         if fieldname in address:
             for black in blacklist:
@@ -231,14 +240,26 @@ def format_address(location):
                     address[fieldname] = address[fieldname].replace(black, '').strip()
 
     # Build display location from components.
-    address_fields = ['road', 'suburb', 'city', 'county', 'state', 'country_code']
+    address_components = ['road', 'suburb', 'city_district', 'city', 'county', 'state', 'country_code']
     address_parts = []
-    for address_field in address_fields:
-        if address_field in address:
-            next_field = address[address_field]
-            if address_parts and next_field == address_parts[-1]:
-                continue
-            address_parts.append(next_field)
+    starts_with_number = re.compile('^\d+')
+    for field_choices in address_components:
+        field_choices = to_list(field_choices)
+        for fieldname in field_choices:
+            if fieldname in address:
+                component = address[fieldname]
+
+                if not component:
+                    continue
+
+                if address_parts and component == address_parts[-1]:
+                    continue
+
+                if starts_with_number.match(component):
+                    continue
+
+                address_parts.append(component)
+                break
 
     location_label = ', '.join(address_parts)
     return location_label

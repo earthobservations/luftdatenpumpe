@@ -54,10 +54,10 @@ def test_improved_stadtstaat():
     location = resolve_location(latitude=53.112, longitude=8.896)
     improve_location(location)
     assert location.address.suburb == 'Horn-Lehe'
-    assert location.address.city == 'Stadtbezirk Bremen-Ost'
+    assert location.address.city == 'Bremen'
     assert location.address.state == 'Bremen'
     name = format_address(location)
-    assert name == 'Flemingstraße, Horn-Lehe, Stadtbezirk Bremen-Ost, Bremen, DE'
+    assert name == 'Flemingstraße, Horn-Lehe, Bremen-Ost, Bremen, DE'
 
     location = resolve_location(latitude=52.544, longitude=13.374)
     improve_location(location)
@@ -65,7 +65,7 @@ def test_improved_stadtstaat():
     assert location.address.city == 'Berlin'
     assert location.address.state == 'Berlin'
     name = format_address(location)
-    assert name == 'Gerichtstraße, Gesundbrunnen, Berlin, DE'
+    assert name == 'Gerichtstraße, Gesundbrunnen, Mitte, Berlin, DE'
 
 
 def test_improved_stadtteil():
@@ -137,3 +137,28 @@ def test_improved_road():
     assert location.address.road == 'Hans-Holbein-Straße'
     name = format_address(location)
     assert name == 'Hans-Holbein-Straße, Leinfelden, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
+
+
+def test_improved_city_district_vs_suburb():
+    """
+    Check priority control of `city_district` vs. `suburb`.
+    I.e. use `"city_district": "Friedrichshain-Kreuzberg"` over `"suburb": "Fhain"`.
+    """
+
+    location = resolve_location(latitude=52.518, longitude=13.442)
+    improve_location(location)
+    name = format_address(location)
+    assert name == 'Weidenweg, Friedrichshain-Kreuzberg, Berlin, DE'
+
+
+def test_improved_city_patches():
+    """
+    Check patched `city` attribute,
+    I.e. use `"city": "Regensburg"` over `"city": "Rgbg"`.
+    """
+
+    location = resolve_location(latitude=49.006, longitude=12.104)
+    improve_location(location)
+    assert location.address.city == 'Regensburg'
+    name = format_address(location)
+    assert name == 'Regerstraße, Galgenberg, Regensburg, Bayern, DE'
