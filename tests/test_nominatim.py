@@ -27,12 +27,13 @@ def test_format_address():
     Test address formatting.
     """
     location = resolve_location(latitude=48.778, longitude=9.236)
+    improve_location(location)
     name = format_address(location)
 
     assert name == 'Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
 
 
-def test_improved_city_alias():
+def test_city_alias():
     """
     Test heuristic OSM improvements re. ``city`` attribute.
     """
@@ -46,7 +47,7 @@ def test_improved_city_alias():
     assert location.address.city == 'Leonberg'
 
 
-def test_improved_stadtstaat():
+def test_stadtstaat():
     """
     Test heuristic OSM improvements re. ``city`` attribute for Stadtstaaten.
     """
@@ -79,7 +80,7 @@ def test_improved_stadtstaat():
     assert name == 'Curslacker Deich, Curslack, Bergedorf, Hamburg, DE'
 
 
-def test_improved_stadtteil():
+def test_stadtteil():
     """
     Test heuristic OSM improvements re. `suburb` vs. `residential` attribute.
     """
@@ -94,7 +95,7 @@ def test_improved_stadtteil():
     assert name == 'Paul-Pfizer-Straße, Ringelbach, Reutlingen, Baden-Württemberg, DE'
 
 
-def test_improved_residential_village():
+def test_residential_village():
     """
     This address has to use information from `residential` and `village` fields.
     """
@@ -107,7 +108,7 @@ def test_improved_residential_village():
     assert name == 'Trostberger Straße, Lengloh, Tacherting, Traunstein, Bayern, DE'
 
 
-def test_improved_something():
+def test_something():
     location = resolve_location(latitude=52.181, longitude=7.630)
     improve_location(location)
     #log.info(location)
@@ -116,7 +117,7 @@ def test_improved_something():
     assert name == 'Holunderbusch, Saerbeck, Steinfurt, Nordrhein-Westfalen, DE'
 
 
-def test_improved_road():
+def test_road():
     """
     These addresses originally lack the `road` attribute.
     """
@@ -150,7 +151,7 @@ def test_improved_road():
     assert name == 'Hans-Holbein-Straße, Leinfelden, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
 
 
-def test_improved_city_district_vs_suburb():
+def test_city_district_vs_suburb():
     """
     Check priority control of `city_district` vs. `suburb`.
     I.e. use `"city_district": "Friedrichshain-Kreuzberg"` over `"suburb": "Fhain"`.
@@ -162,7 +163,7 @@ def test_improved_city_district_vs_suburb():
     assert name == 'Weidenweg, Friedrichshain-Kreuzberg, Berlin, DE'
 
 
-def test_improved_city_patches():
+def test_city_patches():
     """
     Check patched `city` attribute,
     I.e. use `"city": "Regensburg"` over `"city": "Rgbg"`.
@@ -175,6 +176,23 @@ def test_improved_city_patches():
     assert name == 'Regerstraße, Galgenberg, Regensburg, Bayern, DE'
 
 
+def test_country_patches():
+    """
+    Fix `"country": "RP"` to `"country": "Poland"`.
+    """
+
+    location = resolve_location(latitude=51.72, longitude=19.48)
+    improve_location(location)
+    assert location.address.country == 'Poland'
+    name = format_address(location)
+    assert name == 'Rentowna, Górna, Łódź-Górna, Łódź, łódzkie, PL'
+
+    location = resolve_location(latitude=19.806, longitude=-70.704)
+    improve_location(location)
+    assert location.address.country == 'Dominican Republic'
+    name = format_address(location)
+    assert name == 'Guayacanes, Costámbar, Puerto Plata, DO'
+
 def test_taiwan_poor():
     """
     LDI station #187 does not have good reverse geocoding information.
@@ -182,7 +200,7 @@ def test_taiwan_poor():
 
     location = resolve_location(latitude=24.074, longitude=120.34)
     improve_location(location)
-    assert location.address.country_code == 'tw'
+    assert location.address.country_code == 'TW'
     assert location.address.country == '臺灣'
     name = format_address(location)
     assert name == 'TW'

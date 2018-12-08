@@ -147,7 +147,9 @@ def improve_location(location):
     address = location.address
 
     # Uppercase `country_code` attribute.
-    address.country_code = address.country_code.upper()
+    if 'country_code' in address:
+        address.country_code = address.country_code.upper()
+
 
     # Improve `city` attribute.
 
@@ -183,11 +185,17 @@ def improve_location(location):
                 break
 
     # Patch `country` field.
-    # TODO:
-    # RP => Republic of Poland?
-    # Example: PL	Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
-    # R.D. => Republic of Dominica?
-    # Example: DO	Guayacanes, Costámbar, Puerto Plata, DO (#109)
+    if 'country_code' in address:
+
+        # R.D. => Dominican Republic
+        # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
+        if address.country_code == 'DO':
+            address.country = 'Dominican Republic'
+
+        # RP => Republic of Poland
+        # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
+        if address.country_code == 'PL':
+            address.country = 'Poland'
 
     # Patch `city` field.
     if 'city' in address and address.city == 'Rgbg':
