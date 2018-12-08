@@ -51,62 +51,75 @@ class LuftdatenPumpe:
             iterator = tqdm(data)
 
         for item in iterator:
+            try:
 
-            #log.info('item: %s', item)
+                reading = self.make_reading(item)
+                if reading is None:
+                    continue
+                yield reading
 
-            # Decode JSON item
-            station_id = item['location']['id']
-            sensor_id = item['sensor']['id']
-            sensor_type = item['sensor']['sensor_type']['name']
+            except Exception as ex:
+                log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
 
-            # If there is a filter defined, evaluate it
-            # For specific location|sensor ids, skip further processing
-            if self.filter:
-                if 'stations' in self.filter:
-                    if station_id not in self.filter['stations']:
-                        continue
-                if 'sensors' in self.filter:
-                    if sensor_id not in self.filter['sensors']:
-                        continue
+    def make_reading(self, item):
 
-            # Build reading
-            reading = Munch(
-                station=Munch(),
-                data=Munch(),
-            )
+        #log.info('item: %s', item)
 
-            # Insert timestamp in appropriate format
-            reading.data.time = self.convert_timestamp(item['timestamp'])
+        # Decode JSON item
+        station_id = item['location']['id']
+        sensor_id = item['sensor']['id']
+        sensor_type = item['sensor']['sensor_type']['name']
 
-            # Insert baseline metadata information
-            reading.station.station_id = station_id
-            reading.station.sensor_id = sensor_id
-            reading.station.sensor_type = sensor_type
+        # If there is a filter defined, evaluate it
+        # For specific location|sensor ids, skip further processing
+        if self.filter:
+            if 'stations' in self.filter:
+                if station_id not in self.filter['stations']:
+                    return
+            if 'sensors' in self.filter:
+                if sensor_id not in self.filter['sensors']:
+                    return
 
-            # Collect position information
-            del item['location']['id']
-            reading.station.position = Munch()
-            for key, value in item['location'].items():
-                if key in ['latitude', 'longitude', 'altitude']:
-                    reading.station.position[key] = float(value)
-                else:
-                    reading.station.position[key] = value
+        # Build reading
+        reading = Munch(
+            station=Munch(),
+            data=Munch(),
+        )
 
-            # Collect sensor values
-            for sensor in item['sensordatavalues']:
-                name = sensor['value_type']
-                value = float(sensor['value'])
-                reading.data[name] = value
+        # Insert timestamp in appropriate format
+        reading.data.time = self.convert_timestamp(item['timestamp'])
 
-            # Add more detailed location information
-            self.enrich_station(reading.station)
+        # Insert baseline metadata information
+        reading.station.station_id = station_id
+        reading.station.sensor_id = sensor_id
+        reading.station.sensor_type = sensor_type
 
-            log.debug('Reading: %s', json.dumps(reading))
+        # Collect position information
+        del item['location']['id']
+        reading.station.position = Munch()
+        for key, value in item['location'].items():
+            if key in ['latitude', 'longitude', 'altitude']:
+                try:
+                    value = float(value)
+                except:
+                    value = None
+            reading.station.position[key] = value
 
-            # Debugging
-            #break
+        # Collect sensor values
+        for sensor in item['sensordatavalues']:
+            name = sensor['value_type']
+            value = float(sensor['value'])
+            reading.data[name] = value
 
-            yield reading
+        # Add more detailed location information
+        self.enrich_station(reading.station)
+
+        log.debug('Reading: %s', json.dumps(reading))
+
+        # Debugging
+        #break
+
+        return reading
 
     def enrich_station(self, station):
 
