@@ -146,16 +146,26 @@ def improve_location(location):
 
     address = location.address
 
+    # Uppercase `country_code` attribute.
+    address.country_code = address.country_code.upper()
 
     # Improve `city` attribute.
 
     # Stadtstaat handling. For all known Stadtstaaten,
     # - if `city` is missing, use `state` attribute.
     # - if `state` is missing, use `city` attribute.
-    # TODO: Add more? Hamburg, Bremen, etc.
-    stadtstaat = address.get('city', address.get('state'))
-    if stadtstaat in ['Berlin', 'Hamburg']:
-        address.state = address.city = stadtstaat
+    # https://de.wikipedia.org/wiki/Stadtstaat#Souver%C3%A4ne_Stadtstaaten
+    stadtstaaten = [
+
+        # Germany
+        'Berlin', 'Bremen', 'Hamburg',
+
+        # Austria
+        'Wien',
+    ]
+    city_or_state = address.get('city', address.get('state'))
+    if city_or_state in stadtstaaten:
+        address.state = address.city = city_or_state
 
     # If `city` is missing, try a number of alternative attributes.
     city_choices = [
@@ -171,6 +181,13 @@ def improve_location(location):
             if fieldname in address:
                 address.city = address[fieldname]
                 break
+
+    # Patch `country` field.
+    # TODO:
+    # RP => Republic of Poland?
+    # Example: PL	Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
+    # R.D. => Republic of Dominica?
+    # Example: DO	Guayacanes, Costámbar, Puerto Plata, DO (#109)
 
     # Patch `city` field.
     if 'city' in address and address.city == 'Rgbg':
@@ -218,9 +235,6 @@ def format_address(location):
     location = deepcopy(location)
     address = location.address
 
-    # Uppercase `country_code`.
-    address.country_code = address.country_code.upper()
-
     # Clean up `county`, 'city_district` and `suburb` fields.
     blacklist = [
         # county
@@ -230,7 +244,7 @@ def format_address(location):
         'Stadtbezirk',
 
         # suburb: prefixes
-        'Bezirksteil', 'Bezirk',
+        'Bezirksteil', 'Bezirk', 'KG',
 
         # suburb: values
         'Fhain',

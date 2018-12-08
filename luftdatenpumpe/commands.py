@@ -96,10 +96,10 @@ def run():
 
         print(json.dumps(stations, indent=4))
 
-        #storage = RDBMSStorage()
-        #storage.store_stations(stations)
-        #storage.dump_tables()
-        #storage.demo_query()
+        storage = RDBMSStorage()
+        storage.store_stations(stations)
+        storage.dump_tables()
+        storage.demo_query()
 
     elif options['forward']:
 

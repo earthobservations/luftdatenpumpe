@@ -4,6 +4,8 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
+from collections import OrderedDict
+
 import dataset
 from munch import Munch
 from copy import deepcopy
@@ -38,8 +40,8 @@ class RDBMSStorage:
             #log.info(station)
 
             # Station table
-            stationdata = Munch()
-            stationdata.id = station.station_id
+            stationdata = OrderedDict()
+            stationdata['id'] = station.station_id
             for key, value in station.items():
                 if key.startswith('name'):
                     stationdata[key] = value
