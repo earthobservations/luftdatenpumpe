@@ -10,7 +10,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.3.0',
+      version='0.4.0',
       description='Process data from live API of luftdaten.info',
       long_description='Request data from live API of luftdaten.info, enrich with geospatial information and publish to MQTT bus.',
       license="AGPL 3, EUPL 1.2",
