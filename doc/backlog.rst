@@ -28,6 +28,7 @@ Prio 2
 - [o] Publish to MQTT with separate topics
 - [/] Store stations / data **while** processing
 - [o] Store "boundingbox" attribute to RDBMS database
+- [o] Dry-run for RDBMS storage
 
 
 ******

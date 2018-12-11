@@ -7,11 +7,16 @@ Luftdatenpumpe
 About
 *****
 1. Luftdatenpumpe_ acquires the current window of measurement readings from the livedata API of `luftdaten.info`_.
+
 2. While iterating the readings, it collects information about all stations and sensors they are originating from.
+
 3. Then, each stations location information gets enhanced by
+
     - attaching its geospatial position as a Geohash_.
     - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
+
 4. The resulting data can be
+
     - displayed on STDOUT or STDERR.
     - stored into RDBMS_ databases using the fine dataset_ package.
       Being built on top of SQLAlchemy_, this supports all major RDBMS_ databases.

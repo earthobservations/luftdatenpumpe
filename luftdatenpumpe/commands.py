@@ -23,11 +23,11 @@ def run():
     Options:
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
-      --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder and add to MQTT message
+      --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
       --progress                    Show progress bar
       --version                     Show version information
-      --dry-run                     Run data acquisition and postprocessing but skip publishing to MQTT bus
+      --dry-run                     Skip publishing to MQTT bus
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
