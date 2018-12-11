@@ -5,9 +5,8 @@
 import re
 import time
 import logging
+import geohash2
 from copy import deepcopy
-
-import Geohash
 from munch import Munch
 from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator, to_list
@@ -291,12 +290,23 @@ def format_address(location):
 
 
 def geohash_encode(latitude, longitude):
-    # https://en.wikipedia.org/wiki/Geohash
-    # Eight characters should be fine
-    geohash = Geohash.encode(float(latitude), float(longitude))
+    """
+    Compute Geohash from coordinates.
+
+    -- https://en.wikipedia.org/wiki/Geohash
+    """
+    geohash = geohash2.encode(float(latitude), float(longitude))
+
+    # Eight characters should be fine?
     #geohash = geohash[:8]
+
     return geohash
 
 
 def geohash_decode(geohash):
-    return Geohash.decode(geohash)
+    """
+    Compute coordinates from Geohash.
+
+    -- https://en.wikipedia.org/wiki/Geohash
+    """
+    return geohash2.decode(geohash)

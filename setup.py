@@ -22,7 +22,7 @@ requires = [
     'psycopg2-binary==2.7.6.1',
 
     # Geospatial
-    'Geohash==1.0',
+    'geohash2==1.1',
     'geopy==1.18.0',
 ]
 
