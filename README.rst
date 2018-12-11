@@ -13,7 +13,7 @@
 Luftdatenpumpe
 ##############
 
-.. image:: https://raw.githubusercontent.com/hiveeyes/luftdatenpumpe/master/doc/logo.svg
+.. image:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
     :target: https://github.com/hiveeyes/luftdatenpumpe
     :height: 200px
     :width: 200px
