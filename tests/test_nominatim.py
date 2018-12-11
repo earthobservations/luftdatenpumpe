@@ -33,7 +33,7 @@ def test_format_address():
     assert name == 'Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
 
 
-def test_city_alias():
+def test_city_missing():
     """
     Test heuristic OSM improvements re. ``city`` attribute.
     """
@@ -45,6 +45,10 @@ def test_city_alias():
     location = resolve_location(latitude=48.8, longitude=9.002)
     improve_location(location)
     assert location.address.city == 'Leonberg'
+
+    location = resolve_location(latitude=24.074, longitude=120.34)
+    improve_location(location)
+    assert location.address.city == 'unknown'
 
 
 def test_stadtstaat():
@@ -117,7 +121,7 @@ def test_something():
     assert name == 'Holunderbusch, Saerbeck, Steinfurt, Nordrhein-Westfalen, DE'
 
 
-def test_road():
+def test_road_missing():
     """
     These addresses originally lack the `road` attribute.
     """
@@ -149,6 +153,27 @@ def test_road():
     assert location.address.road == 'Hans-Holbein-Straße'
     name = format_address(location)
     assert name == 'Hans-Holbein-Straße, Leinfelden, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
+
+    # From `neighbourhood` attribute
+    location = resolve_location(latitude=27.222, longitude=78.01)
+    improve_location(location)
+    assert location.address.road == 'Balkeshwar Ghat'
+    name = format_address(location)
+    assert name == 'Balkeshwar Ghat, Balkeshwar, Agra, Uttar Pradesh, IN'
+
+    # From `house_number` attribute
+    location = resolve_location(latitude=42.734, longitude=23.308)
+    improve_location(location)
+    assert location.address.road == "\u0431\u043b.402"
+    name = format_address(location)
+    assert name == "\u0431\u043b.402, \u0436.\u043a. \u041d\u0430\u0434\u0435\u0436\u0434\u0430 4, \u041d\u0430\u0434\u0435\u0436\u0434\u0430, \u0421\u0442\u043e\u043b\u0438\u0447\u043d\u0430, BG"
+
+    # Unknown road
+    location = resolve_location(latitude=49.342, longitude=8.146)
+    improve_location(location)
+    assert location.address.road == 'unknown'
+    name = format_address(location)
+    assert name == 'Neustadt-Stadtmitte, Neustadt, Neustadt an der Weinstra\u00dfe, Rheinland-Pfalz, DE'
 
 
 def test_city_district_vs_suburb():
@@ -192,6 +217,7 @@ def test_country_patches():
     assert location.address.country == 'Dominican Republic'
     name = format_address(location)
     assert name == 'Guayacanes, Costámbar, Puerto Plata, DO'
+
 
 def test_taiwan_poor():
     """

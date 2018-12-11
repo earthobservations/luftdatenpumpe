@@ -151,6 +151,20 @@ def improve_location(location):
         address.country_code = address.country_code.upper()
 
 
+    # Patch `country` field.
+    if 'country_code' in address:
+
+        # R.D. => Dominican Republic
+        # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
+        if address.country_code == 'DO':
+            address.country = 'Dominican Republic'
+
+        # RP => Republic of Poland
+        # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
+        if address.country_code == 'PL':
+            address.country = 'Poland'
+
+
     # Improve `city` attribute.
 
     # Stadtstaat handling. For all known Stadtstaaten,
@@ -184,31 +198,13 @@ def improve_location(location):
                 address.city = address[fieldname]
                 break
 
-    # Patch `country` field.
-    if 'country_code' in address:
-
-        # R.D. => Dominican Republic
-        # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
-        if address.country_code == 'DO':
-            address.country = 'Dominican Republic'
-
-        # RP => Republic of Poland
-        # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
-        if address.country_code == 'PL':
-            address.country = 'Poland'
-
     # Patch `city` field.
     if 'city' in address and address.city == 'Rgbg':
         address.city = 'Regensburg'
 
-    # Improve Stadtstaat.
-    # As the name of the city will already be propagated through the `state` attribute,
-    # we can stuff more details on the lower level into the `city` attribute.
-    if False and 'city' in address and 'state' in address and address.city == address.state:
-        if 'city_district' in address:
-            address.city = address.city_district
-        elif 'suburb' in address:
-            address.city = address.suburb
+    if 'city' not in address:
+        address.city = 'unknown'
+
 
     # Improve Stadtteil.
     # Use `residential` or `neighbourhood` for missing `suburb` attribute.
@@ -219,10 +215,14 @@ def improve_location(location):
 
     # Be agnostic against road vs. path
     if 'road' not in address:
-        road_choices = ['path', 'pedestrian', 'cycleway', 'footway']
+        road_choices = ['path', 'pedestrian', 'cycleway', 'footway', 'neighbourhood', 'house_number']
         for fieldname in road_choices:
             if fieldname in address:
                 address.road = address[fieldname]
+                break
+
+    if 'road' not in address:
+        address.road = 'unknown'
 
 
 def format_address(location):
@@ -274,7 +274,7 @@ def format_address(location):
             if fieldname in address:
                 component = address[fieldname]
 
-                if not component:
+                if not component or component == 'unknown':
                     continue
 
                 if address_parts and component == address_parts[-1]:
