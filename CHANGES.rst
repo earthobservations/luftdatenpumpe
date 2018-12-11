@@ -14,6 +14,8 @@ in progress
 - Add basic RDBMS adapter for storing station list and associated
   information to Postgres and other SQL databases supported by SQLAlchemy
 - Streamline station data schema
+- Add test harness for reverse geocoder subsystem
+- Improve robustness and quality of reverse geocoder
 - Make "sensors" data substructure an array
 
 
