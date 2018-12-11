@@ -18,6 +18,7 @@ Luftdatenpumpe
     :height: 200px
     :width: 200px
 
+
 *****
 About
 *****
@@ -30,12 +31,18 @@ About
     - attaching its geospatial position as a Geohash_.
     - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
 
-4. The resulting data can be
+4. Information about stations can be
 
-    - displayed on STDOUT or STDERR.
+    - displayed on STDOUT or STDERR in JSON format.
+    - filtered and transformed interactively through jq_, the swiss army knife of JSON manipulation.
     - stored into RDBMS_ databases using the fine dataset_ package.
-      Being built on top of SQLAlchemy_, this supports all major RDBMS_ databases.
+      Being built on top of SQLAlchemy_, this supports all major databases.
+
+5. Measurement readings can be
+
+    - displayed on STDOUT or STDERR in JSON format, which allows for piping into jq_ again.
     - forwarded to MQTT_.
+
 
 .. _luftdaten.info: http://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
@@ -49,6 +56,8 @@ About
 .. _SQLAlchemy: https://www.sqlalchemy.org/
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _MQTT: http://mqtt.org/
+
+.. _jq: https://stedolan.github.io/jq/
 
 
 ****
@@ -235,5 +244,5 @@ The copyright of particular images and pictograms are held by their respective o
 
 Icons and pictograms
 ====================
-- `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ made from
+- `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ from
   `Icon Fonts <http://www.onlinewebfonts.com/icon>`_ is licensed by CC BY 3.0.

@@ -5,12 +5,12 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
-- Fix twine. Just works outside of virtualenv.
 
 
 2018-12-11 0.4.2
 ================
 - Use "geohash2" package from PyPI for Python3 compatibility
+- Fix twine. Just works outside of virtualenv.
 
 
 2018-12-11 0.4.1
