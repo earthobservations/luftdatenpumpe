@@ -75,7 +75,7 @@ sdist:
 	@$(python) setup.py sdist
 
 pypi-upload: install-releasetools
-	@$(twine) upload --skip-existing dist/*.tar.gz
+	twine upload --skip-existing --verbose dist/*.tar.gz
 
 install-doctools: setup-virtualenv
 	@$(pip) install --quiet --requirement requirements-docs.txt --upgrade
