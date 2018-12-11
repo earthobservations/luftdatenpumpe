@@ -15,7 +15,7 @@ requires = [
     'tqdm==4.28.1',
 
     # Caching
-    'requests-cache==0.4.13',
+    'requests-cache==0.4.23',
     'dogpile.cache==0.6.8',
     'redis==3.0.1',
 
@@ -37,7 +37,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.4.1',
+      version='0.4.2',
       description='Process data from live API of luftdaten.info',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
