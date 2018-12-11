@@ -37,7 +37,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.4.2',
+      version='0.4.3',
       description='Process data from live API of luftdaten.info',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
