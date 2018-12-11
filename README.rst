@@ -1,7 +1,22 @@
+.. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+
+.. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+
+.. image:: https://img.shields.io/github/tag/hiveeyes/luftdatenpumpe.svg
+    :target: https://github.com/hiveeyes/luftdatenpumpe
+
+|
+
 ##############
 Luftdatenpumpe
 ##############
 
+.. image:: https://raw.githubusercontent.com/hiveeyes/luftdatenpumpe/master/doc/logo.svg
+    :target: https://github.com/hiveeyes/luftdatenpumpe
+    :height: 200px
+    :width: 200px
 
 *****
 About
@@ -211,3 +226,14 @@ along with this program; if not, see:
 <http://www.gnu.org/licenses/agpl-3.0.txt>,
 or write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+
+
+********************
+Content attributions
+********************
+The copyright of particular images and pictograms are held by their respective owners, unless otherwise noted.
+
+Icons and pictograms
+====================
+- `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ made from
+  `Icon Fonts <http://www.onlinewebfonts.com/icon>`_ is licensed by CC BY 3.0.

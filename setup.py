@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
+import os
 from setuptools import setup, find_packages
+
+here = os.path.abspath(os.path.dirname(__file__))
+README = open(os.path.join(here, 'README.rst')).read()
 
 requires = [
     # Core
@@ -36,7 +39,7 @@ extras = {
 setup(name='luftdatenpumpe',
       version='0.4.1',
       description='Process data from live API of luftdaten.info',
-      long_description='Request data from live API of luftdaten.info, enrich with geospatial information and publish to MQTT bus.',
+      long_description=README,
       license="AGPL 3, EUPL 1.2",
       classifiers=[
         "Programming Language :: Python",
@@ -67,7 +70,7 @@ setup(name='luftdatenpumpe',
         ],
       author='Andreas Motl',
       author_email='andreas@hiveeyes.org',
-      url='https://hiveeyes.org/',
+      url='https://github.com/hiveeyes/luftdatenpumpe',
       keywords='luftdaten.info opendata data acquisition ' +
                'mqtt http rest sql ' +
                'influxdb mosquitto grafana',
@@ -81,8 +84,6 @@ setup(name='luftdatenpumpe',
       extras_require = extras,
       tests_require=extras['test'],
       dependency_links=[
-          # This fork makes the package install on Python 3.x
-          'https://github.com/webartifex/geohash/raw/master/dist/Geohash-1.0-py3.6.egg#egg=Geohash-1.0',
       ],
       entry_points={
           'console_scripts': [
