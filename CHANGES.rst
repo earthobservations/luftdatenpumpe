@@ -7,6 +7,9 @@ in progress
 ===========
 
 
+2018-12-11 0.4.3
+================
+- Fix setup.py
 2018-12-11 0.4.2
 ================
 - Use "geohash2" package from PyPI for Python3 compatibility

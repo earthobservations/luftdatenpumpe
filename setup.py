@@ -15,7 +15,7 @@ requires = [
     'tqdm==4.28.1',
 
     # Caching
-    'requests-cache==0.4.23',
+    'requests-cache==0.4.13',
     'dogpile.cache==0.6.8',
     'redis==3.0.1',
 
