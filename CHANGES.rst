@@ -10,6 +10,9 @@ in progress
 2018-12-11 0.4.3
 ================
 - Fix setup.py
+- Add MANIFEST.in file
+
+
 2018-12-11 0.4.2
 ================
 - Use "geohash2" package from PyPI for Python3 compatibility
