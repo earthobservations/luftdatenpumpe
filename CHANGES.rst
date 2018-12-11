@@ -14,6 +14,7 @@ in progress
 - Add basic RDBMS adapter for storing station list and associated
   information to Postgres and other SQL databases supported by SQLAlchemy
 - Streamline station data schema
+- Make "sensors" data substructure an array
 
 
 2018-12-02 0.3.0

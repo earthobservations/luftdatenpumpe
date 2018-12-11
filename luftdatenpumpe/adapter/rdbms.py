@@ -49,7 +49,7 @@ class RDBMSStorage:
             self.stationtable.upsert(stationdata, ['id'])
 
             # Sensors table
-            for _, sensor in station['sensors'].items():
+            for sensor in station['sensors']:
                 sensordata = {}
                 sensordata['station_id'] = station['station_id']
                 sensordata.update(sensor)

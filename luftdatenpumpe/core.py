@@ -207,10 +207,10 @@ class LuftdatenPumpe:
             station_id = reading.station.station_id
 
             # Sensor information from the reading
-            sensor_info = {
+            sensor_info = Munch({
                 'sensor_id': reading.station.sensor_id,
                 'sensor_type': reading.station.sensor_type,
-            }
+            })
 
             # Acquire additional sensors from reading.
             # This continues with the next loop iteration as
@@ -218,19 +218,18 @@ class LuftdatenPumpe:
             if station_id in stations:
                 station = stations[station_id]
                 sensor_id = reading.station.sensor_id
-                if sensor_id not in station['sensors']:
-                    station['sensors'].update({sensor_id: sensor_info})
+                if not any(map(lambda item: item.sensor_id == sensor_id, station['sensors'])):
+                    station['sensors'].append(sensor_info)
                 continue
 
-            # Acquire station information from reading
+            # New station found: Acquire its information from reading
             station = Munch()
             for field in field_candidates:
                 if field in reading.station:
                     station[field] = reading.station[field]
 
             # Acquire first sensor from reading
-            sensor_id = reading.station.sensor_id
-            station['sensors'] = {sensor_id: sensor_info}
+            station['sensors'] = [sensor_info]
 
             # Collect location if not empty
             if station:
