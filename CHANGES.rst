@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2018-12-11 0.4.1
+================
+- Remove unknown Trove classifiers from setup.py
+
+
 2018-12-11 0.4.0
 ================
 - Refactoring, Python2/3 compatibility, Add setup.py

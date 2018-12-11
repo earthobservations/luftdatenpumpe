@@ -2,6 +2,30 @@
 import sys
 from setuptools import setup, find_packages
 
+requires = [
+    # Core
+    'six==1.11.0',
+    'appdirs==1.4.3',
+    'docopt==0.6.2',
+    'requests==2.20.1',
+    'munch==2.3.2',
+    'tqdm==4.28.1',
+
+    # Caching
+    'requests-cache==0.4.13',
+    'dogpile.cache==0.6.8',
+    'redis==3.0.1',
+
+    # Adapters
+    'paho-mqtt==1.4.0',
+    'dataset==1.1.0',
+    'psycopg2-binary==2.7.6.1',
+
+    # Geospatial
+    'Geohash==1.0',
+    'geopy==1.18.0',
+]
+
 extras = {
     'test': [
         'pytest==4.0.1',
@@ -30,8 +54,6 @@ setup(name='luftdatenpumpe',
         "Topic :: Communications",
         "Topic :: Database",
         "Topic :: Internet",
-        "Topic :: Internet :: MQTT",
-        "Topic :: Internet :: WWW/HTTP",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
         "Topic :: Scientific/Engineering :: Visualization",
@@ -55,30 +77,7 @@ setup(name='luftdatenpumpe',
       },
       zip_safe=False,
       test_suite='luftdatenpumpe.test',
-      install_requires=[
-
-          # Core
-          'six==1.11.0',
-          'appdirs==1.4.3',
-          'docopt==0.6.2',
-          'requests==2.20.1',
-          'munch==2.3.2',
-          'tqdm==4.28.1',
-
-          # Caching
-          'requests-cache==0.4.13',
-          'dogpile.cache==0.6.8',
-          'redis==3.0.1',
-
-          # Adapters
-          'paho-mqtt==1.4.0',
-          'dataset==1.1.0',
-          'psycopg2-binary==2.7.6.1',
-
-          # Geospatial
-          'Geohash==1.0',
-          'geopy==1.18.0',
-      ],
+      install_requires=requires,
       extras_require = extras,
       tests_require=extras['test'],
       dependency_links=[
