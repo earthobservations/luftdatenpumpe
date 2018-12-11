@@ -20,6 +20,23 @@ def setup_logging(level=logging.INFO):
     requests_log.setLevel(logging.WARN)
 
 
+def normalize_options(options):
+    normalized = {}
+    for key, value in options.items():
+        key = key.strip('--<>')
+        normalized[key] = value
+    return normalized
+
+
+def read_list(data, separator=u','):
+    if data is None:
+        return []
+    result = list(map(lambda x: x.strip(), data.split(separator)))
+    if len(result) == 1 and not result[0]:
+        result = []
+    return result
+
+
 def exception_traceback(exc_info=None):
     """
     Return a string containing a traceback message for the given

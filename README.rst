@@ -6,81 +6,109 @@ Luftdatenpumpe
 *****
 About
 *****
-
-Features:
-
-- Request data from live API of luftdaten.info
-- Enrich location data with geospatial information from OSM/Nominatim
-- Display list of stations and readings
-- Export list of stations to RDBMS database
-- Forward readings to MQTT
-
-
-Description
-===========
-
-## Details
-How does this content get produced?
-1. [Luftdatenpumpe] acquires the current window of measurement readings from the livedata API of [luftdaten.info].
+1. Luftdatenpumpe_ acquires the current window of measurement readings from the livedata API of `luftdaten.info`_.
 2. While iterating the readings, it collects information about all stations and sensors they are originating from.
 3. Then, each stations location information gets enhanced by
-   - attaching its geospatial position as a [Geohash].
-   - attaching a synthetic real-world address resolved using the reverse geocoding service [Nominatim] by [OpenStreetMap].
-4. The resulting data is stored into a PostgreSQL database on `weather.hiveeyes.org` using the fine [dataset] package.
-   Being built on top of [SQLAlchemy], this supports all major [RDBMS] databases.
+    - attaching its geospatial position as a Geohash_.
+    - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
+4. The resulting data can be
+    - displayed on STDOUT or STDERR.
+    - stored into RDBMS_ databases using the fine dataset_ package.
+      Being built on top of SQLAlchemy_, this supports all major RDBMS_ databases.
+    - forwarded to MQTT_.
 
-[luftdaten.info]: http://luftdaten.info/
-[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe
-[Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-[The Hiveeyes Project]: https://hiveeyes.org/
+.. _luftdaten.info: http://luftdaten.info/
+.. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
+.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+.. _The Hiveeyes Project: https://hiveeyes.org/
 
-[OpenStreetMap]: https://en.wikipedia.org/wiki/OpenStreetMap
-[Nominatim]: https://wiki.openstreetmap.org/wiki/Nominatim
-[Geohash]: https://en.wikipedia.org/wiki/Geohash
-[dataset]: https://dataset.readthedocs.io/
-[SQLAlchemy]: https://www.sqlalchemy.org/
-[RDBMS]: https://en.wikipedia.org/wiki/Relational_database_management_system
-
+.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
+.. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
+.. _Geohash: https://en.wikipedia.org/wiki/Geohash
+.. _dataset: https://dataset.readthedocs.io/
+.. _SQLAlchemy: https://www.sqlalchemy.org/
+.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
+.. _MQTT: http://mqtt.org/
 
 
 ****
 Demo
 ****
 
-Live Daten
+Live Data
 ==========
-- https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin
-- https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland
+- `Feinstaub Verlauf Berlin <https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin>`_
+- `Feinstaub Karte Deutschland <https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland>`_
 
-Stationslisten
-==============
-- https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state
-- https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations
-- https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements
-- https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type
+List of stations
+================
+- `LDI Stations #1 » Select by name, country and state <https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state>`_
+- `LDI Stations #2 » Cascaded » Stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
+- `LDI Stations #3 » Cascaded » Measurements <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
+- `LDI Stations #4 » Select by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
 
 
 ********
 Synopsis
 ********
 
-List stations
-=============
+Overview
+========
 ::
 
-    luftdatenpumpe stations --stations=28,297 --reverse-geocode
+    # List stations
+    luftdatenpumpe stations --station=28,297 --reverse-geocode
+
+    # Write list of stations and metadata to PostgreSQL database
+    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase
+
+    # Forward readings to MQTT
+    luftdatenpumpe readings --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
 
 
-
-MQTT forwarding
-===============
+Details
+=======
 ::
 
-    luftdatenpumpe forward --stations=28,1071 --mqtt-uri mqtt://mqtt.example.org/luftdaten.info
+    $ luftdatenpumpe --help
+        Usage:
+          luftdatenpumpe stations [options] [--target=<target>]...
+          luftdatenpumpe readings [options] [--target=<target>]...
+          luftdatenpumpe --version
+          luftdatenpumpe (-h | --help)
 
-With authentication::
+        Options:
+          --station=<stations>          Filter data by given location ids, comma-separated.
+          --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
+          --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder and add to MQTT message
+          --target=<target>             Data output target
+          --progress                    Show progress bar
+          --version                     Show version information
+          --dry-run                     Run data acquisition and postprocessing but skip publishing to MQTT bus
+          --debug                       Enable debug messages
+          -h --help                     Show this screen
 
-    luftdatenpumpe forward --stations=28,1071 --mqtt-uri mqtt://username:password@mqtt.example.org/luftdaten.info
+        Station list examples:
+
+          # Display metadata for given stations in JSON format
+          luftdatenpumpe stations --station=28,1071 --reverse-geocode
+
+          # Display metadata for given sensors in JSON format
+          luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
+
+          # Display list of stations in JSON format, suitable for integrating with Grafana
+          luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
+
+          # Write list of stations and metadata to PostgreSQL database, also display on STDERR
+          luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
+
+        Data examples:
+
+          # Publish data to topic "luftdaten.info" at MQTT broker "mqtt.example.org"
+          luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://mqtt.example.org/luftdaten.info
+
+          # MQTT publishing, with authentication
+          luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@mqtt.example.org/luftdaten.info
 
 
 *****

@@ -17,6 +17,7 @@ in progress
 - Add test harness for reverse geocoder subsystem
 - Improve robustness and quality of reverse geocoder
 - Make "sensors" data substructure an array
+- Refactor target machinery and redesign command line interface
 
 
 2018-12-02 0.3.0

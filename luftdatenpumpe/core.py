@@ -4,16 +4,12 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
-
 import requests
 import requests_cache
 from tqdm import tqdm
 from munch import Munch
-from pprint import pformat
-
-from .geo import geohash_encode, resolve_location, improve_location, format_address
-from .mqtt import MQTTAdapter
-from .util import exception_traceback
+from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
+from luftdatenpumpe.util import exception_traceback
 
 
 log = logging.getLogger(__name__)
@@ -24,8 +20,7 @@ class LuftdatenPumpe:
     # luftdaten.info API URI
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
-    def __init__(self, filter=None, reverse_geocode=False, mqtt_uri=None, progressbar=False, dry_run=False):
-        self.mqtt_uri = mqtt_uri
+    def __init__(self, filter=None, reverse_geocode=False, progressbar=False, dry_run=False):
         self.reverse_geocode = reverse_geocode
         self.dry_run = dry_run
         self.progressbar = progressbar
@@ -34,9 +29,6 @@ class LuftdatenPumpe:
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
         requests_cache.install_cache('api.luftdaten.info', backend='redis', expire_after=300)
-
-        if mqtt_uri:
-            self.mqtt = MQTTAdapter(mqtt_uri)
 
     def request(self):
         payload = requests.get(self.uri).content.decode('utf-8')
@@ -73,11 +65,11 @@ class LuftdatenPumpe:
         # If there is a filter defined, evaluate it
         # For specific location|sensor ids, skip further processing
         if self.filter:
-            if 'stations' in self.filter:
-                if station_id not in self.filter['stations']:
+            if 'station' in self.filter:
+                if station_id not in self.filter['station']:
                     return
-            if 'sensors' in self.filter:
-                if sensor_id not in self.filter['sensors']:
+            if 'sensor' in self.filter:
+                if sensor_id not in self.filter['sensor']:
                     return
 
         # Build reading
@@ -160,43 +152,8 @@ class LuftdatenPumpe:
                     except:
                         pass
 
-    def forward_to_mqtt(self):
-        """
-        Will publish these kind of messages to the MQTT bus:
-        {
-            "time": "2018-12-03T01:49:00Z",
-            "location_id": 9564,
-            "sensor_id": 18870,
-            "sensor_type": "DHT22",
-            "geohash": "u3qcs53rp",
-            "altitude": 85.0,
-            "temperature": 2.8,
-            "humidity": 90.5
-        }
-        """
-        for reading in self.request():
-
-            # Build MQTT message.
-            message = Munch()
-
-            # Station info
-            for key, value in reading.station.items():
-                if isinstance(value, dict):
-                    message.update(value)
-                else:
-                    message[key] = value
-
-            message['location_id'] = message['station_id']
-            del message['station_id']
-
-            # Measurement fields
-            message.update(reading.data)
-
-            # Publish to MQTT bus.
-            if self.dry_run:
-                log.info('Dry-run. Would publish record:\n{}'.format(pformat(message)))
-            else:
-                self.publish_mqtt(message)
+    def get_readings(self):
+        return list(self.request())
 
     def get_stations(self):
         stations = {}
@@ -242,18 +199,6 @@ class LuftdatenPumpe:
 
         return results
 
-    def get_stations_grafana(self):
-        stations = self.get_stations()
-        entries = []
-        for station in stations:
-            if 'name' in station:
-                station_name = station.name
-            else:
-                station_name = u'Station #{}, {}'.format(station.station_id, station.position.country)
-            entry = {'value': station.station_id, 'text': station_name}
-            entries.append(entry)
-        return entries
-
     @staticmethod
     def convert_timestamp(timestamp):
         # mungle timestamp to be formally in ISO 8601/UTC
@@ -262,12 +207,3 @@ class LuftdatenPumpe:
         if '+' not in timestamp:
             timestamp += 'Z'
         return timestamp
-
-    def publish_mqtt(self, measurement):
-        # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
-        # putting them first. This is:
-        # - "P1" and "P2" for "sensor_type": "SDS011"
-        # - "temperature" and "humidity" for "sensor_type": "DHT22"
-        # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
-        mqtt_message = json.dumps(measurement)
-        self.mqtt.publish(mqtt_message)

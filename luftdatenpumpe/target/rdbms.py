@@ -4,23 +4,28 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
-from collections import OrderedDict
-
 import dataset
-from munch import Munch
 from copy import deepcopy
+from collections import OrderedDict
 
 log = logging.getLogger(__name__)
 
 
 class RDBMSStorage:
 
-    def __init__(self):
+    def __init__(self, uri, empty_tables=False):
 
         # TODO: Make datasource URI configurable.
         #self.db = dataset.connect('sqlite:///:memory:')
         #self.db = dataset.connect('postgres:///weatherbase_dev')
-        self.db = dataset.connect('postgres:///weatherbase')
+        #self.db = dataset.connect('postgres:///weatherbase')
+        self.db = dataset.connect(uri)
+
+        # Optionally, empty all tables
+        if empty_tables:
+            for tablename in self.db.tables:
+                if tablename.startswith('ldi_'):
+                    self.db.query('DELETE FROM {}'.format(tablename))
 
         # Create tables.
         self.db.create_table('ldi_stations', primary_id='id')
@@ -31,6 +36,9 @@ class RDBMSStorage:
         self.stationtable = self.db['ldi_stations']
         self.sensorstable = self.db['ldi_sensors']
         self.osmtable = self.db['ldi_osmdata']
+
+    def emit(self, stations):
+        return self.store_stations(stations)
 
     def store_stations(self, stations):
 
@@ -97,3 +105,14 @@ class RDBMSStorage:
         tpl = "```\n{}\n```"
         content = json.dumps(thing, indent=4)
         return tpl.format(content)
+
+    @classmethod
+    def get_dialects(cls):
+        results = []
+        try:
+            from sqlalchemy.dialects import __all__ as sql_dialects
+            results = list(sql_dialects)
+        except:
+            pass
+        #log.info('SQLAlchemy dialects: %s', results)
+        return results
