@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2018-12-11 0.4.0
+================
 - Refactoring, Python2/3 compatibility, Add setup.py
 - Add "sensor_type" information to station list
 - Use Redis-based caching through dogpile.cache, ditch Beaker
@@ -18,6 +22,7 @@ in progress
 - Improve robustness and quality of reverse geocoder
 - Make "sensors" data substructure an array
 - Refactor target machinery and redesign command line interface
+- Add release tooling
 
 
 2018-12-02 0.3.0
