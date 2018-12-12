@@ -29,6 +29,7 @@ Prio 2
 - [/] Store stations / data **while** processing
 - [o] Store "boundingbox" attribute to RDBMS database
 - [o] Dry-run for RDBMS storage
+- [o] Filter by sensor type
 
 
 ******
@@ -43,6 +44,7 @@ Prio 3
       https://www.postgresql.org/docs/9.2/sql-createview.html
       on top of
       https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199/25
+- [o] Integrate https://github.com/openaq/openaq-fetch somehow
 
 
 ******
@@ -54,5 +56,43 @@ Prio 4
 - [o] OSM: Italia only has 3-letter state names like CAL, CAM, LOM, etc.
 - [o] Add PostgREST
 - [o] Import historical data from http://archive.luftdaten.info/
-- [o] Grafana: Link to https://www.madavi.de/sensor/graph.php somehow?
+- [o] Grafana: Link to https://www.madavi.de/sensor/graph.php and/or
+      http://deutschland.maps.luftdaten.info/#13/50.9350/13.3913 somehow?
 - [o] After importing historical data, make a video from the expanding map
+- [o] Update
+
+    - https://github.com/opendata-stuttgart/sensors-software/issues/33
+    - https://twitter.com/SchindlerTimo/status/1064634624192774150
+
+
+*********************
+What others are doing
+*********************
+
+OpenAQ
+======
+- https://openaq.org/
+- https://github.com/openaq
+- https://github.com/dolugen/openaq-browser
+- https://docs.openaq.org/
+- https://dolugen.github.io/openaq-browser/
+
+European Environment Agency
+===========================
+- https://www.eea.europa.eu/themes/air/air-quality-index
+
+OpenSense
+=========
+- https://www.opensense.network/
+- https://github.com/opensense-network
+- https://twitter.com/sallapf/status/1070334518106750977
+
+openHAB weather bindings
+========================
+- https://www.openhab.org/addons/bindings/weather1/
+- https://community.openhab.org/t/weather-widget/45437
+- https://community.openhab.org/t/solved-json-path-weather-warnings-dwd-deutscher-wetterdienst/46295
+
+Weather API
+===========
+- https://darksky.net/

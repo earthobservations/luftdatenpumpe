@@ -24,9 +24,10 @@ About
 *****
 1. Luftdatenpumpe_ acquires the current window of measurement readings from the livedata API of `luftdaten.info`_.
 
-2. While iterating the readings, it collects information about all stations and sensors they are originating from.
+2. While iterating the readings, it optionally applies a filter based on station-id or sensor-id and
+   collects information about all stations and sensors they are originating from.
 
-3. Then, each stations location information gets enhanced by
+3. Then, each station's location information gets enhanced by
 
     - attaching its geospatial position as a Geohash_.
     - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
@@ -204,9 +205,14 @@ Python module
 =============
 ::
 
-    # Not published yet, please install from repository
     pip install luftdatenpumpe
 
+.. note::
+
+    Please refer to the `virtualenv`_ page about further guidelines how to install
+    and use this software independently from your local python installation.
+
+.. _virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
 
 
 **********

@@ -99,7 +99,8 @@ def run():
             filter[filter_name] = list(map(int, read_list(options[filter_name])))
     log.info('Applying filter: {}'.format(filter))
 
-    # Fake data source. Always LDI.
+    # Fake data source. Currently always LDI.
+    # TODO: Add more data sources.
     datasource = 'ldi'
     datasource_humanized = datasource.upper()
 

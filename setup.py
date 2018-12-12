@@ -39,7 +39,9 @@ extras = {
 
 setup(name='luftdatenpumpe',
       version='0.4.3',
-      description='Process data from live API of luftdaten.info',
+      description='Process data from live API of luftdaten.info. Filter by station- '
+                  'and sensor-id, apply reverse geocoding, output as JSON, store into '
+                  'RDBMS databases and publish to MQTT.',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
       classifiers=[
@@ -73,8 +75,9 @@ setup(name='luftdatenpumpe',
       author_email='andreas@hiveeyes.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
       keywords='luftdaten.info opendata data acquisition ' +
-               'mqtt http rest sql ' +
-               'influxdb mosquitto grafana',
+               'http rest json '
+               'rdbms sql mysql postgresql ' +
+               'influxdb mosquitto mqtt grafana',
       packages=find_packages(),
       include_package_data=True,
       package_data={
