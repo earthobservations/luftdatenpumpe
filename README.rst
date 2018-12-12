@@ -155,10 +155,17 @@ Details
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe readings --station=28,1071         --target=json+stream://sys.stderr         --target=postgresql:///weatherbase
+      luftdatenpumpe readings \
+        --station=28,1071 \
+        --target=json+stream://sys.stderr \
+        --target=postgresql:///weatherbase
 
-      # Write readings to STDERR, InfluxDB and MQTT
-      luftdatenpumpe readings --station=28,1071         --target=json+stream://sys.stderr         --target=mqtt://localhost/luftdaten.info         --target=influxdb://localhost:8086/luftdaten_info
+      # Write readings to STDERR, MQTT and InfluxDB
+      luftdatenpumpe readings \
+        --station=28,1071 \
+        --target=json+stream://sys.stderr \
+        --target=mqtt://localhost/luftdaten.info \
+        --target=influxdb://localhost:8086/luftdaten_info
 
 
 *****

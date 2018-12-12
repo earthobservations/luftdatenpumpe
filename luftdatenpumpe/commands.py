@@ -72,7 +72,7 @@ def run():
         --target=json+stream://sys.stderr \
         --target=postgresql:///weatherbase
 
-      # Write readings to STDERR, InfluxDB and MQTT
+      # Write readings to STDERR, MQTT and InfluxDB
       luftdatenpumpe readings --station=28,1071 \
         --target=json+stream://sys.stderr \
         --target=mqtt://localhost/luftdaten.info \
