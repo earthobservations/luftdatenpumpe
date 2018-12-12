@@ -4,13 +4,11 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
-import requests
-import requests_cache
 from tqdm import tqdm
 from munch import Munch
+from requests_cache import CachedSession
 from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
 from luftdatenpumpe.util import exception_traceback
-
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +26,8 @@ class LuftdatenPumpe:
 
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
-        requests_cache.install_cache('api.luftdaten.info', backend='redis', expire_after=300)
+        self.session = CachedSession(cache_name='api.luftdaten.info', backend='redis', expire_after=300)
+
     def get_readings(self):
         return self.request()
 
@@ -77,7 +76,7 @@ class LuftdatenPumpe:
         return results
 
     def request(self):
-        payload = requests.get(self.uri).content.decode('utf-8')
+        payload = self.session.get(self.uri).content.decode('utf-8')
         data = json.loads(payload)
         #pprint(data)
 
