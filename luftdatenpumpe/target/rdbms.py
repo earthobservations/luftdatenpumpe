@@ -13,12 +13,12 @@ log = logging.getLogger(__name__)
 
 class RDBMSStorage:
 
-    def __init__(self, uri, empty_tables=False):
+    capabilities = ['stations']
 
-        # TODO: Make datasource URI configurable.
-        #self.db = dataset.connect('sqlite:///:memory:')
-        #self.db = dataset.connect('postgres:///weatherbase_dev')
-        #self.db = dataset.connect('postgres:///weatherbase')
+    def __init__(self, uri, empty_tables=False, dry_run=False):
+
+        self.dry_run = dry_run
+
         self.db = dataset.connect(uri)
 
         # Optionally, empty all tables
@@ -37,33 +37,35 @@ class RDBMSStorage:
         self.sensorstable = self.db['ldi_sensors']
         self.osmtable = self.db['ldi_osmdata']
 
-    def emit(self, stations):
-        return self.store_stations(stations)
+    def emit(self, station):
+        return self.store_station(station)
 
-    def store_stations(self, stations):
+    def flush(self):
+        pass
 
-        for station in stations:
+    def store_station(self, station):
 
-            # Debugging
-            #log.info(station)
+        # Debugging
+        #log.info(station)
 
-            # Station table
-            stationdata = OrderedDict()
-            stationdata['id'] = station.station_id
-            for key, value in station.items():
-                if key.startswith('name'):
-                    stationdata[key] = value
-            stationdata.update(station.position)
-            self.stationtable.upsert(stationdata, ['id'])
+        # Station table
+        stationdata = OrderedDict()
+        stationdata['id'] = station.station_id
+        for key, value in station.items():
+            if key.startswith('name'):
+                stationdata[key] = value
+        stationdata.update(station.position)
+        self.stationtable.upsert(stationdata, ['id'])
 
-            # Sensors table
-            for sensor in station['sensors']:
-                sensordata = {}
-                sensordata['station_id'] = station['station_id']
-                sensordata.update(sensor)
-                self.sensorstable.upsert(sensordata, ['sensor_id'])
+        # Sensors table
+        for sensor in station['sensors']:
+            sensordata = {}
+            sensordata['station_id'] = station['station_id']
+            sensordata.update(sensor)
+            self.sensorstable.upsert(sensordata, ['sensor_id'])
 
-            # OSM table
+        # OSM table
+        if 'location' in station:
             osmdata = {}
             osmdata['station_id'] = station['station_id']
             location = deepcopy(station['location'])

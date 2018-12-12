@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Add InfluxDB egress handler
 
 
 2018-12-11 0.4.3

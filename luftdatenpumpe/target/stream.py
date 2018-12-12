@@ -3,9 +3,15 @@
 # License: GNU Affero General Public License, Version 3
 class StreamTarget:
 
+    capabilities = ['stations', 'readings']
+
     def __init__(self, handle, formatter):
         self.handle = handle
         self.formatter = formatter
+        self.buffer = []
 
     def emit(self, data):
-        self.handle.write(self.formatter(data))
+        self.buffer.append(data)
+
+    def flush(self):
+        self.handle.write(self.formatter(self.buffer))

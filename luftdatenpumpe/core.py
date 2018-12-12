@@ -29,6 +29,52 @@ class LuftdatenPumpe:
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
         requests_cache.install_cache('api.luftdaten.info', backend='redis', expire_after=300)
+    def get_readings(self):
+        return self.request()
+
+    def get_stations(self):
+        stations = {}
+        field_candidates = ['station_id', 'name', 'position', 'location']
+        for reading in self.request():
+
+            # Location ID for the reading
+            station_id = reading.station.station_id
+
+            # Sensor information from the reading
+            sensor_info = Munch({
+                'sensor_id': reading.station.sensor_id,
+                'sensor_type': reading.station.sensor_type,
+            })
+
+            # Acquire additional sensors from reading.
+            # This continues with the next loop iteration as
+            # location information has already been transferred.
+            if station_id in stations:
+                station = stations[station_id]
+                sensor_id = reading.station.sensor_id
+                if not any(map(lambda item: item.sensor_id == sensor_id, station['sensors'])):
+                    station['sensors'].append(sensor_info)
+                continue
+
+            # New station found: Acquire its information from reading
+            station = Munch()
+            for field in field_candidates:
+                if field in reading.station:
+                    station[field] = reading.station[field]
+
+            # Acquire first sensor from reading
+            station['sensors'] = [sensor_info]
+
+            # Collect location if not empty
+            if station:
+                stations[station_id] = station
+
+        results = []
+        for key in sorted(stations.keys()):
+            station = stations[key]
+            results.append(station)
+
+        return results
 
     def request(self):
         payload = requests.get(self.uri).content.decode('utf-8')
@@ -151,53 +197,6 @@ class LuftdatenPumpe:
                         station.name += ', ' + station.position.country
                     except:
                         pass
-
-    def get_readings(self):
-        return list(self.request())
-
-    def get_stations(self):
-        stations = {}
-        field_candidates = ['station_id', 'name', 'position', 'location']
-        for reading in self.request():
-
-            # Location ID for the reading
-            station_id = reading.station.station_id
-
-            # Sensor information from the reading
-            sensor_info = Munch({
-                'sensor_id': reading.station.sensor_id,
-                'sensor_type': reading.station.sensor_type,
-            })
-
-            # Acquire additional sensors from reading.
-            # This continues with the next loop iteration as
-            # location information has already been transferred.
-            if station_id in stations:
-                station = stations[station_id]
-                sensor_id = reading.station.sensor_id
-                if not any(map(lambda item: item.sensor_id == sensor_id, station['sensors'])):
-                    station['sensors'].append(sensor_info)
-                continue
-
-            # New station found: Acquire its information from reading
-            station = Munch()
-            for field in field_candidates:
-                if field in reading.station:
-                    station[field] = reading.station[field]
-
-            # Acquire first sensor from reading
-            station['sensors'] = [sensor_info]
-
-            # Collect location if not empty
-            if station:
-                stations[station_id] = station
-
-        results = []
-        for key in sorted(stations.keys()):
-            station = stations[key]
-            results.append(station)
-
-        return results
 
     @staticmethod
     def convert_timestamp(timestamp):

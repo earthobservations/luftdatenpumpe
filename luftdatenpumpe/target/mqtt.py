@@ -19,6 +19,8 @@ log = logging.getLogger(__name__)
 
 class MQTTAdapter(object):
 
+    capabilities = ['readings']
+
     def __init__(self, uri, keepalive=60, client_id_prefix=None, dry_run=False):
 
         address = urlsplit(uri)
@@ -36,8 +38,7 @@ class MQTTAdapter(object):
 
         self.connect()
 
-    def emit(self, readings):
-
+    def emit(self, reading):
         """
         Will publish these kind of messages to the MQTT bus:
         {
@@ -51,35 +52,37 @@ class MQTTAdapter(object):
             "humidity": 90.5
         }
         """
-        for reading in readings:
 
-            # Build MQTT message.
-            message = Munch()
+        # Build MQTT message.
+        message = Munch()
 
-            # Station info
-            for key, value in reading.station.items():
-                if isinstance(value, dict):
-                    message.update(value)
-                else:
-                    message[key] = value
-
-            message['location_id'] = message['station_id']
-            del message['station_id']
-
-            # Measurement fields
-            message.update(reading.data)
-
-            # Publish to MQTT bus.
-            if self.dry_run:
-                log.info('Dry-run. Would publish record:\n{}'.format(pformat(message)))
+        # Station info
+        for key, value in reading.station.items():
+            if isinstance(value, dict):
+                message.update(value)
             else:
-                # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
-                # putting them first. This is:
-                # - "P1" and "P2" for "sensor_type": "SDS011"
-                # - "temperature" and "humidity" for "sensor_type": "DHT22"
-                # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
-                mqtt_message = json.dumps(message)
-                self.publish(mqtt_message)
+                message[key] = value
+
+        message['location_id'] = message['station_id']
+        del message['station_id']
+
+        # Measurement fields
+        message.update(reading.data)
+
+        # Publish to MQTT bus.
+        if self.dry_run:
+            log.info('Dry-run. Would publish record:\n{}'.format(pformat(message)))
+        else:
+            # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
+            # putting them first. This is:
+            # - "P1" and "P2" for "sensor_type": "SDS011"
+            # - "temperature" and "humidity" for "sensor_type": "DHT22"
+            # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
+            mqtt_message = json.dumps(message)
+            self.publish(mqtt_message)
+
+    def flush(self):
+        pass
 
     def connect(self):
 

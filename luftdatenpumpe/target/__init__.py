@@ -2,10 +2,13 @@
 # (c) 2018 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import json
+import types
 import logging
+
 from munch import Munch
 from urllib.parse import urlparse
 
+from luftdatenpumpe.target.influxdb import InfluxDBStorage
 from luftdatenpumpe.target.stream import StreamTarget
 from luftdatenpumpe.target.rdbms import RDBMSStorage
 from luftdatenpumpe.target.mqtt import MQTTAdapter
@@ -14,6 +17,8 @@ log = logging.getLogger(__name__)
 
 
 def json_formatter(data):
+    if isinstance(data, types.GeneratorType):
+        data = list(data)
     return json.dumps(data, indent=4)
 
 
@@ -29,7 +34,7 @@ def json_grafana_formatter(stations):
     return json_formatter(entries)
 
 
-def resolve_target_handler(target, options):
+def resolve_target_handler(target, dry_run=False):
     handler = None
 
     url = Munch(urlparse(target)._asdict())
@@ -56,9 +61,12 @@ def resolve_target_handler(target, options):
         handler = StreamTarget(stream, formatter)
 
     elif url.scheme in RDBMSStorage.get_dialects():
-        handler = RDBMSStorage(target)
+        handler = RDBMSStorage(target, dry_run=dry_run)
 
     elif url.scheme == 'mqtt':
-        handler = MQTTAdapter(target, dry_run=options.get('dry-run'))
+        handler = MQTTAdapter(target, dry_run=dry_run)
+
+    elif url.scheme == 'influxdb':
+        handler = InfluxDBStorage(target, dry_run=dry_run)
 
     return handler

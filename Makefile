@@ -103,3 +103,6 @@ redis-start: mkvar
 
 postgis-start:
 	pg_ctl -D /usr/local/var/postgres start
+
+influxdb-start:
+	influxd run -config etc/influxdb.conf

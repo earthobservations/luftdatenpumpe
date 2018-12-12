@@ -100,44 +100,64 @@ Details
 ::
 
     $ luftdatenpumpe --help
-        Usage:
-          luftdatenpumpe stations [options] [--target=<target>]...
-          luftdatenpumpe readings [options] [--target=<target>]...
-          luftdatenpumpe --version
-          luftdatenpumpe (-h | --help)
 
-        Options:
-          --station=<stations>          Filter data by given location ids, comma-separated.
-          --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
-          --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder and add to MQTT message
-          --target=<target>             Data output target
-          --progress                    Show progress bar
-          --version                     Show version information
-          --dry-run                     Run data acquisition and postprocessing but skip publishing to MQTT bus
-          --debug                       Enable debug messages
-          -h --help                     Show this screen
+    Usage:
+      luftdatenpumpe stations [options] [--target=<target>]...
+      luftdatenpumpe readings [options] [--target=<target>]...
+      luftdatenpumpe --version
+      luftdatenpumpe (-h | --help)
 
-        Station list examples:
+    Options:
+      --station=<stations>          Filter data by given location ids, comma-separated.
+      --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
+      --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
+      --target=<target>             Data output target
+      --progress                    Show progress bar
+      --version                     Show version information
+      --dry-run                     Skip publishing to MQTT bus
+      --debug                       Enable debug messages
+      -h --help                     Show this screen
 
-          # Display metadata for given stations in JSON format
-          luftdatenpumpe stations --station=28,1071 --reverse-geocode
+    Station list examples:
 
-          # Display metadata for given sensors in JSON format
-          luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
+      # Display metadata for given stations in JSON format
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode
 
-          # Display list of stations in JSON format, suitable for integrating with Grafana
-          luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
+      # Display metadata for given sensors in JSON format
+      luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
 
-          # Write list of stations and metadata to PostgreSQL database, also display on STDERR
-          luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
+      # Display list of stations in JSON format, suitable for integrating with Grafana
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
 
-        Data examples:
+      # Write list of stations and metadata to PostgreSQL database, also display on STDERR
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
 
-          # Publish data to topic "luftdaten.info" at MQTT broker "mqtt.example.org"
-          luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://mqtt.example.org/luftdaten.info
+    Data examples (InfluxDB):
 
-          # MQTT publishing, with authentication
-          luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@mqtt.example.org/luftdaten.info
+      # Store into InfluxDB running on "localhost"
+      luftdatenpumpe readings --station=28,1071 --target=influxdb://localhost:8086/luftdaten_info
+
+      # Store into InfluxDB, with UDP
+      luftdatenpumpe readings --station=28,1071 --target=udp+influxdb://localhost:4445/luftdaten_info
+
+      # Store into InfluxDB, with authentication
+      luftdatenpumpe readings --station=28,1071 --target=influxdb://username:password@localhost:8086/luftdaten_info
+
+    Data examples (MQTT):
+
+      # Publish data to topic "luftdaten.info" at MQTT broker running on "localhost"
+      luftdatenpumpe readings --station=28,1071 --target=mqtt://localhost/luftdaten.info
+
+      # MQTT publishing, with authentication
+      luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@localhost/luftdaten.info
+
+    Combined examples:
+
+      # Write stations to STDERR and PostgreSQL
+      luftdatenpumpe readings --station=28,1071         --target=json+stream://sys.stderr         --target=postgresql:///weatherbase
+
+      # Write readings to STDERR, InfluxDB and MQTT
+      luftdatenpumpe readings --station=28,1071         --target=json+stream://sys.stderr         --target=mqtt://localhost/luftdaten.info         --target=influxdb://localhost:8086/luftdaten_info
 
 
 *****
