@@ -2,8 +2,11 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import sys
 import json
+import redis
 import logging
+
 from tqdm import tqdm
 from munch import Munch
 from requests_cache import CachedSession
@@ -27,6 +30,11 @@ class LuftdatenPumpe:
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
         self.session = CachedSession(cache_name='api.luftdaten.info', backend='redis', expire_after=300)
+        try:
+            self.session.cache.responses.get('test')
+        except redis.exceptions.ConnectionError as ex:
+            log.error('Unable to connect to Redis: %s', ex)
+            sys.exit(2)
 
     def get_readings(self):
         return self.request()
