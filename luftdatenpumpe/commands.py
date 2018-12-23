@@ -46,7 +46,7 @@ def run():
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
 
       # Write list of stations and metadata to PostgreSQL database, also display on STDERR
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta --target=json+stream://sys.stderr
 
     Data examples (InfluxDB):
 
@@ -70,9 +70,9 @@ def run():
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe readings --station=28,1071 \
+      luftdatenpumpe stations --station=28,1071 \
         --target=json+stream://sys.stderr \
-        --target=postgresql:///weatherbase
+        --target=postgresql:///luftdaten_meta
 
       # Write readings to STDERR, MQTT and InfluxDB
       luftdatenpumpe readings --station=28,1071 \

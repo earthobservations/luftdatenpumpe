@@ -1,0 +1,13 @@
+{
+  "name": "luftdaten_meta",
+  "type": "postgres",
+  "url": "localhost:5432",
+  "access": "proxy",
+  "jsonData": {
+    "postgresVersion": 1000,
+    "sslmode": "disable"
+  },
+  "database": "luftdaten_meta",
+  "user": "readonly",
+  "password": "readonly"
+}

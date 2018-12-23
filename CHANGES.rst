@@ -12,6 +12,7 @@ in progress
 - Use nominatim.hiveeyes.org as primary reverse geocoder,
   fall back to nominatim.openstreetmap.org
 - Add option to disable the Nominatim cache
+- Add configuration and documentation about Grafana Worldmap
 
 
 2018-12-11 0.4.3

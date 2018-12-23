@@ -90,7 +90,7 @@ Overview
     luftdatenpumpe stations --station=28,297 --reverse-geocode
 
     # Write list of stations and metadata to PostgreSQL database
-    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase
+    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta
 
     # Forward readings to MQTT
     luftdatenpumpe readings --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
@@ -131,7 +131,7 @@ Details
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
 
       # Write list of stations and metadata to PostgreSQL database, also display on STDERR
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta --target=json+stream://sys.stderr
 
     Data examples (InfluxDB):
 
@@ -155,10 +155,10 @@ Details
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe readings \
+      luftdatenpumpe stations \
         --station=28,1071 \
         --target=json+stream://sys.stderr \
-        --target=postgresql:///weatherbase
+        --target=postgresql:///luftdaten_meta
 
       # Write readings to STDERR, MQTT and InfluxDB
       luftdatenpumpe readings \
@@ -184,17 +184,17 @@ Postgres database
 Create database::
 
     createuser --no-createdb --pwprompt hiveeyes
-    createdb --owner hiveeyes weatherbase
+    createdb --owner hiveeyes luftdaten_meta
 
 Create read-only user::
 
     su - postgres
     psql
 
-    postgres=# \c weatherbase
-    weatherbase=# CREATE ROLE readonly WITH LOGIN PASSWORD 'XXX';
-    weatherbase=# GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO readonly;
-    weatherbase=# GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
+    postgres=# \c luftdaten_meta
+    luftdaten_meta=# CREATE ROLE readonly WITH LOGIN PASSWORD 'readonly';
+    luftdaten_meta=# GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO readonly;
+    luftdaten_meta=# GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
 
 
 Redis cache

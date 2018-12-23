@@ -1,0 +1,9 @@
+{
+  "name": "luftdaten_info",
+  "type": "influxdb",
+  "url": "http://localhost:8086/",
+  "access": "proxy",
+  "database": "luftdaten_info",
+  "user": "root",
+  "password": "root"
+}

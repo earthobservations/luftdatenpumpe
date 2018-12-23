@@ -45,7 +45,7 @@ Prio 2
 Prio 3
 ******
 - [o] OSM: Why are some roads or towns empty?
-      weatherbase=# select * from ldi_osmdata where road is null limit 7;
+      luftdaten_meta=# select * from ldi_osmdata where road is null limit 7;
 - [o] Add remark after "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright" like
       "remark": "The address information has been modified by luftdatenpumpe 0.4.0"
 - [o] OSM: English labels for e.g. Hercegovine, BA
