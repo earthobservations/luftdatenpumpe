@@ -22,7 +22,7 @@ def json_formatter(data):
     return json.dumps(data, indent=4)
 
 
-def json_grafana_formatter(stations):
+def json_grafana_formatter_base(stations):
     entries = []
     for station in stations:
         if 'name' in station:
@@ -30,6 +30,51 @@ def json_grafana_formatter(stations):
         else:
             station_name = u'Station #{}, {}'.format(station.station_id, station.position.country)
         entry = {'value': station.station_id, 'text': station_name}
+        entries.append(entry)
+    return entries
+
+
+def json_grafana_formatter_vt(stations):
+    """
+    Format list of stations in JSON format made of value/text items,
+    suitable for use as a Grafana JSON data source.
+
+    Example::
+
+        luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.vt+stream://sys.stdout
+
+    Emits items like::
+
+        {
+            "value": 22,
+            "text": "Steglen, Haslach, Herrenberg, Vereinbarte  der Stadt Herrenberg, Baden-W\u00fcrttemberg, DE"
+        }
+
+    """
+    entries = json_grafana_formatter_base(stations)
+    return json_formatter(entries)
+
+
+def json_grafana_formatter_kn(stations):
+    """
+    Format list of stations in JSON format made of key/name items,
+    suitable for use as a mapping in Grafana Worldmap Panel.
+
+    Example::
+
+        luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.kn+stream://sys.stdout
+
+    Emits items like::
+
+        {
+            "key": "22",
+            "name": "Steglen, Haslach, Herrenberg, Vereinbarte  der Stadt Herrenberg, Baden-W\u00fcrttemberg, DE"
+        }
+
+    """
+    entries = []
+    for station in json_grafana_formatter_base(stations):
+        entry = {'key': str(station['value']), 'name': station['text']}
         entries.append(entry)
     return json_formatter(entries)
 
@@ -44,8 +89,10 @@ def resolve_target_handler(target, dry_run=False):
     if '+' in url.scheme:
         format, scheme = url.scheme.split('+')
         url.scheme = scheme
-        if format.startswith('json.grafana'):
-            formatter = json_grafana_formatter
+        if format.startswith('json.grafana.vt'):
+            formatter = json_grafana_formatter_vt
+        elif format.startswith('json.grafana.kn'):
+            formatter = json_grafana_formatter_kn
         elif format.startswith('json'):
             formatter = json_formatter
         formatter.format = format

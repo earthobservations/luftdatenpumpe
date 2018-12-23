@@ -18,6 +18,7 @@ in progress
 - Add User-Agent for requests to api.luftdaten.info
 - Improve globbing when selecting path for CSV import
 - Compensate empty values (nan) when importing from CSV
+- Add output formatter for Grafana Worldmap Panel JSON file
 
 
 2018-12-11 0.4.3
