@@ -8,28 +8,37 @@ Prio 1
 ******
 - [x] Download cache for data feed (5 minutes)
 - [x] Write metadata directly to Postgres
-- [o] Redesign commandline interface
-- [o] Create CHANGES.rst, update documentation and repository (tags)
-- [o] Add tooling for packaging
-- [o] Publish to PyPI
+- [x] Redesign commandline interface
+- [x] Create CHANGES.rst, update documentation and repository (tags)
+- [x] Add tooling for packaging
+- [x] Publish to PyPI
+- [x] Write measurement data directly to InfluxDB
+- [x] Store stations / data **while** processing
+- [x] Make a sensor type chooser in Grafana. How would that actually select
+      multiple(!) stations by id through Grafana?
+- [x] Store Geohash into InfluxDB database again. Check for sensor_id.
+- [x] Probe Redis when starting
+- [o] Add link to Demo #5
+- [o] Add Grafana assets
 
 
 ******
 Prio 2
 ******
-- [o] Write measurement data directly to InfluxDB
 - [o] Refactor for handling multiple data sources and targets
-- [o] Get English (or configurable) country labels from Nominatim
-- [o] Handle multiple languages with Nominatim. Use English as default.
-- [o] Make a sensor type chooser in Grafana. How would that actually select multiple(!) stations by id through Grafana?
 - [o] Run some metric about total count of measuremnts per feed action
 - [o] Export to tabular format: http://docs.python-tablib.org/
 - [o] Output data in tabular, markdown or rst formats
 - [o] Publish to MQTT with separate topics
-- [/] Store stations / data **while** processing
 - [o] Store "boundingbox" attribute to RDBMS database
 - [o] Dry-run for RDBMS storage
-- [o] Filter by sensor type
+- [o] Filter by sensor type on command line
+- Grafana Worldmap Panel
+    - [o] Handle multiple languages with Nominatim. Use English as default.
+    - [o] Get English (or configurable) country labels from Nominatim
+    - [o] JSON endpoint: Add formatter ``jq '[ .[] | {key: .station_id | tostring, name: .name} ]'``
+    - [o] JSON endpoint: Map by geohash only
+    - [o] Link to Nominatim place_id, see https://nominatim.hiveeyes.org/details.php?place_id=8110875
 
 
 ******
@@ -63,6 +72,8 @@ Prio 4
 
     - https://github.com/opendata-stuttgart/sensors-software/issues/33
     - https://twitter.com/SchindlerTimo/status/1064634624192774150
+
+- [o] Provide jq examples
 
 
 *********************

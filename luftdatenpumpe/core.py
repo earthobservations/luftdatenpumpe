@@ -207,7 +207,7 @@ class LuftdatenPumpe:
 
     @staticmethod
     def convert_timestamp(timestamp):
-        # mungle timestamp to be formally in ISO 8601/UTC
+        # Mungle timestamp to be formally in ISO 8601 format (UTC).
         if ' ' in timestamp:
             timestamp = timestamp.replace(' ', 'T')
         if '+' not in timestamp:
