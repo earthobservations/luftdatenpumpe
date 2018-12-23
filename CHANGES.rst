@@ -19,6 +19,7 @@ in progress
 - Improve globbing when selecting path for CSV import
 - Compensate empty values (nan) when importing from CSV
 - Add output formatter for Grafana Worldmap Panel JSON file
+- Add RDBMS database (PostgreSQL) as station data source
 
 
 2018-12-11 0.4.3

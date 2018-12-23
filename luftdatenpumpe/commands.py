@@ -35,6 +35,7 @@ def run():
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
+
     Station list examples:
 
       # Display metadata for given stations in JSON format
@@ -43,11 +44,18 @@ def run():
       # Display metadata for given sensors in JSON format
       luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
 
-      # Display list of stations in JSON format, suitable for integrating with Grafana
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana+stream://sys.stdout
+      # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
 
-      # Write list of stations and metadata to PostgreSQL database, also display on STDERR
+      # Display list of stations in JSON format made of key/name items, suitable for use as a mapping in Grafana Worldmap Panel
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
+
+      # Write list of stations and metadata to RDBMS database (PostgreSQL), also display on STDERR
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta --target=json+stream://sys.stderr
+
+      # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
+      luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.kn+stream://sys.stdout
+
 
     Live data examples (InfluxDB):
 
@@ -60,13 +68,18 @@ def run():
       # Store into InfluxDB, with authentication
       luftdatenpumpe readings --station=28,1071 --target=influxdb://username:password@localhost:8086/luftdaten_info
 
+
     Archive data examples (InfluxDB):
 
       # Mirror archive of luftdaten.info
       wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
 
-      # Scan for .csv files in specified path and store into InfluxDB
+      # Ingest station information from CSV archive files, store into PostgreSQL
+      luftdatenpumpe stations --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///luftdaten_meta --reverse-geocode --progress
+
+      # Ingest readings from CSV archive files, store into InfluxDB
       luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
+
 
     Live data examples (MQTT):
 
@@ -75,6 +88,7 @@ def run():
 
       # MQTT publishing, with authentication
       luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@localhost/luftdaten.info
+
 
     Combined examples:
 
