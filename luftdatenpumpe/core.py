@@ -353,9 +353,11 @@ class LuftdatenPumpe:
     def csvdata_to_reading(self, csvitem, reading, fieldnames):
         has_data = False
         for fieldname in fieldnames:
-            if csvitem[fieldname]:
-                has_data = True
-                reading.data[fieldname] = float(csvitem[fieldname])
+            value = csvitem[fieldname].strip()
+            if not value or value.lower() == 'nan':
+                continue
+            has_data = True
+            reading.data[fieldname] = float(value)
         return has_data
 
     def make_item(self, csvitem):

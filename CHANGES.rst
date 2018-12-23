@@ -17,6 +17,7 @@ in progress
 - Add Grafana Graph dashboard
 - Add User-Agent for requests to api.luftdaten.info
 - Improve globbing when selecting path for CSV import
+- Compensate empty values (nan) when importing from CSV
 
 
 2018-12-11 0.4.3
