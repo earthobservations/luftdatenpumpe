@@ -52,7 +52,14 @@ def resolve_location(latitude=None, longitude=None, geohash=None, improve=True):
         latitude, longitude = geohash_decode(geohash)
 
     # Run reverse geocoder.
-    location = reverse_geocode(latitude, longitude).raw
+    location = reverse_geocode(latitude, longitude)
+
+    # Backward compatibility re. already cached objects from ``reverse_geocode``.
+    if hasattr(location, 'raw'):
+        location = location.raw
+
+    if location is None or 'error' in location:
+        raise ValueError('Reverse geocoding failed for lat={}, lon={}'.format(latitude, longitude))
 
     location = rebundle_location(location)
 
@@ -88,14 +95,51 @@ def reverse_geocode(latitude, longitude):
     """
     Cache responses of the Nominatim reverse geocoding service.
 
-    TODO:
-    - Use a local version of Nomatim to get rid of
-      the 1 request per second fair use policy.
-      https://wiki.openstreetmap.org/wiki/Nominatim/Installation
+    Uses a local version of Nomatim to get rid of
+    the "one request per second" fair-use policy.
+
+    https://wiki.openstreetmap.org/wiki/Nominatim/Installation
+
+    This is a Python implementation for subsequently requesting::
+
+        time http https://nominatim.hiveeyes.org/reverse lat==52.246 lon==20.898 format==json
+        time http https://nominatim.openstreetmaps.org/reverse lat==52.246 lon==20.898 format==json
+
     """
+    location = reverse_geocode_main(latitude, longitude)
 
-    log.debug('Decoding from Nominatim: {}'.format(locals()))
+    if location is None or 'error' in location:
+        location = reverse_geocode_fallback(latitude, longitude)
 
+    if location is None or 'error' in location:
+        # Must raise an exception here to let the result not be cached.
+        raise ValueError('Reverse geocoding failed for lat={}, lon={}'.format(latitude, longitude))
+
+    return location
+
+
+def reverse_geocode_main(latitude, longitude):
+
+    log.debug('Reverse geocoding I: {}'.format(locals()))
+
+    location = None
+    try:
+        geolocator = Nominatim(domain='nominatim.hiveeyes.org', user_agent=nominatim_user_agent, timeout=1.25)
+        position = (latitude, longitude)
+        location = geolocator.reverse(position).raw
+
+    except Exception as ex:
+        name = ex.__class__.__name__
+        log.warning('Reverse geocoding I failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
+
+    return location
+
+
+def reverse_geocode_fallback(latitude, longitude):
+
+    log.debug('Reverse geocoding II: {}'.format(locals()))
+
+    location = None
     try:
         # 2018-03-24
         # Nominatim expects the User-Agent as HTTP header otherwise it returns a HTTP-403.
@@ -110,12 +154,11 @@ def reverse_geocode(latitude, longitude):
         #geolocator = Nominatim(user_agent=nominatim_user_agent, scheme='http')
 
         position = (latitude, longitude)
-        location = geolocator.reverse(position)
+        location = geolocator.reverse(position).raw
 
     except Exception as ex:
         name = ex.__class__.__name__
-        log.error('Reverse geocoding failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
-        raise
+        log.error('Reverse geocoding II failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
 
     finally:
         # Obey to fair use policy (an absolute maximum of 1 request per second).
@@ -142,6 +185,9 @@ def improve_location(location):
     - How to handle "building", "public_building", "residential", "pedestrian", "kindergarten", "clothes"?
     - Also check OSM place: https://wiki.openstreetmap.org/wiki/Key:place !!!
     """
+
+    if location is None:
+        return
 
     address = location.address
 
