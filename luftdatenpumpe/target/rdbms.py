@@ -40,7 +40,7 @@ class RDBMSStorage:
     def emit(self, station):
         return self.store_station(station)
 
-    def flush(self):
+    def flush(self, final=False):
         pass
 
     def store_station(self, station):

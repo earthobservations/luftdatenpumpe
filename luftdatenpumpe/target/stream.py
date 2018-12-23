@@ -13,5 +13,8 @@ class StreamTarget:
     def emit(self, data):
         self.buffer.append(data)
 
-    def flush(self):
+    def flush(self, final=False):
+        if not final:
+            return
         self.handle.write(self.formatter(self.buffer))
+        self.buffer = []

@@ -4,7 +4,7 @@
 # License: GNU Affero General Public License, Version 3
 import sys
 import logging
-from docopt import docopt
+from docopt import docopt, DocoptExit
 from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.util import normalize_options, setup_logging, read_list
@@ -23,6 +23,7 @@ def run():
       luftdatenpumpe (-h | --help)
 
     Options:
+      --source=<source>             Data source, either "api" or "file://" [default: api].
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
@@ -48,7 +49,7 @@ def run():
       # Write list of stations and metadata to PostgreSQL database, also display on STDERR
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta --target=json+stream://sys.stderr
 
-    Data examples (InfluxDB):
+    Live data examples (InfluxDB):
 
       # Store into InfluxDB running on "localhost"
       luftdatenpumpe readings --station=28,1071 --target=influxdb://localhost:8086/luftdaten_info
@@ -59,7 +60,15 @@ def run():
       # Store into InfluxDB, with authentication
       luftdatenpumpe readings --station=28,1071 --target=influxdb://username:password@localhost:8086/luftdaten_info
 
-    Data examples (MQTT):
+    Archive data examples (InfluxDB):
+
+      # Mirror archive of luftdaten.info
+      wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
+
+      # Scan for .csv files in specified path and store into InfluxDB
+      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
+
+    Live data examples (MQTT):
 
       # Publish data to topic "luftdaten.info" at MQTT broker running on "localhost"
       luftdatenpumpe readings --station=28,1071 --target=mqtt://localhost/luftdaten.info
@@ -117,6 +126,7 @@ def run():
 
     # The main workhorse.
     pump = LuftdatenPumpe(
+        source=options['source'],
         filter=filter,
         reverse_geocode=options['reverse-geocode'],
         progressbar=options['progress'],
@@ -128,15 +138,17 @@ def run():
     kind = None
     if options['stations']:
         kind = 'stations'
-        log.info('Acquiring list of stations for {}'.format(datasource_humanized))
+        log.info('Acquiring list of stations from {}. source={}'.format(datasource_humanized, options['source']))
         data = pump.get_stations()
         log.info('Acquired #{} stations'.format(len(data)))
 
     elif options['readings']:
         kind = 'readings'
-        log.info('Will publish readings to {}'.format(options['target']))
+        log.info('Acquiring readings from {}. source={}'.format(datasource_humanized, options['source']))
         data = pump.get_readings()
-        log.info('Acquired readings')
+
+    else:
+        raise DocoptExit('Subcommand not implemented')
 
     # Sanity checks.
     if data is None:
@@ -144,5 +156,6 @@ def run():
         sys.exit(2)
 
     # Create and run output processing engine.
+    log.info('Will publish data to {}'.format(options['target']))
     engine = LuftdatenEngine(kind, options['target'], options.get('dry-run', False))
     engine.process(data)

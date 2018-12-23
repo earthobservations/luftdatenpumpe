@@ -13,6 +13,8 @@ in progress
   fall back to nominatim.openstreetmap.org
 - Add option to disable the Nominatim cache
 - Add configuration and documentation about Grafana Worldmap
+- Unlock CSV data acquisition from archive.luftdaten.info
+- Add Grafana Graph dashboard
 
 
 2018-12-11 0.4.3

@@ -9,10 +9,11 @@ log = logging.getLogger(__name__)
 
 class LuftdatenEngine:
 
-    def __init__(self, kind, targets, dry_run):
+    def __init__(self, kind, targets, dry_run, batch_size=2500):
         self.kind = kind
         self.targets = targets
         self.dry_run = dry_run
+        self.batch_size = batch_size
 
     def process(self, data):
 
@@ -39,8 +40,12 @@ class LuftdatenEngine:
                 target.emit(item)
             item_count += 1
 
+            # Preliminary flush each $batch_size items.
+            if item_count % self.batch_size == 0:
+                target.flush()
+
         # Signal readyness to each target subsystem.
         for target in targets:
-            target.flush()
+            target.flush(final=True)
 
         log.info('Processed {} records'.format(item_count))

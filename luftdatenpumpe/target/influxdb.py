@@ -21,6 +21,8 @@ class InfluxDBStorage:
         self.dry_run = dry_run
         self.measurement = measurement
 
+        self.buffer = []
+
         dsn_parts = urlparse(dsn)
         if dsn_parts.scheme.startswith('udp+'):
             self.db = InfluxDBClient.from_dsn(dsn, udp_port=dsn_parts.port, timeout=5)
@@ -59,14 +61,18 @@ class InfluxDBStorage:
             "tags": {
                 "station_id": reading.station.station_id,
                 "sensor_id": reading.station.sensor_id,
-                "geohash": reading.station.position.geohash,
             },
             "time": reading.data.time,
             "fields": data
         }
 
-        # Store into database.
-        self.db.write_points([record])
+        if 'position' in reading.station and 'geohash' in reading.station.position:
+            record['tags']['geohash'] = reading.station.position.geohash
 
-    def flush(self):
-        pass
+        # Store into buffer.
+        self.buffer.append(record)
+
+    def flush(self, final=False):
+        # Store into database.
+        self.db.write_points(self.buffer)
+        self.buffer = []

@@ -6,13 +6,17 @@ here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 
 requires = [
+
     # Core
     'six==1.11.0',
     'appdirs==1.4.3',
     'docopt==0.6.2',
-    'requests==2.20.1',
     'munch==2.3.2',
     'tqdm==4.28.1',
+
+    # Acquisition
+    'requests==2.20.1',
+    'tablib==0.12.1',
 
     # Caching
     'requests-cache==0.4.13',

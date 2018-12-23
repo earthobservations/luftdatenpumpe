@@ -1,0 +1,1590 @@
+{
+  "overwrite": true,
+  "dashboard": {
+    "id": null,
+    "uid": null,
+    "version": 0,
+    "schemaVersion": 16,
+    "title": "luftdaten.info trend",
+    "tags": ["luftdaten.info", "trend", "live"],
+    "timezone": "browser",
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "style": "light",
+    "time": {
+      "from": "now-7d",
+      "to": "now"
+    },
+    "refresh": "30m",
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "links": [
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ GitHub",
+        "type": "link",
+        "url": "https://github.com/hiveeyes/luftdatenpumpe"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "More about this",
+        "type": "link",
+        "url": "https://getkotori.org/docs/applications/luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info",
+        "type": "link",
+        "url": "http://luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info map",
+        "type": "link",
+        "url": "http://deutschland.maps.luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info archive",
+        "type": "link",
+        "url": "http://archive.luftdaten.info/"
+      }
+    ],
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 20,
+        "panels": [],
+        "repeat": "ldi_station_id",
+        "scopedVars": {
+        },
+        "title": "Measurements for $ldi_station_id",
+        "type": "row"
+      },
+      {
+        "aliasColors": {
+          "P10": "#AEA2E0",
+          "P10 in 15 min": "#705DA0",
+          "P2,5": "#BF1B00",
+          "P2.5": "#BF1B00",
+          "P2.5 in 15min": "#890F02",
+          "humidity": "#82B5D8"
+        },
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "luftdaten_info",
+        "decimals": 1,
+        "editable": true,
+        "error": false,
+        "fill": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 13,
+          "w": 24,
+          "x": 0,
+          "y": 1
+        },
+        "height": "500",
+        "id": 18,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "hideEmpty": false,
+          "max": true,
+          "min": true,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "connected",
+        "percentage": false,
+        "pointradius": 1,
+        "points": false,
+        "renderer": "flot",
+        "scopedVars": {
+        },
+        "seriesOverrides": [
+          {
+            "alias": "P10 in 15 min",
+            "fill": 1,
+            "linewidth": 3,
+            "yaxis": 1
+          },
+          {
+            "alias": "P2.5 in 15min",
+            "fill": 1,
+            "linewidth": 3,
+            "yaxis": 1
+          },
+          {
+            "alias": "P10",
+            "lines": false,
+            "pointradius": 1,
+            "points": true
+          },
+          {
+            "alias": "P2.5",
+            "lines": false,
+            "pointradius": 1,
+            "points": true
+          },
+          {
+            "alias": "humidity",
+            "linewidth": 2,
+            "yaxis": 2
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "P2.5",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P1"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "1m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P2"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "P2.5 in 15min",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P2"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "15m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P2"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "P10",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P1"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "1m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "C",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P1"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "P10 in 15 min",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P1"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "15m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "D",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P1"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "humidity",
+            "dsType": "influxdb",
+            "groupBy": [
+              {
+                "params": [
+                  "15m"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "E",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "humidity"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "fill": false,
+            "line": true,
+            "op": "gt",
+            "value": 40
+          },
+          {
+            "colorMode": "warning",
+            "fill": false,
+            "line": true,
+            "op": "gt",
+            "value": 25
+          }
+        ],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "P10, P2.5 and humidity",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "label": "μm/m³",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "humidity",
+            "label": "",
+            "logBase": 1,
+            "max": "100",
+            "min": "0",
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 28
+        },
+        "id": 21,
+        "panels": [],
+        "repeat": "ldi_station_id",
+        "scopedVars": {
+        },
+        "title": "EU Limits for particulates @ $ldi_station_id",
+        "type": "row"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "rgba(50, 172, 45, 0.97)",
+          "rgba(237, 129, 40, 0.89)",
+          "rgba(245, 54, 54, 0.9)"
+        ],
+        "datasource": "luftdaten_info",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": true,
+          "thresholdLabels": true,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 0,
+          "y": 29
+        },
+        "height": "230px",
+        "id": 15,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "20%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "scopedVars": {
+        },
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": true
+        },
+        "tableColumn": "",
+        "targets": [
+          {
+            "alias": "",
+            "dsType": "influxdb",
+            "groupBy": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P1"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": "25,50",
+        "timeFrom": "24h",
+        "title": "P10",
+        "type": "singlestat",
+        "valueFontSize": "100%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "rgba(50, 172, 45, 0.97)",
+          "rgba(237, 129, 40, 0.89)",
+          "rgba(245, 54, 54, 0.9)"
+        ],
+        "datasource": "luftdaten_info",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": true,
+          "thresholdLabels": true,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 6,
+          "y": 29
+        },
+        "height": "230px",
+        "id": 14,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "20%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "scopedVars": {
+        },
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": true
+        },
+        "tableColumn": "",
+        "targets": [
+          {
+            "alias": "",
+            "dsType": "influxdb",
+            "groupBy": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P2"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": "15,30",
+        "timeFrom": "24h",
+        "title": "P2.5 (no limit)",
+        "type": "singlestat",
+        "valueFontSize": "100%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "rgba(50, 172, 45, 0.97)",
+          "rgba(237, 129, 40, 0.89)",
+          "rgba(245, 54, 54, 0.9)"
+        ],
+        "datasource": "luftdaten_info",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": true,
+          "thresholdLabels": true,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 12,
+          "y": 29
+        },
+        "height": "230px",
+        "id": 16,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "scopedVars": {
+        },
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": true
+        },
+        "tableColumn": "",
+        "targets": [
+          {
+            "alias": "",
+            "dsType": "influxdb",
+            "groupBy": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P1"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": "20,40",
+        "timeFrom": "1y",
+        "title": "P10",
+        "type": "singlestat",
+        "valueFontSize": "100%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "current"
+      },
+      {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "rgba(50, 172, 45, 0.97)",
+          "rgba(237, 129, 40, 0.89)",
+          "rgba(245, 54, 54, 0.9)"
+        ],
+        "datasource": "luftdaten_info",
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": true,
+          "thresholdLabels": true,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 6,
+          "w": 6,
+          "x": 18,
+          "y": 29
+        },
+        "height": "230px",
+        "id": 17,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "50%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "scopedVars": {
+        },
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": true
+        },
+        "tableColumn": "",
+        "targets": [
+          {
+            "dsType": "influxdb",
+            "groupBy": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P2"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": "12.5,25",
+        "timeFrom": "1y",
+        "title": "P2.5",
+        "type": "singlestat",
+        "valueFontSize": "100%",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "current"
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 70
+        },
+        "id": 22,
+        "panels": [],
+        "repeat": "ldi_station_id",
+        "title": "Particulates and weather for $ldi_station_id",
+        "type": "row"
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "luftdaten_info",
+        "decimals": 1,
+        "editable": true,
+        "error": false,
+        "fill": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 10,
+          "w": 14,
+          "x": 0,
+          "y": 71
+        },
+        "height": "",
+        "id": 1,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": false,
+          "hideEmpty": false,
+          "max": false,
+          "min": false,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "connected",
+        "percentage": false,
+        "pointradius": 1,
+        "points": true,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "P10",
+            "color": "#F9D9F9",
+            "linewidth": 4,
+            "yaxis": 1
+          },
+          {
+            "alias": "P2,5",
+            "color": "#806EB7",
+            "linewidth": 4,
+            "yaxis": 1
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "P10",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P1"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P1"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "P2.5",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P2"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "B",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "P2"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "fill": true,
+            "line": true,
+            "op": "gt",
+            "value": 40
+          }
+        ],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Particles @ $ldi_station_id",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "none",
+            "label": "μm/m³",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "none",
+            "label": "",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "luftdaten_info",
+        "decimals": 1,
+        "editable": true,
+        "error": false,
+        "fill": 0,
+        "grid": {},
+        "gridPos": {
+          "h": 10,
+          "w": 10,
+          "x": 14,
+          "y": 71
+        },
+        "height": "",
+        "id": 12,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": false,
+          "hideEmpty": false,
+          "max": false,
+          "min": false,
+          "rightSide": false,
+          "show": true,
+          "total": false,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "connected",
+        "percentage": false,
+        "pointradius": 1,
+        "points": true,
+        "renderer": "flot",
+        "seriesOverrides": [
+          {
+            "alias": "humidity",
+            "yaxis": 2
+          }
+        ],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "alias": "temperature",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P2"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "C",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "temperature"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          },
+          {
+            "alias": "humidity",
+            "dsType": "influxdb",
+            "fields": [
+              {
+                "func": "mean",
+                "name": "P2"
+              }
+            ],
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "groupByTags": [],
+            "hide": false,
+            "measurement": "ldi_readings",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": null,
+            "rawQuery": false,
+            "refId": "D",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "humidity"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "station_id",
+                "operator": "=~",
+                "value": "/^$ldi_station_id$/"
+              }
+            ]
+          }
+        ],
+        "thresholds": [
+          {
+            "colorMode": "critical",
+            "fill": true,
+            "line": true,
+            "op": "gt",
+            "value": 40
+          }
+        ],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Weather @ $ldi_station_id",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "cumulative"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "celsius",
+            "label": "°C",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "humidity",
+            "label": "%H",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 81
+        },
+        "id": 23,
+        "panels": [],
+        "repeat": null,
+        "title": "Info",
+        "type": "row"
+      },
+      {
+        "content": "# Particulates\n\nAtmospheric particulate matter – also known as particulate matter (PM) or particulates – are microscopic solid or liquid matter suspended in the Earth's atmosphere. The term aerosol commonly refers to the particulate/air mixture, as opposed to the particulate matter alone. Sources of particulate matter can be man-made or natural. They have impacts on climate and precipitation that adversely affect human health.\n\nSubtypes of atmospheric particulate matter include suspended particulate matter (SPM), thoracic and respirable particles, inhalable coarse particles, which are particles with a diameter between 2.5 and 10 micrometres (μm), fine particles with a diameter of 2.5 μm or less PM2.5 , PM10 ultrafine particles, and soot\n\nThe IARC and WHO designate airborne particulates a Group 1 carcinogen. Particulates are the deadliest form of air pollution[citation needed] due to their ability to penetrate deep into the lungs and blood streams unfiltered, causing permanent DNA mutations, heart attacks, and premature death. In 2013, a study involving 312,944 people in nine European countries revealed that there was no safe level of particulates and that for every increase of 10 μg/m3 in PM10, the lung cancer rate rose 22%. The smaller PM2.5 were particularly deadly, with a 36% increase in lung cancer per 10 μg/m3 as it can penetrate deeper into the lungs.\n\nThe European Union has established these limits for particulates in air\n\n|                                        | **PM10 since 1 January 2005** | **PM2.5 since 1 January 2015** |\n|----------------------------------------|--------------------------|----------------------------|\n| **Yearly average**                         | 40 µg/m3                 | 25 µg/m3                   |\n| **Daily average (24-hour)**                | 50 µg/m3                 | None                       |\n| **Allowed number of exceedences per year** | 35                       | None                       |\n\n(*[Source: Wikipedia](https://en.wikipedia.org/wiki/Particulates)*)",
+        "gridPos": {
+          "h": 19,
+          "w": 12,
+          "x": 0,
+          "y": 82
+        },
+        "id": 6,
+        "links": [],
+        "mode": "markdown",
+        "title": "About Atmospheric particulate matter",
+        "type": "text"
+      },
+      {
+        "content": "# What is luftdaten.info\n\n## About\n[luftdaten.info] is a community project from Stuttgart, Germany. Due to its geographical location \nand microclimatic situation, Stuttgart has high particulate matter (PM) levels on a regular basis.\nPeople at [OK Lab Stuttgart], a project supported by [Code for Germany] of [Open Knowledge Foundation] fame \nconstructed cost-effective particulate sensors easily to rebuild by everyone to provide an alternative to \nmonitoring systems from governmental agencies.\n\nThe sensor readings from [DIY fine dust sensors] are acquired by the backend application [feinstaub-api], \ndisplayed on the [luftdaten.info map] and archived at the [luftdaten.info archive].\n\n## Growth\nThe project is a classical civic-tech with a crowdsourcing approach, it is growing steadily and is \ngetting more and more even international attention. \n\n- [2016] luftdaten.info is in the process of installing low cost, crowdfunded sensor nodes across many \ncities in Germany to measure PM levels.\n\n- [2018] In the meanwhile, there are more than 6,000 sensor nodes online. Mainly located around\nEurope, they start to spread across the whole world.\n\n## Quotes\n> There is certainly growing awareness of the issue among Stuttgart residents. \n  Luftdaten is in the process of installing low cost, crowdfunded sensors across \n  the city to measure PM levels [...].\n\n> “I wanted to build cost-effective sensors, given the less than reliable government \n  data and coverage regarding air pollution,” explains Jan Lutz, a social entrepreneur \n  who runs Luftdaten’s website.\n\n> “But I think in five years Stuttgart will be like Detroit or something, because there \n  is simply no innovation” he adds. “The automobile industry continues to produce more cars, \n  which is basically two tonnes of steel transporting a 70kg human. It’s an overkill, \n  and not sustainable in the long run.”\n\n> -- *[Source: The Guardian, 2017]*\n\n\n[luftdaten.info]: http://luftdaten.info\n[OK Lab Stuttgart]: https://codefor.de/stuttgart/\n[Code for Germany]: https://codefor.de/\n[Open Knowledge Foundation]: https://okfn.de/\n[feinstaub-api]: https://github.com/opendata-stuttgart/feinstaub-api\n[luftdaten.info map]: http://deutschland.maps.luftdaten.info/\n[luftdaten.info archive]: http://archive.luftdaten.info\n[Source: The Guardian, 2017]: https://www.theguardian.com/cities/2017/mar/02/stuttgart-residents-sue-mayor-bodily-harm-air-pollution\n[Grafana]: https://grafana.com\n[DIY fine dust sensors]: https://luftdaten.info/en/construction-manual/\n",
+        "gridPos": {
+          "h": 19,
+          "w": 12,
+          "x": 12,
+          "y": 82
+        },
+        "id": 7,
+        "links": [],
+        "mode": "markdown",
+        "title": "About luftdaten.info",
+        "type": "text"
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "allValue": null,
+          "current": {
+            "text": "All",
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": "luftdaten_meta",
+          "definition": "SELECT ldi_osmdata.country_code AS __value, concat(ldi_osmdata.country, ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata ORDER BY country_code",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Country",
+          "multi": true,
+          "name": "ldi_station_countrycode",
+          "options": [],
+          "query": "SELECT ldi_osmdata.country_code AS __value, concat(ldi_osmdata.country, ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata ORDER BY country_code",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "luftdaten_meta",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "label": "State",
+          "multi": true,
+          "name": "ldi_station_state",
+          "options": [],
+          "query": "SELECT ldi_osmdata.state AS __value, concat(concat_ws(', ', ldi_osmdata.state, ldi_osmdata.country), ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata WHERE ldi_osmdata.country_code IN ($ldi_station_countrycode) ORDER BY ldi_osmdata.country_code, ldi_osmdata.state",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "All",
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": "luftdaten_meta",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "label": "City",
+          "multi": true,
+          "name": "ldi_station_city",
+          "options": [],
+          "query": "SELECT ldi_osmdata.city AS __value, concat(concat_ws(', ', ldi_osmdata.city, ldi_osmdata.state, ldi_osmdata.country), ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata WHERE country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city != '' ORDER BY ldi_osmdata.country_code, ldi_osmdata.state, ldi_osmdata.city",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "All",
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": "luftdaten_meta",
+          "definition": "",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Sensor type",
+          "multi": true,
+          "name": "ldi_station_sensortype",
+          "options": [],
+          "query": "SELECT DISTINCT(sensor_type) FROM ldi_sensors ORDER BY sensor_type",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "allValue": null,
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "luftdaten_meta",
+          "definition": "SELECT ldi_stations.id AS __value, ldi_stations.name AS __text FROM ldi_stations, ldi_osmdata, ldi_sensors WHERE ldi_stations.id = ldi_osmdata.station_id AND ldi_stations.id = ldi_sensors.station_id AND country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city IN ($ldi_station_city) AND ldi_sensors.sensor_type IN ($ldi_station_sensortype) ORDER BY country_code, state, city, road",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Choose multiple stations",
+          "multi": true,
+          "name": "ldi_station_id",
+          "options": [],
+          "query": "SELECT ldi_stations.id AS __value, ldi_stations.name AS __text FROM ldi_stations, ldi_osmdata, ldi_sensors WHERE ldi_stations.id = ldi_osmdata.station_id AND ldi_stations.id = ldi_sensors.station_id AND country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city IN ($ldi_station_city) AND ldi_sensors.sensor_type IN ($ldi_station_sensortype) ORDER BY country_code, state, city, road",
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 0,
+          "tagValuesQuery": "",
+          "tags": [],
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        }
+      ]
+    },
+    "timepicker": {
+      "type": "timepicker",
+      "enable": true,
+      "hidden": false,
+      "collapse": false,
+      "notice": false,
+      "now": true,
+      "status": "Stable",
+      "refresh_intervals": [
+        "5m",
+        "10m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    }
+  }
+}

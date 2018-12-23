@@ -5,18 +5,18 @@
     "uid": null,
     "version": 0,
     "schemaVersion": 16,
-    "title": "luftdaten.info map » By location and sensor type",
-    "tags": ["luftdaten.info", "map"],
-    "timezone": "",
+    "title": "luftdaten.info map",
+    "tags": ["luftdaten.info", "map", "live"],
+    "timezone": "browser",
     "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
-    "links": [],
-    "style": "dark",
+    "style": "light",
     "time": {
       "from": "now-3h",
       "to": "now"
     },
+    "refresh": null,
     "annotations": {
       "list": [
         {
@@ -30,6 +30,48 @@
         }
       ]
     },
+    "links": [
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ GitHub",
+        "type": "link",
+        "url": "https://github.com/hiveeyes/luftdatenpumpe"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "More about this",
+        "type": "link",
+        "url": "https://getkotori.org/docs/applications/luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info",
+        "type": "link",
+        "url": "http://luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info map",
+        "type": "link",
+        "url": "http://deutschland.maps.luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "luftdaten.info archive",
+        "type": "link",
+        "url": "http://archive.luftdaten.info/"
+      }
+    ],
     "panels": [
       {
         "circleMaxSize": "1",
@@ -101,7 +143,7 @@
             "measurement": "ldi_readings",
             "orderByTime": "ASC",
             "policy": "default",
-            "query": "SELECT \"P1\" AS \"metric\" FROM \"earth_43_sensors\" WHERE (\"geohash\" =~ /^u.*/ AND \"sensor_type\" = 'DHT22') AND $timeFilter GROUP BY \"geohash\", \"location_id\"",
+            "query": null,
             "rawQuery": false,
             "refId": "B",
             "resultFormat": "table",
@@ -115,7 +157,7 @@
                 },
                 {
                   "params": [],
-                  "type": "mean"
+                  "type": "first"
                 },
                 {
                   "params": [
@@ -365,13 +407,16 @@
       ]
     },
     "timepicker": {
+      "type": "timepicker",
+      "enable": true,
       "hidden": false,
+      "collapse": false,
+      "notice": false,
+      "now": true,
+      "status": "Stable",
       "refresh_intervals": [
-        "5s",
-        "10s",
-        "30s",
-        "1m",
         "5m",
+        "10m",
         "15m",
         "30m",
         "1h",

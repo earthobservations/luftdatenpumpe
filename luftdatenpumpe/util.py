@@ -2,9 +2,12 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import os
 import sys
+import glob
 import logging
 import traceback
+
 from six import StringIO
 
 
@@ -92,3 +95,20 @@ def invalidate_dogpile_cache(cache_instance, hard=True):
     "old" value until the new one is available.
     """
     cache_instance.invalidate(hard=hard)
+
+
+def find_files_glob(path, suffix):
+    pattern = os.path.join(path, '*' + suffix)
+    return sorted(glob.glob(pattern))
+
+
+def find_files_walk(path, suffix):
+    for root, subdirs, files in os.walk(path):
+        # https://python-forum.io/Thread-why-i-don-t-like-os-walk?pid=35718#pid35718
+        subdirs[:] = sorted(subdirs)  # sorts the subdirs
+        for name in sorted(files):
+            realname = os.path.join(root, name)
+            if realname.endswith(suffix):
+                yield realname
+
+find_files = find_files_glob

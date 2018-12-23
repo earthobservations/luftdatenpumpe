@@ -58,7 +58,10 @@ Dashboard
 ---------
 ::
 
+    # Dashboard with Graph Panel. Filter by location and sensor type.
+    http POST http://localhost:3000/api/dashboards/db @doc/grafana/ldi/dashboard-trend.json --auth=admin:admin
+
     # Dashboard with Worldmap Panel. Filter by location and sensor type.
-    http POST http://localhost:3000/api/dashboards/db @doc/grafana/ldi/dashboard-map-filter.json --auth=admin:admin
+    http POST http://localhost:3000/api/dashboards/db @doc/grafana/ldi/dashboard-map.json --auth=admin:admin
 
 .. todo:: Insert screenshots here.
