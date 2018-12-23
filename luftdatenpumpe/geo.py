@@ -12,6 +12,7 @@ from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator, to_list
 from geopy.geocoders import Nominatim
 
+from luftdatenpumpe.util import invalidate_dogpile_cache
 from . import __appname__ as APP_NAME
 from . import __version__ as APP_VERSION
 
@@ -23,7 +24,6 @@ log = logging.getLogger(__name__)
 nominatim_cache = make_region(
     function_key_generator=kwarg_function_key_generator) \
     .configure('dogpile.cache.redis')
-
 
 # Configure Nominatim client
 nominatim_user_agent = APP_NAME + '/' + APP_VERSION
@@ -356,3 +356,9 @@ def geohash_decode(geohash):
     -- https://en.wikipedia.org/wiki/Geohash
     """
     return geohash2.decode(geohash)
+
+
+def disable_nominatim_cache():
+    log.info('Disabling Nominatim cache')
+    # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
+    invalidate_dogpile_cache(nominatim_cache)

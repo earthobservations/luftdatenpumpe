@@ -6,6 +6,7 @@ import sys
 import logging
 from docopt import docopt
 from luftdatenpumpe import __appname__, __version__
+from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.util import normalize_options, setup_logging, read_list
 from luftdatenpumpe.core import LuftdatenPumpe
 from luftdatenpumpe.engine import LuftdatenEngine
@@ -29,6 +30,7 @@ def run():
       --progress                    Show progress bar
       --version                     Show version information
       --dry-run                     Skip publishing to MQTT bus
+      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
@@ -107,6 +109,11 @@ def run():
     # Default output target is STDOUT.
     if not options['target']:
         options['target'] = ['json+stream://sys.stdout']
+
+    # Optionally disable Nominatim cache.
+    if options['disable-nominatim-cache']:
+        # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
+        disable_nominatim_cache()
 
     # The main workhorse.
     pump = LuftdatenPumpe(

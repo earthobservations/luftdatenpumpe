@@ -60,3 +60,35 @@ def to_list(obj):
     if not isinstance(obj, (list, tuple)):
         obj = [obj, ]
     return obj
+
+
+def invalidate_dogpile_cache(cache_instance, hard=True):
+    """
+    The default invalidation system works by setting
+    a current timestamp (using ``time.time()``)
+    representing the "minimum creation time" for
+    a value.  Any retrieved value whose creation
+    time is prior to this timestamp
+    is considered to be stale.  It does not
+    affect the data in the cache in any way, and is
+    **local to this instance of :class:`.CacheRegion`.**
+
+    .. warning::
+
+        The :meth:`.CacheRegion.invalidate` method's default mode of
+        operation is to set a timestamp **local to this CacheRegion
+        in this Python process only**.   It does not impact other Python
+        processes or regions as the timestamp is **only stored locally in
+        memory**.  To implement invalidation where the
+        timestamp is stored in the cache or similar so that all Python
+        processes can be affected by an invalidation timestamp, implement a
+        custom :class:`.RegionInvalidationStrategy`.
+
+    The method supports both "hard" and "soft" invalidation
+    options.  With "hard" invalidation,
+    :meth:`.CacheRegion.get_or_create` will force an immediate
+    regeneration of the value which all getters will wait for.
+    With "soft" invalidation, subsequent getters will return the
+    "old" value until the new one is available.
+    """
+    cache_instance.invalidate(hard=hard)
