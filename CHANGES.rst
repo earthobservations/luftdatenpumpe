@@ -15,6 +15,7 @@ in progress
 - Add configuration and documentation about Grafana Worldmap
 - Unlock CSV data acquisition from archive.luftdaten.info
 - Add Grafana Graph dashboard
+- Add User-Agent for requests to api.luftdaten.info
 
 
 2018-12-11 0.4.3

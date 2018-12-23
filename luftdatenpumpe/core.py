@@ -15,12 +15,15 @@ from requests_cache import CachedSession
 from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
 from luftdatenpumpe.util import exception_traceback, find_files
 
+from . import __appname__ as APP_NAME
+from . import __version__ as APP_VERSION
+
 log = logging.getLogger(__name__)
 
 
 class LuftdatenPumpe:
 
-    # luftdaten.info API URI
+    # Live data API URI for luftdaten.info
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
     def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, dry_run=False):
@@ -32,7 +35,16 @@ class LuftdatenPumpe:
 
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
-        self.session = CachedSession(cache_name='api.luftdaten.info', backend='redis', expire_after=300)
+
+        # Configure User-Agent string.
+        user_agent = APP_NAME + '/' + APP_VERSION
+
+        # Configure cached requests session.
+        self.session = CachedSession(
+            cache_name='api.luftdaten.info', backend='redis', expire_after=300,
+            user_agent=user_agent)
+
+        # Probe Redis for availability.
         try:
             self.session.cache.responses.get('test')
         except redis.exceptions.ConnectionError as ex:
