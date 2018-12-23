@@ -99,7 +99,7 @@ def invalidate_dogpile_cache(cache_instance, hard=True):
 
 def find_files_glob(path, suffix):
     pattern = os.path.join(path, '*' + suffix)
-    return sorted(glob.glob(pattern))
+    return sorted(glob.glob(pattern, recursive=True))
 
 
 def find_files_walk(path, suffix):

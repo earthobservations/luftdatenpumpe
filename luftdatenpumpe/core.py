@@ -2,6 +2,7 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import os
 import re
 import sys
 import json
@@ -253,6 +254,13 @@ class LuftdatenPumpe:
         return timestamp
 
     def import_archive(self, path):
+
+        if not path.endswith('*'):
+            if path.endswith(os.pathsep):
+                path += '**'
+            else:
+                path = os.path.join(path, '**')
+
         log.info('Importing CSV files from {}'.format(path))
 
         data = find_files(path, '.csv')

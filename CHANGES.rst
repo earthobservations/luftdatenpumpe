@@ -16,6 +16,7 @@ in progress
 - Unlock CSV data acquisition from archive.luftdaten.info
 - Add Grafana Graph dashboard
 - Add User-Agent for requests to api.luftdaten.info
+- Improve globbing when selecting path for CSV import
 
 
 2018-12-11 0.4.3
