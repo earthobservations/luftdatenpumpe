@@ -8,6 +8,7 @@ in progress
 - Add InfluxDB egress handler
 - Improve HTTP response caching
 - Probe Redis before starting and croak if connection fails
+- Add "geohash" field when writing into InfluxDB
 
 
 2018-12-11 0.4.3

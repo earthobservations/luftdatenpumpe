@@ -46,6 +46,9 @@ class InfluxDBStorage:
         }
         """
 
+        # Debugging
+        #import json; print(json.dumps(reading, indent=4))
+
         # Copy measurement values and delete "time" field.
         data = dict(reading.data)
         del data['time']
@@ -56,6 +59,7 @@ class InfluxDBStorage:
             "tags": {
                 "station_id": reading.station.station_id,
                 "sensor_id": reading.station.sensor_id,
+                "geohash": reading.station.position.geohash,
             },
             "time": reading.data.time,
             "fields": data
