@@ -28,7 +28,7 @@ class RDBMSStorage:
                     self.db.query('DELETE FROM {}'.format(tablename))
 
         # Create tables.
-        self.db.create_table('ldi_stations', primary_id='id')
+        self.db.create_table('ldi_stations', primary_id='station_id')
         self.db.create_table('ldi_osmdata', primary_id='station_id')
         self.db.create_table('ldi_sensors', primary_id='sensor_id')
 
@@ -50,39 +50,48 @@ class RDBMSStorage:
 
         # Station table
         stationdata = OrderedDict()
-        stationdata['id'] = station.station_id
+        stationdata['station_id'] = station.station_id
         for key, value in station.items():
             if key.startswith('name'):
                 stationdata[key] = value
         stationdata.update(station.position)
-        self.stationtable.upsert(stationdata, ['id'])
+        self.stationtable.upsert(stationdata, ['station_id'])
 
         # Sensors table
         for sensor in station['sensors']:
-            sensordata = {}
-            sensordata['station_id'] = station['station_id']
+            sensordata = OrderedDict()
+            sensordata['station_id'] = station.station_id
             sensordata.update(sensor)
             self.sensorstable.upsert(sensordata, ['sensor_id'])
 
         # OSM table
         if 'location' in station:
-            osmdata = {}
-            osmdata['station_id'] = station['station_id']
-            location = deepcopy(station['location'])
-            for key, value in location['address'].items():
+            osmdata = OrderedDict()
+            osmdata['station_id'] = station.station_id
+            location = deepcopy(station.location)
+            for key, value in location.address.items():
                 #key = 'address_' + key
                 location[key] = value
             del location['address']
 
             if 'address_more' in location:
-                osmdata['address_more'] = json.dumps(location['address_more'])
+                osmdata['address_more'] = json.dumps(location.address_more)
                 del location['address_more']
 
             # TODO: Also store bounding box
             del location['boundingbox']
 
             osmdata.update(location)
-            self.osmtable.upsert(osmdata, ['station_id'])
+
+            # Prefix designated column name with 'osm_'.
+            osmdata_real = OrderedDict()
+            for key, value in osmdata.items():
+                if key not in ['station_id']:
+                    if not key.startswith('osm_'):
+                        key = 'osm_' + key
+                osmdata_real[key] = value
+
+            self.osmtable.upsert(osmdata_real, ['station_id'])
 
     def dump_tables(self):
         for table in [self.stationtable, self.sensorstable, self.osmtable]:
@@ -96,7 +105,7 @@ class RDBMSStorage:
         #print(dir(self.stationtable.table))
 
         # https://dataset.readthedocs.io/en/latest/quickstart.html#running-custom-sql-queries
-        expression = 'SELECT * FROM ldi_stations, ldi_osmdata WHERE ldi_stations.id = ldi_osmdata.station_id'
+        expression = 'SELECT * FROM ldi_stations, ldi_osmdata WHERE ldi_stations.station_id = ldi_osmdata.station_id'
         print('### Expression:', expression)
         result = self.db.query(expression)
         for record in result:
@@ -120,25 +129,39 @@ class RDBMSStorage:
         return results
 
     def create_view(self):
+
+        # Inquire osmdata fields.
+        osmdata = self.db.query("""
+            SELECT concat(TABLE_NAME, '.', COLUMN_NAME) AS name
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_NAME='ldi_osmdata' AND COLUMN_NAME NOT IN ('station_id')
+            ORDER BY ORDINAL_POSITION
+        """)
+        osmdata_columns = []
+        for record in osmdata:
+            osmdata_columns.append(record['name'])
+
         # Create unified view.
+        osmdata_columns_expression = ', '.join(osmdata_columns)
         view = """
-        DROP VIEW IF EXISTS ldi_view;
-        CREATE VIEW ldi_view AS
+        DROP VIEW IF EXISTS ldi_network;
+        CREATE VIEW ldi_network AS
             SELECT
-              ldi_stations.*,
-              ldi_osmdata.*,
+              ldi_stations.station_id,
+              ldi_stations.name, ldi_stations.latitude, ldi_stations.longitude, ldi_stations.altitude, ldi_stations.country, ldi_stations.geohash,
               ldi_sensors.sensor_id, ldi_sensors.sensor_type,
-              concat(ldi_osmdata.state, ' » ', ldi_osmdata.city) AS state_and_city,
-              concat(ldi_stations.name, ' (#', CAST(ldi_stations.id AS text), ')') AS name_and_id,
-              concat(ldi_osmdata.country_name, ' (', ldi_osmdata.country_code, ')') AS country_and_countrycode,
-              concat(concat_ws(', ', ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS state_and_country,
-              concat(concat_ws(', ', ldi_osmdata.city, ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS city_and_state_and_country
+              concat(ldi_osmdata.osm_state, ' » ', ldi_osmdata.osm_city) AS state_and_city,
+              concat(ldi_stations.name, ' (#', CAST(ldi_stations.station_id AS text), ')') AS name_and_id,
+              concat(ldi_osmdata.osm_country, ' (', ldi_osmdata.osm_country_code, ')') AS country_and_countrycode,
+              concat(concat_ws(', ', ldi_osmdata.osm_state, ldi_osmdata.osm_country), ' (', ldi_osmdata.osm_country_code, ')') AS state_and_country,
+              concat(concat_ws(', ', ldi_osmdata.osm_city, ldi_osmdata.osm_state, ldi_osmdata.osm_country), ' (', ldi_osmdata.osm_country_code, ')') AS city_and_state_and_country,
+              {}
             FROM
               ldi_stations, ldi_osmdata, ldi_sensors
             WHERE
-              ldi_stations.id = ldi_osmdata.station_id AND
-              ldi_stations.id = ldi_sensors.station_id
+              ldi_stations.station_id = ldi_osmdata.station_id AND
+              ldi_stations.station_id = ldi_sensors.station_id
             ORDER BY
-              country_code, state_and_city, name_and_id, sensor_type
-        """
+              osm_country_code, state_and_city, name_and_id, sensor_type
+        """.format(osmdata_columns_expression)
         self.db.query(view)

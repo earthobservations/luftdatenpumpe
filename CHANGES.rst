@@ -10,6 +10,7 @@ in progress
   from Nominatim service with DE-only dataset loaded
 - Use country code for routing to different Nominatim services,
   one of them having the DE-only dataset loaded
+- Improve RDBMS database schema
 
 
 2019-01-18 0.6.0
