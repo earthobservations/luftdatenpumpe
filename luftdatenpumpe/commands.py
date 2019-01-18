@@ -26,6 +26,7 @@ def run():
       --source=<source>             Data source, either "api" or "file://" [default: api].
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
+      --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
       --progress                    Show progress bar
@@ -122,6 +123,9 @@ def run():
     for filter_name in ['station', 'sensor']:
         if options[filter_name]:
             filter[filter_name] = list(map(int, read_list(options[filter_name])))
+    for filter_name in ['sensor-type']:
+        if options[filter_name]:
+            filter[filter_name] = list(map(str.lower, read_list(options[filter_name])))
     log.info('Applying filter: {}'.format(filter))
 
     # Fake data source. Currently always LDI.

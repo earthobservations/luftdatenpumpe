@@ -373,19 +373,26 @@ class LuftdatenPumpe:
                     continue
                 yield reading
 
+    @staticmethod
+    def sensor_matches(path, sensors):
+        for sensor in sensors:
+            if sensor in path:
+                return True
+        return False
+
     def import_csv(self, csvpath):
 
         # Skip files not matching filter pattern (by sensor id).
         if not self.import_archive_filename_accepted(csvpath):
             return
 
+        # When progressbar is enabled, log this to the DEBUG level.
         logger = log.info
         if self.progressbar:
             logger = log.debug
-        #logger('Importing {}'.format(csvpath))
-        log.info('Importing {}'.format(csvpath))
+        logger('Reading CSV file {}'.format(csvpath))
 
-        if 'ppd42ns' in csvpath or 'sds011' in csvpath:
+        if self.sensor_matches(csvpath, ['ppd42ns', 'sds011', 'pms3003', 'pms5003', 'pms7003', 'hpm']):
             """
             PPD42NS
             sensor_id;sensor_type;location;lat;lon;timestamp;P1;durP1;ratioP1;P2;durP2;ratioP2
@@ -394,22 +401,46 @@ class LuftdatenPumpe:
             SDS011
             sensor_id;sensor_type;location;lat;lon;timestamp;P1;durP1;ratioP1;P2;durP2;ratioP2
             92;SDS011;42;48.800;9.003;2016-07-14T13:02:46.949036+00:00;7.71;;;5.03;;
-            """
-            fieldnames = ['P1', 'P2']
 
-        elif 'dht22' in csvpath:
+            PMS3003
+            sensor_id;sensor_type;location;lat;lon;timestamp;P1;P2;P0
+            409;PMS3003;193;14.382;121.047;2017-12-31T00:00:21;48.00;39.00;
+
+            PMS5003
+            sensor_id;sensor_type;location;lat;lon;timestamp;P1;P2;P0
+            11390;PMS5003;5751;52.015;5.432;2018-04-20T00:00:25;45.25;31.50;22.50
+
+            PMS7003
+            sensor_id;sensor_type;location;lat;lon;timestamp;P1;P2;P0
+            5920;PMS7003;2986;51.213;6.808;2017-12-27T00:01:57;5.00;4.00;1.00
+
+            HPM
+            sensor_id;sensor_type;location;lat;lon;timestamp;P1;P2
+            7096;HPM;3590;50.853;4.342;2017-11-25T00:04:50;22;21
+            """
+            fieldnames = ['P0', 'P1', 'P2']
+
+        elif self.sensor_matches(csvpath, ['dht22', 'htu21d']):
             """
             DHT22
             sensor_id;sensor_type;location;lat;lon;timestamp;temperature;humidity
             48;DHT22;19;48.722;9.209;2016-08-13T00:00:26.053188+00:00;;
+
+            HTU21D
+            sensor_id;sensor_type;location;lat;lon;timestamp;temperature;humidity
+            2875;HTU21D;1445;52.600;13.327;2017-11-26T00:00:38;2.80;99.90
             """
             fieldnames = ['temperature', 'humidity']
 
-        elif 'bme280' in csvpath:
+        elif self.sensor_matches(csvpath, ['bmp180', 'bmp280', 'bme280']):
             """
             BMP180
             sensor_id;sensor_type;location;lat;lon;timestamp;pressure;altitude;pressure_sealevel;temperature
             1464;BMP180;725;48.410;9.934;2017-04-11T00:00:45;96011;;;11.30
+
+            BMP280
+            sensor_id;sensor_type;location;lat;lon;timestamp;pressure;altitude;pressure_sealevel;temperature
+            2184;BMP280;1098;48.939;8.961;2017-11-26T00:00:35;;;;2.60
 
             BME280
             sensor_id;sensor_type;location;lat;lon;timestamp;pressure;altitude;pressure_sealevel;temperature;humidity
@@ -488,6 +519,14 @@ class LuftdatenPumpe:
                 if m:
                     sensor_id = int(m.group(1))
                     if sensor_id not in self.filter['sensor']:
+                        return False
+
+            if 'sensor-type' in self.filter:
+                # Decode sensor type from filename, e.g. ``2017-01-13_dht22_sensor_318.csv``.
+                m = re.match('.+_(\w+)_sensor_\d+\.csv$', csvpath)
+                if m:
+                    sensor_type = m.group(1)
+                    if sensor_type not in self.filter['sensor-type']:
                         return False
 
         return True
