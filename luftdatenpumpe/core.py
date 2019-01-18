@@ -332,7 +332,7 @@ class LuftdatenPumpe:
                     pass
 
             except Exception as ex:
-                log.error(u'Problem with reverse geocoder: {}\n{}'.format(ex, exception_traceback()))
+                log.error(u'Problem with reverse geocoder for station {}: {}\n{}'.format(station, ex, exception_traceback()))
 
             if 'name' not in station:
                 station.name = u'Station #{}'.format(station.station_id)
