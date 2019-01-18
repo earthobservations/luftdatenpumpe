@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-01-18 0.5.0
+================
 - Add InfluxDB egress handler
 - Improve HTTP response caching
 - Probe Redis before starting and croak if connection fails
