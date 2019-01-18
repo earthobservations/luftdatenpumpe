@@ -128,6 +128,10 @@ def reverse_geocode_main(latitude, longitude):
         position = (latitude, longitude)
         location = geolocator.reverse(position).raw
 
+        # Sanity checks
+        if location['address'] == {'country': 'Deutschland', 'country_code': 'de', 'continent': 'Europe'}:
+            return None
+
     except Exception as ex:
         name = ex.__class__.__name__
         log.warning('Reverse geocoding I failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
