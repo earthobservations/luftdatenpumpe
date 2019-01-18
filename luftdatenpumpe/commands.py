@@ -29,10 +29,10 @@ def run():
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
+      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
       --dry-run                     Skip publishing to MQTT bus
-      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
@@ -81,6 +81,12 @@ def run():
       # Ingest readings from CSV archive files, store into InfluxDB
       luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
 
+      # Ingest most early readings
+      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2015-10-*
+
+      # Ingest most early PMS sensors
+      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2017-1*/*pms*.csv
+
 
     Live data examples (MQTT):
 
@@ -94,15 +100,11 @@ def run():
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe stations --station=28,1071 \
-        --target=json+stream://sys.stderr \
-        --target=postgresql:///luftdaten_meta
+      luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql:///luftdaten_meta
 
       # Write readings to STDERR, MQTT and InfluxDB
-      luftdatenpumpe readings --station=28,1071 \
-        --target=json+stream://sys.stderr \
-        --target=mqtt://localhost/luftdaten.info \
-        --target=influxdb://localhost:8086/luftdaten_info
+      luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://localhost:8086/luftdaten_info
+
 
     """
 
