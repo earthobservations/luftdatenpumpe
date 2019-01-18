@@ -54,10 +54,10 @@ def run():
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
 
       # Write list of stations and metadata to RDBMS database (PostgreSQL), also display on STDERR
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///luftdaten_meta --target=json+stream://sys.stderr
+      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
 
       # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
-      luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.kn+stream://sys.stdout
+      luftdatenpumpe stations --source=postgresql:///weatherbase --target=json.grafana.kn+stream://sys.stdout
 
 
     Live data examples (InfluxDB):
@@ -78,7 +78,7 @@ def run():
       wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
 
       # Ingest station information from CSV archive files, store into PostgreSQL
-      luftdatenpumpe stations --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///luftdaten_meta --reverse-geocode --progress
+      luftdatenpumpe stations --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///weatherbase --reverse-geocode --progress
 
       # Ingest readings from CSV archive files, store into InfluxDB
       luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
@@ -102,7 +102,7 @@ def run():
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql:///luftdaten_meta
+      luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql:///weatherbase
 
       # Write readings to STDERR, MQTT and InfluxDB
       luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://localhost:8086/luftdaten_info

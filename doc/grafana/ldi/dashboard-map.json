@@ -189,7 +189,7 @@
       },
       {
         "columns": [],
-        "datasource": "luftdaten_meta",
+        "datasource": "weatherbase",
         "fontSize": "100%",
         "gridPos": {
           "h": 13,
@@ -213,7 +213,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT ldi_osmdata.country_code, concat(ldi_osmdata.state, ' » ', ldi_osmdata.city) AS state_and_city, concat(ldi_stations.name, ' (#', CAST(ldi_stations.id AS text), ')') AS name_and_id, ldi_sensors.sensor_type FROM ldi_stations, ldi_osmdata, ldi_sensors WHERE ldi_stations.id = ldi_osmdata.station_id AND ldi_stations.id = ldi_sensors.station_id AND ldi_stations.id IN ($ldi_station_id) AND ldi_sensors.sensor_type IN ($ldi_station_sensortype) ORDER BY country_code, state_and_city, name_and_id, sensor_type;",
+            "rawSql": "SELECT osm_country_code, state_and_city, name_and_id, sensor_type FROM ldi_network WHERE station_id IN ($ldi_station_id) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, state_and_city, name_and_id, sensor_type;",
             "refId": "A",
             "select": [
               [
@@ -281,15 +281,15 @@
               "$__all"
             ]
           },
-          "datasource": "luftdaten_meta",
-          "definition": "SELECT ldi_osmdata.country_code AS __value, concat(ldi_osmdata.country_name, ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata ORDER BY country_code",
+          "datasource": "weatherbase",
+          "definition": "",
           "hide": 0,
           "includeAll": true,
           "label": "Country",
           "multi": true,
           "name": "ldi_station_countrycode",
           "options": [],
-          "query": "SELECT ldi_osmdata.country_code AS __value, concat(ldi_osmdata.country_name, ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata ORDER BY country_code",
+          "query": "SELECT osm_country_code AS __value, country_and_countrycode AS __text FROM ldi_network ORDER BY osm_country_code",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -306,7 +306,7 @@
             "text": "All",
             "value": "$__all"
           },
-          "datasource": "luftdaten_meta",
+          "datasource": "weatherbase",
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -314,7 +314,7 @@
           "multi": true,
           "name": "ldi_station_state",
           "options": [],
-          "query": "SELECT ldi_osmdata.state AS __value, concat(concat_ws(', ', ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata WHERE ldi_osmdata.country_code IN ($ldi_station_countrycode) ORDER BY ldi_osmdata.country_code, ldi_osmdata.state",
+          "query": "SELECT osm_state AS __value, state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) ORDER BY osm_country_code, osm_state",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -333,7 +333,7 @@
               "$__all"
             ]
           },
-          "datasource": "luftdaten_meta",
+          "datasource": "weatherbase",
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -341,7 +341,7 @@
           "multi": true,
           "name": "ldi_station_city",
           "options": [],
-          "query": "SELECT ldi_osmdata.city AS __value, concat(concat_ws(', ', ldi_osmdata.city, ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS __text FROM ldi_osmdata WHERE country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city != '' ORDER BY ldi_osmdata.country_code, ldi_osmdata.state, ldi_osmdata.city",
+          "query": "SELECT osm_city AS __value, city_and_state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city != '' ORDER BY osm_country_code, osm_state, osm_city",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -360,7 +360,7 @@
               "$__all"
             ]
           },
-          "datasource": "luftdaten_meta",
+          "datasource": "weatherbase",
           "definition": "",
           "hide": 0,
           "includeAll": true,
@@ -385,15 +385,15 @@
             "text": "All",
             "value": "$__all"
           },
-          "datasource": "luftdaten_meta",
-          "definition": "SELECT ldi_osmdata.station_id FROM ldi_osmdata, ldi_sensors WHERE ldi_osmdata.station_id = ldi_sensors.station_id AND country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city IN ($ldi_station_city) AND ldi_sensors.sensor_type IN ($ldi_station_sensortype) ORDER BY country_code, state, city, road",
+          "datasource": "weatherbase",
+          "definition": "",
           "hide": 2,
           "includeAll": true,
           "label": null,
           "multi": true,
           "name": "ldi_station_id",
           "options": [],
-          "query": "SELECT ldi_osmdata.station_id FROM ldi_osmdata, ldi_sensors WHERE ldi_osmdata.station_id = ldi_sensors.station_id AND country_code IN ($ldi_station_countrycode) AND state IN ($ldi_station_state) AND city IN ($ldi_station_city) AND ldi_sensors.sensor_type IN ($ldi_station_sensortype) ORDER BY country_code, state, city, road",
+          "query": "SELECT station_id FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city IN ($ldi_station_city) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,

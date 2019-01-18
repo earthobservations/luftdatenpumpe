@@ -61,7 +61,7 @@ Prio 2
 Prio 3
 ******
 - [o] OSM: Why are some roads or towns empty?
-      luftdaten_meta=# select * from ldi_osmdata where road is null limit 7;
+      weatherbase=# select * from ldi_osmdata where road is null limit 7;
 - [o] Add remark after "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright" like
       "remark": "The address information has been modified by luftdatenpumpe 0.4.0"
 - [o] OSM: English labels for e.g. Hercegovine, BA
@@ -138,3 +138,8 @@ Done
     - archive.luftdaten.info/2017-11-26/2017-11-26_htu21d_sensor_2875.csv
 - [x] Speed up CSV data import using UDP?
 - [x] Add PostgreSQL view "ldi_view" with ready-computed name+station_id things and more
+- [x] Improve RDBMS database schema
+    - [x] Rename "weatherbase" to "weatherbase"
+    - [x] Rename id => station_id
+    - [x] Rename osm => osm_*
+    - [x] Rename ldi_view => ldi_network

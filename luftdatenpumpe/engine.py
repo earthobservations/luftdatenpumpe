@@ -34,6 +34,7 @@ class LuftdatenEngine:
             targets.append(target)
 
         # Emit to active target subsystems.
+        log.info('Emitting data to target subsystems, this might take some time')
         item_count = 0
         for item in data:
             for target in targets:

@@ -187,22 +187,22 @@ class LuftdatenPumpe:
             SELECT *
             FROM ldi_stations, ldi_osmdata
             WHERE
-              ldi_stations.id = ldi_osmdata.station_id
+              ldi_stations.station_id = ldi_osmdata.station_id
             ORDER BY
-              ldi_stations.id
+              ldi_stations.station_id
         """
 
         storage = RDBMSStorage(self.source)
         for station in storage.db.query(sql):
             station = munchify(station)
             entry = {
-                "station_id": station.id,
+                "station_id": station.station_id,
                 "name": station.name,
                 "position": {
                     "latitude": station.latitude,
                     "longitude": station.longitude,
                     "altitude": station.altitude,
-                    "country": station.country_code,
+                    "country": station.country,
                     "geohash": station.geohash
                 }
             }

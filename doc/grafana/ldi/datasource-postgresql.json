@@ -1,5 +1,5 @@
 {
-  "name": "luftdaten_meta",
+  "name": "weatherbase",
   "type": "postgres",
   "url": "localhost:5432",
   "access": "proxy",
@@ -7,7 +7,7 @@
     "postgresVersion": 1000,
     "sslmode": "disable"
   },
-  "database": "luftdaten_meta",
+  "database": "weatherbase",
   "user": "readonly",
   "password": "readonly"
 }

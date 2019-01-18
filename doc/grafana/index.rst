@@ -42,16 +42,16 @@ Create ldi-stations.json (Homebrew)::
     mkdir -p $(dirname $stationsfile)
 
     # Write list of stations and metadata from live API to RDBMS database (PostgreSQL)
-    luftdatenpumpe stations --reverse-geocode --target=postgresql:///luftdaten_meta --progress
+    luftdatenpumpe stations --reverse-geocode --target=postgresql:///weatherbase --progress
 
     # Optionally add more stations from CSV archive files
-    luftdatenpumpe stations --reverse-geocode --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///luftdaten_meta --progress
+    luftdatenpumpe stations --reverse-geocode --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///weatherbase --progress
 
     # Create database view
-    luftdatenpumpe stations --target=postgresql:///luftdaten_meta --create-database-view
+    luftdatenpumpe stations --target=postgresql:///weatherbase --create-database-view
 
     # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
-    luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.kn+stream://sys.stdout > $stationsfile
+    luftdatenpumpe stations --source=postgresql:///weatherbase --target=json.grafana.kn+stream://sys.stdout > $stationsfile
 
 
 Datasources
@@ -61,7 +61,7 @@ Datasources
     # InfluxDB datasource "luftdaten_info"
     http POST http://localhost:3000/api/datasources @doc/grafana/ldi/datasource-influxdb.json --auth=admin:admin
 
-    # PostgreSQL datasource "luftdaten_meta"
+    # PostgreSQL datasource "weatherbase"
     http POST http://localhost:3000/api/datasources @doc/grafana/ldi/datasource-postgresql.json --auth=admin:admin
 
 
