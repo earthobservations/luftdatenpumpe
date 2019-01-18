@@ -12,6 +12,7 @@ in progress
   one of them having the DE-only dataset loaded
 - Improve RDBMS database schema
 - Naming things
+- Show cardinality in sensor type chooser
 
 
 2019-01-18 0.6.0

@@ -1519,7 +1519,7 @@
           "multi": true,
           "name": "ldi_station_sensortype",
           "options": [],
-          "query": "SELECT DISTINCT(sensor_type) FROM ldi_sensors ORDER BY sensor_type",
+          "query": "SELECT sensor_type AS __value, concat( sensor_type, '\u00A0\u00A0\u00A0\u00A0|', CAST(COUNT(sensor_type) AS text), '|' ) AS __text FROM ldi_sensors GROUP BY sensor_type ORDER BY sensor_type",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
