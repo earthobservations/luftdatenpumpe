@@ -8,6 +8,8 @@ in progress
 - Rename OSM data field "country_name" back to "country"
 - Add sanity checks for protecting against unqualified responses
   from Nominatim service with DE-only dataset loaded
+- Use country code for routing to different Nominatim services,
+  one of them having the DE-only dataset loaded
 
 
 2019-01-18 0.6.0

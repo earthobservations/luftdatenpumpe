@@ -316,7 +316,8 @@ class LuftdatenPumpe:
                 station.location = resolve_location(
                     latitude=station.position.latitude,
                     longitude=station.position.longitude,
-                    geohash=station.position.geohash
+                    geohash=station.position.geohash,
+                    country_code=station.position.country,
                 )
 
                 # Improve location information.

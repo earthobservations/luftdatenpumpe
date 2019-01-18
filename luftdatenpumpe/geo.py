@@ -45,14 +45,14 @@ osm_address_fields = \
     ]
 
 
-def resolve_location(latitude=None, longitude=None, geohash=None, improve=True):
+def resolve_location(latitude=None, longitude=None, geohash=None, country_code=None, improve=True):
 
     # If only geohash is given, convert back to lat/lon.
     if latitude is None and longitude is None and geohash is not None:
         latitude, longitude = geohash_decode(geohash)
 
     # Run reverse geocoder.
-    location = reverse_geocode(latitude, longitude)
+    location = reverse_geocode(latitude, longitude, country_code)
 
     # Backward compatibility re. already cached objects from ``reverse_geocode``.
     if hasattr(location, 'raw'):
@@ -91,7 +91,7 @@ def rebundle_location(location):
 
 # Cache responses from Nominatim for 3 months
 @nominatim_cache.cache_on_arguments(expiration_time=60 * 60 * 24 * 30 * 3)
-def reverse_geocode(latitude, longitude):
+def reverse_geocode(latitude, longitude, country_code):
     """
     Cache responses of the Nominatim reverse geocoding service.
 
@@ -106,7 +106,10 @@ def reverse_geocode(latitude, longitude):
         time http https://nominatim.openstreetmaps.org/reverse lat==52.246 lon==20.898 format==json
 
     """
-    location = reverse_geocode_main(latitude, longitude)
+
+    location = None
+    if country_code == 'DE':
+        location = reverse_geocode_main(latitude, longitude)
 
     if location is None or 'error' in location:
         location = reverse_geocode_fallback(latitude, longitude)
@@ -206,12 +209,12 @@ def improve_location(location):
         # R.D. => Dominican Republic
         # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
         if address.country_code == 'DO':
-            address.country_name = 'Dominican Republic'
+            address.country = 'Dominican Republic'
 
         # RP => Republic of Poland
         # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
         if address.country_code == 'PL':
-            address.country_name = 'Poland'
+            address.country = 'Poland'
 
 
     # Improve `city` attribute.
