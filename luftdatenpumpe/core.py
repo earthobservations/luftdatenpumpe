@@ -350,24 +350,27 @@ class LuftdatenPumpe:
 
     def import_archive(self, path):
 
-        if not path.endswith('*'):
-            if path.endswith(os.pathsep):
-                path += '**'
-            else:
-                path = os.path.join(path, '**')
+        # Optionally append suffix appropriately.
+        suffix = '.csv'
+        if not path.endswith(suffix):
+            path += '/**/*' + suffix
 
-        log.info('Importing CSV files from {}'.format(path))
+        log.info('Building list of CSV files from {}'.format(path))
+        data = list(find_files(path))
+        log.info('Processing {} files'.format(len(data)))
 
-        data = find_files(path, '.csv')
-
+        # Optionally add progressbar indicator.
         iterator = data
         if self.progressbar:
             iterator = tqdm(list(data))
 
+        # Process all files.
         for csvpath in iterator:
             readings = self.import_csv(csvpath)
             if readings is None:
                 continue
+
+            # Process all readings per CSV file.
             for reading in readings:
                 if reading is None:
                     continue
@@ -452,23 +455,38 @@ class LuftdatenPumpe:
             log.warning('Skip import of {}. Unknown sensor type'.format(csvpath))
             return
 
-        #print('reading:', reading)
         return self.csv_reader(csvpath, fieldnames)
 
     def csv_reader(self, csvpath, fieldnames):
-        imported_data = Dataset().load(open(csvpath).read(), format='csv', delimiter=';')
-        data = imported_data.dict
 
-        for csvitem in data:
-            # print(csvitem)
+        payload = None
+        if self.quick_mode:
+            try:
+                payload = open(csvpath).read(256)
+                payload = '\n'.join(payload.split('\n')[:2])
+            except:
+                pass
+        else:
+            payload = open(csvpath).read()
 
-            item = self.make_item(csvitem)
+        if payload is None:
+            log.error('Could not read CSV file %s', csvpath)
+            return
+
+        # Read CSV file into tablib's Dataset and cast to dictionary representation.
+        imported_data = Dataset().load(payload, format='csv', delimiter=';')
+        records = imported_data.dict
+
+        # Iterate all CSV records.
+        for record in records:
+
+            item = self.make_item(record)
             try:
                 reading = self.make_reading(item)
                 if reading is None:
                     continue
 
-                if not self.csvdata_to_reading(csvitem, reading, fieldnames):
+                if not self.csvdata_to_reading(record, reading, fieldnames):
                     continue
 
                 yield reading
@@ -476,14 +494,31 @@ class LuftdatenPumpe:
             except Exception as ex:
                 log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
 
-    def csvdata_to_reading(self, csvitem, reading, fieldnames):
+    def csvdata_to_reading(self, record, reading, fieldnames):
+
+        # Indicator whether we found any data.
         has_data = False
+
+        # Read all the CSV record fields.
         for fieldname in fieldnames:
-            value = csvitem[fieldname].strip()
+
+            # Skip missing keys.
+            if fieldname not in record:
+                continue
+
+            # Sanitize value.
+            value = record[fieldname].strip()
+
+            # Skip empty or non-numeric values.
             if not value or value.lower() == 'nan':
                 continue
-            has_data = True
+
+            # Actually use this reading, casting to float.
             reading.data[fieldname] = float(value)
+
+            # Signal positive dataness.
+            has_data = True
+
         return has_data
 
     def make_item(self, csvitem):

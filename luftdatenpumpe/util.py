@@ -97,8 +97,7 @@ def invalidate_dogpile_cache(cache_instance, hard=True):
     cache_instance.invalidate(hard=hard)
 
 
-def find_files_glob(path, suffix):
-    pattern = os.path.join(path, '*' + suffix)
+def find_files_glob(pattern):
     return sorted(glob.glob(pattern, recursive=True))
 
 

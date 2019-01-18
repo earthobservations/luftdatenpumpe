@@ -21,6 +21,7 @@ in progress
 - Add output formatter for Grafana Worldmap Panel JSON file
 - Add RDBMS database (PostgreSQL) as station data source
 - Add ``--sensor-type`` filter option
+- Improve CSV file reading
 
 
 2018-12-11 0.4.3
