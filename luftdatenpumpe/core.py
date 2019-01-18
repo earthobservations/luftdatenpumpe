@@ -2,7 +2,6 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import os
 import re
 import sys
 import json
@@ -28,12 +27,15 @@ class LuftdatenPumpe:
     # Live data API URI for luftdaten.info
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
-    def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, dry_run=False):
+    def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False):
         self.source = source
         self.reverse_geocode = reverse_geocode
         self.dry_run = dry_run
         self.progressbar = progressbar
         self.filter = filter
+
+        # Quick mode only imports the first few datasets to speed things up.
+        self.quick_mode = quick_mode
 
         # Cache responses from the luftdaten.info API for five minutes.
         # TODO: Make backend configurable.
@@ -369,6 +371,15 @@ class LuftdatenPumpe:
             readings = self.import_csv(csvpath)
             if readings is None:
                 continue
+
+            # Optionally, return first reading only.
+            # This is a shortcut-option for churning through the whole data set quickly.
+            # This can be used to get whole regional coverage of the data while lacking many details.
+            if self.quick_mode:
+                readings = list(readings)
+                if readings:
+                    yield readings[0]
+                    continue
 
             # Process all readings per CSV file.
             for reading in readings:

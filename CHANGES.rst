@@ -23,6 +23,7 @@ in progress
 - Add ``--sensor-type`` filter option
 - Improve CSV file reading
 - Flush each 50 records when talking to InfluxDB with UDP
+- Introduce quick mode for importing just the first few records
 
 
 2018-12-11 0.4.3
