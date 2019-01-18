@@ -118,3 +118,27 @@ class RDBMSStorage:
             pass
         #log.info('SQLAlchemy dialects: %s', results)
         return results
+
+    def create_view(self):
+        # Create unified view.
+        view = """
+        DROP VIEW IF EXISTS ldi_view;
+        CREATE VIEW ldi_view AS
+            SELECT
+              ldi_stations.*,
+              ldi_osmdata.*,
+              ldi_sensors.sensor_id, ldi_sensors.sensor_type,
+              concat(ldi_osmdata.state, ' » ', ldi_osmdata.city) AS state_and_city,
+              concat(ldi_stations.name, ' (#', CAST(ldi_stations.id AS text), ')') AS name_and_id,
+              concat(ldi_osmdata.country_name, ' (', ldi_osmdata.country_code, ')') AS country_and_countrycode,
+              concat(concat_ws(', ', ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS state_and_country,
+              concat(concat_ws(', ', ldi_osmdata.city, ldi_osmdata.state, ldi_osmdata.country_name), ' (', ldi_osmdata.country_code, ')') AS city_and_state_and_country
+            FROM
+              ldi_stations, ldi_osmdata, ldi_sensors
+            WHERE
+              ldi_stations.id = ldi_osmdata.station_id AND
+              ldi_stations.id = ldi_sensors.station_id
+            ORDER BY
+              country_code, state_and_city, name_and_id, sensor_type
+        """
+        self.db.query(view)

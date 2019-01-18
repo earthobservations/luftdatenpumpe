@@ -41,11 +41,14 @@ Create ldi-stations.json (Homebrew)::
     stationsfile=/usr/local/share/grafana/public/json/ldi-stations.json
     mkdir -p $(dirname $stationsfile)
 
-    # Write list of stations and metadata to RDBMS database (PostgreSQL)
+    # Write list of stations and metadata from live API to RDBMS database (PostgreSQL)
     luftdatenpumpe stations --reverse-geocode --target=postgresql:///luftdaten_meta --progress
 
     # Optionally add more stations from CSV archive files
     luftdatenpumpe stations --reverse-geocode --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///luftdaten_meta --progress
+
+    # Create database view
+    luftdatenpumpe stations --target=postgresql:///luftdaten_meta --create-database-view
 
     # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
     luftdatenpumpe stations --source=postgresql:///luftdaten_meta --target=json.grafana.kn+stream://sys.stdout > $stationsfile

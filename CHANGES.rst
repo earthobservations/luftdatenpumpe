@@ -24,6 +24,7 @@ in progress
 - Improve CSV file reading
 - Flush each 50 records when talking to InfluxDB with UDP
 - Introduce quick mode for importing just the first few records
+- Add new option "--create-database-view"
 
 
 2018-12-11 0.4.3

@@ -7,6 +7,7 @@ import logging
 from docopt import docopt, DocoptExit
 from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.geo import disable_nominatim_cache
+from luftdatenpumpe.target import resolve_target_handler
 from luftdatenpumpe.util import normalize_options, setup_logging, read_list
 from luftdatenpumpe.core import LuftdatenPumpe
 from luftdatenpumpe.engine import LuftdatenEngine
@@ -29,6 +30,7 @@ def run():
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
+      --create-database-view        Create database view like "ldi_view" spanning all tables.
       --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
@@ -143,6 +145,15 @@ def run():
     if options['disable-nominatim-cache']:
         # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
         disable_nominatim_cache()
+
+    # Create database view and exit.
+    if options['create-database-view']:
+        log.info('Creating database view')
+        for target in options['target']:
+            if target.startswith('postgresql:'):
+                handler = resolve_target_handler(target)
+                handler.create_view()
+        sys.exit()
 
     # The main workhorse.
     pump = LuftdatenPumpe(
