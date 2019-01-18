@@ -6,6 +6,10 @@ Luftdatenpumpe changelog
 in progress
 ===========
 
+2019-01-18 0.5.1
+================
+- Fix renaming OSM field "country" to "country_name"
+
 
 2019-01-18 0.5.0
 ================

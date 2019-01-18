@@ -209,12 +209,12 @@ def improve_location(location):
         # R.D. => Dominican Republic
         # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
         if address.country_code == 'DO':
-            address.country = 'Dominican Republic'
+            address.country_name = 'Dominican Republic'
 
         # RP => Republic of Poland
         # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
         if address.country_code == 'PL':
-            address.country = 'Poland'
+            address.country_name = 'Poland'
 
 
     # Improve `city` attribute.
