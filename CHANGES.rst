@@ -22,6 +22,7 @@ in progress
 - Add RDBMS database (PostgreSQL) as station data source
 - Add ``--sensor-type`` filter option
 - Improve CSV file reading
+- Flush each 50 records when talking to InfluxDB with UDP
 
 
 2018-12-11 0.4.3

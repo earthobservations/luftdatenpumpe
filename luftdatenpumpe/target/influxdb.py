@@ -22,9 +22,11 @@ class InfluxDBStorage:
         self.measurement = measurement
 
         self.buffer = []
+        self.is_udp = False
 
         dsn_parts = urlparse(dsn)
         if dsn_parts.scheme.startswith('udp+'):
+            self.is_udp = True
             self.db = InfluxDBClient.from_dsn(dsn, udp_port=dsn_parts.port, timeout=5)
         else:
             self.db = InfluxDBClient.from_dsn(dsn, timeout=5)
@@ -72,7 +74,11 @@ class InfluxDBStorage:
         # Store into buffer.
         self.buffer.append(record)
 
+        if self.is_udp and len(self.buffer) > 50:
+            self.flush()
+
     def flush(self, final=False):
         # Store into database.
+        #print('Writing points:', len(self.buffer))
         self.db.write_points(self.buffer)
         self.buffer = []
