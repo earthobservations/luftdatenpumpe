@@ -25,6 +25,7 @@ in progress
 - Flush each 50 records when talking to InfluxDB with UDP
 - Introduce quick mode for importing just the first few records
 - Add new option "--create-database-view"
+- Rename OSM data field "country" to "country_name"
 
 
 2018-12-11 0.4.3

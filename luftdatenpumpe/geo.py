@@ -71,7 +71,14 @@ def rebundle_location(location):
     address = Munch()
     for field in osm_address_fields:
         if field in location['address']:
-            address[field] = location['address'][field]
+
+            target_field = field
+
+            # Hack: Rename OSM field "country" to "country_name"
+            if field == 'country':
+                target_field = 'country_name'
+
+            address[target_field] = location['address'][field]
             del location['address'][field]
 
     address_more = Munch()
