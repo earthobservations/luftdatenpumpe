@@ -6,18 +6,11 @@ Luftdatenpumpe backlog
 ******
 Prio 1
 ******
-- [o] README
-    - [o] Add link to Demo #5
-    - [o] Mention InfluxDB storage and historical data
-    - [o] Add some screenshots
-- [o] Speed up CSV data import using UDP?
-- [o] Add PostgreSQL views with ready-computed name+station_id things and more
-- [o] Add more sensors:
-    - archive.luftdaten.info/2017-10-08/2017-10-08_pms3003_sensor_366.csv
-    - archive.luftdaten.info/2017-10-08/2017-10-08_pms7003_sensor_5920.csv
-    - archive.luftdaten.info/2017-11-25/2017-11-25_hpm_sensor_7096.csv
-    - archive.luftdaten.info/2017-11-26/2017-11-26_bmp280_sensor_2184.csv
-    - archive.luftdaten.info/2017-11-26/2017-11-26_htu21d_sensor_2875.csv
+
+
+********
+Prio 1.5
+********
 - [o] grafanimate: Monthly gif for fast progress and daily video for atmo.
 - [o] grafanimate: Add "coverage" dashboard
 - [o] grafanimate: Render 2015-2018 for each year
@@ -133,3 +126,15 @@ Done
 - [x] Overhaul station metadata process:
       1. Collect station information from API or CSV into PostgreSQL
       2. Export station information from PostgreSQL as JSON, optionally in format suitable for Grafana Worldmap Panel
+- [x] Improve README
+    - [x] Add link to Demo #5
+    - [x] Mention InfluxDB storage and historical data
+    - [x] Add some screenshots
+- [x] Add more sensors:
+    - archive.luftdaten.info/2017-10-08/2017-10-08_pms3003_sensor_366.csv
+    - archive.luftdaten.info/2017-10-08/2017-10-08_pms7003_sensor_5920.csv
+    - archive.luftdaten.info/2017-11-25/2017-11-25_hpm_sensor_7096.csv
+    - archive.luftdaten.info/2017-11-26/2017-11-26_bmp280_sensor_2184.csv
+    - archive.luftdaten.info/2017-11-26/2017-11-26_htu21d_sensor_2875.csv
+- [x] Speed up CSV data import using UDP?
+- [x] Add PostgreSQL view "ldi_view" with ready-computed name+station_id things and more

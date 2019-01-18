@@ -28,10 +28,11 @@ Luftdatenpumpe
 *****
 About
 *****
-1. Luftdatenpumpe_ acquires the current window of measurement readings from the livedata API of `luftdaten.info`_.
+1. Luftdatenpumpe_ acquires the measurement readings either from the livedata API
+   of `luftdaten.info`_ or from its archived CSV files published to `archive.luftdaten.info`.
 
-2. While iterating the readings, it optionally applies a filter based on station-id or sensor-id and
-   collects information about all stations and sensors they are originating from.
+2. While iterating the readings, it optionally applies a filter based on station-id, sensor-id or
+   sensor-type and collects information about all stations and sensors they are originating from.
 
 3. Then, each station's location information gets enhanced by
 
@@ -42,13 +43,15 @@ About
 
     - displayed on STDOUT or STDERR in JSON format.
     - filtered and transformed interactively through jq_, the swiss army knife of JSON manipulation.
-    - stored into RDBMS_ databases using the fine dataset_ package.
+    - stored into RDBMS_ databases like PostgreSQL_ using the fine dataset_ package.
       Being built on top of SQLAlchemy_, this supports all major databases.
 
 5. Measurement readings can be
 
     - displayed on STDOUT or STDERR in JSON format, which allows for piping into jq_ again.
     - forwarded to MQTT_.
+    - stored to InfluxDB_ and then
+    - displayed in Grafana_.
 
 
 .. _luftdaten.info: http://luftdaten.info/
@@ -64,7 +67,29 @@ About
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _MQTT: http://mqtt.org/
 
+.. _PostgreSQL: https://www.postgresql.org/
+.. _InfluxDB: https://github.com/influxdata/influxdb
+.. _Grafana: https://github.com/grafana/grafana
+
 .. _jq: https://stedolan.github.io/jq/
+
+
+
+**********
+Screenshot
+**********
+Display luftdaten.info (LDI) measurements on Grafana Worldmap Panel.
+
+.. image:: https://community.hiveeyes.org/uploads/default/original/2X/f/f455d3afcd20bfa316fefbe69e43ca2fe159e62d.png
+    :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
+
+Map and table display. Filter by synthesized address components and sensor type.
+
+.. image:: https://community.hiveeyes.org/uploads/default/original/2X/4/48eeda1a1d418eaf698b241a65080666abcf2497.png
+    :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
+
+Long name from OSM address and station id on overlay.
+
 
 
 ****
@@ -82,6 +107,7 @@ List of stations
 - `LDI Stations #2 » Cascaded » Stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
 - `LDI Stations #3 » Cascaded » Measurements <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
 - `LDI Stations #4 » Select by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
+- `LDI Stations #5 » Map by location and sensor type <https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type>`_
 
 
 ********
