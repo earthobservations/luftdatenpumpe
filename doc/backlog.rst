@@ -143,3 +143,6 @@ Done
     - [x] Rename id => station_id
     - [x] Rename osm => osm_*
     - [x] Rename ldi_view => ldi_network
+- [x] Fix Grafana vt+kn exports
+- [x] Overhaul Grafana dashboards
+- [x] Display number of sensors per family
