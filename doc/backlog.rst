@@ -6,6 +6,7 @@ Luftdatenpumpe backlog
 ******
 Prio 1
 ******
+- [o] Add PM2.5 panel again?
 
 
 ********
@@ -146,3 +147,6 @@ Done
 - [x] Fix Grafana vt+kn exports
 - [x] Overhaul Grafana dashboards
 - [x] Display number of sensors per family
+- [x] Remove --help from README
+- [x] Improve README re. setup
+- [x] Entrypoints for rendering Grafana JSONs

@@ -8,10 +8,13 @@
     :target: https://github.com/hiveeyes/luftdatenpumpe
 
 .. image:: https://assets.okfn.org/images/ok_buttons/od_80x15_red_green.png
+    :target: https://github.com/hiveeyes/luftdatenpumpe
 
 .. image:: https://assets.okfn.org/images/ok_buttons/oc_80x15_blue.png
+    :target: https://github.com/hiveeyes/luftdatenpumpe
 
 .. image:: https://assets.okfn.org/images/ok_buttons/os_80x15_orange_grey.png
+    :target: https://github.com/hiveeyes/luftdatenpumpe
 
 |
 
@@ -54,60 +57,44 @@ About
     - displayed in Grafana_.
 
 
-.. _luftdaten.info: http://luftdaten.info/
-.. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
-.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-.. _The Hiveeyes Project: https://hiveeyes.org/
-
-.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
-.. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
-.. _Geohash: https://en.wikipedia.org/wiki/Geohash
-.. _dataset: https://dataset.readthedocs.io/
-.. _SQLAlchemy: https://www.sqlalchemy.org/
-.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
-.. _MQTT: http://mqtt.org/
-
-.. _PostgreSQL: https://www.postgresql.org/
-.. _InfluxDB: https://github.com/influxdata/influxdb
-.. _Grafana: https://github.com/grafana/grafana
-
-.. _jq: https://stedolan.github.io/jq/
-
-
-
-**********
-Screenshot
-**********
+***********
+Screenshots
+***********
 Display luftdaten.info (LDI) measurements on Grafana Worldmap Panel.
+
+
+Worldmap and address
+====================
+Map and station info display. Filter by different synthesized address components and sensor type.
 
 .. image:: https://community.hiveeyes.org/uploads/default/original/2X/f/f455d3afcd20bfa316fefbe69e43ca2fe159e62d.png
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
-Map and table display. Filter by synthesized address components and sensor type.
+
+Map overlay
+===========
+Display verbose name from OSM address and station id on overlay.
 
 .. image:: https://community.hiveeyes.org/uploads/default/original/2X/4/48eeda1a1d418eaf698b241a65080666abcf2497.png
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
-Long name from OSM address and station id on overlay.
 
+*****
+Demos
+*****
 
-
-****
-Demo
-****
-
-Live Data
-==========
-- `Feinstaub Verlauf Berlin <https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin>`_
-- `Feinstaub Karte Deutschland <https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland>`_
-
-List of stations
-================
+Labs
+====
 - `LDI Stations #1 » Select by name, country and state <https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state>`_
 - `LDI Stations #2 » Cascaded » Stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
 - `LDI Stations #3 » Cascaded » Measurements <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
 - `LDI Stations #4 » Select by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
 - `LDI Stations #5 » Map by location and sensor type <https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type>`_
+
+Live Data (legacy)
+==================
+- `Feinstaub Verlauf Berlin <https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin>`_
+- `Feinstaub Karte Deutschland <https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland>`_
 
 
 ********
@@ -132,11 +119,10 @@ Details
 =======
 ::
 
-    $ luftdatenpumpe --help
-
     Usage:
       luftdatenpumpe stations [options] [--target=<target>]...
       luftdatenpumpe readings [options] [--target=<target>]...
+      luftdatenpumpe grafana --kind=<kind> --name=<name> [--variables=<variables>]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
 
@@ -144,94 +130,58 @@ Details
       --source=<source>             Data source, either "api" or "file://" [default: api].
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
+      --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
+      --create-database-view        Create database view like "ldi_view" spanning all tables.
+      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
       --dry-run                     Skip publishing to MQTT bus
-      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
 
-    Station list examples:
+For a full overview about all options including many examples,
+please visit `luftdatenpumpe --help`_.
 
-      # Display metadata for given stations in JSON format
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode
-
-      # Display metadata for given sensors in JSON format
-      luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
-
-      # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
-
-      # Display list of stations in JSON format made of key/name items, suitable for use as a mapping in Grafana Worldmap Panel
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
-
-      # Write list of stations and metadata to RDBMS database (PostgreSQL), also display on STDERR
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase --target=json+stream://sys.stderr
-
-      # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
-      luftdatenpumpe stations --source=postgresql:///weatherbase --target=json.grafana.kn+stream://sys.stdout
-
-
-    Live data examples (InfluxDB):
-
-      # Store into InfluxDB running on "localhost"
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://localhost:8086/luftdaten_info
-
-      # Store into InfluxDB, with UDP
-      luftdatenpumpe readings --station=28,1071 --target=udp+influxdb://localhost:4445/luftdaten_info
-
-      # Store into InfluxDB, with authentication
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://username:password@localhost:8086/luftdaten_info
-
-
-    Archive data examples (InfluxDB):
-
-      # Mirror archive of luftdaten.info
-      wget --mirror --continue http://archive.luftdaten.info/ --limit-rate=1.5M
-      wget --mirror --continue http://archive.luftdaten.info/ --accept-regex='2018-0[6789]'
-      wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
-
-      # Ingest station information from CSV archive files, store into PostgreSQL
-      luftdatenpumpe stations --source=file:///var/spool/archive.luftdaten.info --target=postgresql:///weatherbase --reverse-geocode --progress
-
-      # Ingest readings from CSV archive files, store into InfluxDB
-      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
-
-
-    Live data examples (MQTT):
-
-      # Publish data to topic "luftdaten.info" at MQTT broker running on "localhost"
-      luftdatenpumpe readings --station=28,1071 --target=mqtt://localhost/luftdaten.info
-
-      # MQTT publishing, with authentication
-      luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@localhost/luftdaten.info
-
-
-    Combined examples:
-
-      # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql:///weatherbase
-
-      # Write readings to STDERR, MQTT and InfluxDB
-      luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://localhost:8086/luftdaten_info
 
 
 *****
 Setup
 *****
 
-Prerequisites
-=============
+
+Configure package repository
+============================
+Hiveeyes is hosting recent releases of InfluxDB and Grafana there.
+We are mostly also running exactly these releases on our production servers.
+
+Add Hiveeyes package repository::
+
+    wget -qO - https://packages.hiveeyes.org/hiveeyes/foss/debian/pubkey.txt | apt-key add -
+    apt install
+
+Add Hiveeyes package repository, e.g. by appending this to ``/etc/apt/sources.list``::
+
+    deb https://packages.hiveeyes.org/hiveeyes/foss/debian/ testing main foundation
+
+Reindex package database::
+
+    apt update
+
+
+Install packages
+================
 Debian packages::
 
-    apt install postgis redis-server redis-tools
+    apt install apt-transport-https
+    apt install postgis redis-server redis-tools influxdb grafana
 
 
-Postgres database
------------------
+
+Configure PostgreSQL
+====================
 Create user and database::
 
     su - postgres
@@ -248,8 +198,8 @@ Create read-only user::
     weatherbase=# GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
 
 
-Redis cache
------------
+Configure Redis
+===============
 This program extensively uses a runtime cache based on Redis.
 To make this work best, you should enable data durability with your Redis instance.
 
@@ -259,8 +209,8 @@ To make this work best, you should enable data durability with your Redis instan
         appendonly yes
 
 
-Python module
-=============
+Install Luftdatenpumpe
+======================
 ::
 
     pip install luftdatenpumpe
@@ -270,7 +220,17 @@ Python module
     Please refer to the `virtualenv`_ page about further guidelines how to install
     and use this software independently from your local python installation.
 
-.. _virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
+
+*******
+Running
+*******
+At this point, you should try to conduct simple tests
+like outlined in the synopsis section above.
+
+After that, you might want to advance into reading about
+`integrating Luftdatenpumpe with Grafana`_ in order to learn about
+how to build such beautiful and interactive map- and graph-compositions.
+
 
 
 **********
@@ -283,13 +243,16 @@ Upstream luftdaten.info
 - http://archive.luftdaten.info/
 - http://deutschland.maps.luftdaten.info/
 
-Standing on the shoulders of giants
-===================================
-- https://github.com/vinsci/geohash/
-- https://github.com/openstreetmap/Nominatim
-- https://github.com/influxdata/influxdb
+Technologies used
+=================
+Standing on the shoulders of giants.
+
 - https://github.com/grafana/grafana
 - https://grafana.com/plugins/grafana-worldmap-panel
+- https://www.postgresql.org/
+- https://github.com/influxdata/influxdb
+- https://github.com/vinsci/geohash/
+- https://github.com/openstreetmap/Nominatim
 
 Development
 ===========
@@ -330,3 +293,29 @@ Icons and pictograms
 ====================
 - `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ from
   `Icon Fonts <http://www.onlinewebfonts.com/icon>`_ is licensed by CC BY 3.0.
+
+
+
+.. _luftdaten.info: http://luftdaten.info/
+.. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
+.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+.. _The Hiveeyes Project: https://hiveeyes.org/
+
+.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
+.. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
+.. _Geohash: https://en.wikipedia.org/wiki/Geohash
+.. _dataset: https://dataset.readthedocs.io/
+.. _SQLAlchemy: https://www.sqlalchemy.org/
+.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
+.. _MQTT: http://mqtt.org/
+
+.. _PostgreSQL: https://www.postgresql.org/
+.. _InfluxDB: https://github.com/influxdata/influxdb
+.. _Grafana: https://github.com/grafana/grafana
+
+.. _jq: https://stedolan.github.io/jq/
+
+
+.. _virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
+.. _integrating Luftdatenpumpe with Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/grafana.rst
+.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/running.rst
