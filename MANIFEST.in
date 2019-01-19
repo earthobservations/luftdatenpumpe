@@ -1,4 +1,5 @@
 include setup.cfg *.rst *.md LICENSE
 exclude .bumpversion.cfg
+exclude *.txt
 recursive-include luftdatenpumpe *.py *.ini *.json
 prune tests

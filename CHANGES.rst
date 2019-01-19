@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-01-19 0.8.1
+================
+- Make dashboards not editable
+
+
 2019-01-19 0.8.0
 ================
 - Refactor and improve Grafana datasource- and dashboard JSON files
