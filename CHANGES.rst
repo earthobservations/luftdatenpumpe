@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-01-19 0.8.0
+================
 - Refactor and improve Grafana datasource- and dashboard JSON files
 - Add ``luftdatenpumpe grafana`` subcommand for accessing
   Grafana datasource- and dashboard JSON files
