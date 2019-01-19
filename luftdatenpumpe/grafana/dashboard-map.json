@@ -13,10 +13,10 @@
     "graphTooltip": 0,
     "style": "light",
     "time": {
-      "from": "now-3h",
+      "from": "now-30m",
       "to": "now"
     },
-    "refresh": null,
+    "refresh": "10m",
     "annotations": {
       "list": [
         {
@@ -43,7 +43,15 @@
         "icon": "external link",
         "tags": [],
         "targetBlank": true,
-        "title": "More about this",
+        "title": "Luftdatenpumpe @ Hiveeyes",
+        "type": "link",
+        "url": "https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ Kotori",
         "type": "link",
         "url": "https://getkotori.org/docs/applications/luftdaten.info/"
       },
@@ -103,8 +111,8 @@
         "id": 12,
         "initialZoom": "5",
         "interval": "",
-        "jsonUrl": "/public/json/ldi-stations.json",
-        "jsonpCallback": "tu_map",
+        "jsonUrl": "{{ jsonUrl }}",
+        "jsonpCallback": "",
         "jsonpUrl": "",
         "links": [],
         "locationData": "table+json",

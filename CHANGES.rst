@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Refactor and improve Grafana datasource- and dashboard JSON files
 
 
 2019-01-18 0.7.0

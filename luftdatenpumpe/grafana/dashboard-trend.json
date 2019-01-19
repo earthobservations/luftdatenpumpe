@@ -16,7 +16,7 @@
       "from": "now-7d",
       "to": "now"
     },
-    "refresh": "30m",
+    "refresh": "13m",
     "annotations": {
       "list": [
         {
@@ -43,7 +43,15 @@
         "icon": "external link",
         "tags": [],
         "targetBlank": true,
-        "title": "More about this",
+        "title": "Luftdatenpumpe @ Hiveeyes",
+        "type": "link",
+        "url": "https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ Kotori",
         "type": "link",
         "url": "https://getkotori.org/docs/applications/luftdaten.info/"
       },
