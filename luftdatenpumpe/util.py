@@ -7,8 +7,9 @@ import sys
 import glob
 import logging
 import traceback
-
 from six import StringIO
+from munch import munchify
+from collections import OrderedDict
 
 
 def setup_logging(level=logging.INFO):
@@ -28,7 +29,7 @@ def normalize_options(options):
     for key, value in options.items():
         key = key.strip('--<>')
         normalized[key] = value
-    return normalized
+    return munchify(normalized)
 
 
 def read_list(data, separator=u','):
@@ -37,6 +38,19 @@ def read_list(data, separator=u','):
     result = list(map(lambda x: x.strip(), data.split(separator)))
     if len(result) == 1 and not result[0]:
         result = []
+    return result
+
+
+def read_pairs(data, listsep=u',', pairsep=u'='):
+    if data is None:
+        return {}
+    pairs = list(map(lambda x: x.strip(), data.split(listsep)))
+    if len(pairs) == 1 and not pairs[0]:
+        return {}
+    result = OrderedDict()
+    for pair in pairs:
+        key, value = pair.split(pairsep)
+        result[key] = value
     return result
 
 

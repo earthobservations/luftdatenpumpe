@@ -3,12 +3,14 @@
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import sys
+import json
 import logging
 from docopt import docopt, DocoptExit
 from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.geo import disable_nominatim_cache
+from luftdatenpumpe.grafana import get_artefact
 from luftdatenpumpe.target import resolve_target_handler
-from luftdatenpumpe.util import normalize_options, setup_logging, read_list
+from luftdatenpumpe.util import normalize_options, setup_logging, read_list, read_pairs
 from luftdatenpumpe.core import LuftdatenPumpe
 from luftdatenpumpe.engine import LuftdatenEngine
 
@@ -20,6 +22,7 @@ def run():
     Usage:
       luftdatenpumpe stations [options] [--target=<target>]...
       luftdatenpumpe readings [options] [--target=<target>]...
+      luftdatenpumpe grafana --kind=<kind> --name=<name> [--variables=<variables>]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
 
@@ -120,7 +123,33 @@ def run():
         log_level = logging.DEBUG
     setup_logging(log_level)
 
+    # Debugging
     #log.info('Options: {}'.format(json.dumps(options, indent=4)))
+
+
+    # A. Utility targets
+
+    # Create database view and exit.
+    if options['create-database-view']:
+        log.info('Creating database view')
+        for target in options['target']:
+            if target.startswith('postgresql:'):
+                handler = resolve_target_handler(target)
+                handler.create_view()
+        sys.exit()
+
+    # Generate Grafana datasource and dashboard JSON and exit.
+    elif options['grafana']:
+        options.variables = read_pairs(options.variables)
+        log.info('Generating Grafana artefact '
+                 'kind={}, name={}, variables={}'.format(
+                    options.kind, options.name, json.dumps(options.variables)))
+        thing = get_artefact(options.kind, options.name, variables=options.variables)
+        print(thing)
+        sys.exit()
+
+
+    # B. Data processing targets
 
     # Optionally, decode filters by station id and/or sensor id
     filter = {}
@@ -145,15 +174,6 @@ def run():
     if options['disable-nominatim-cache']:
         # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
         disable_nominatim_cache()
-
-    # Create database view and exit.
-    if options['create-database-view']:
-        log.info('Creating database view')
-        for target in options['target']:
-            if target.startswith('postgresql:'):
-                handler = resolve_target_handler(target)
-                handler.create_view()
-        sys.exit()
 
     # The main workhorse.
     pump = LuftdatenPumpe(

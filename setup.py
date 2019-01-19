@@ -32,6 +32,9 @@ requires = [
     # Geospatial
     'geohash2==1.1',
     'geopy==1.18.0',
+
+    # Grafana
+    'jinja2==2.10',
 ]
 
 extras = {
