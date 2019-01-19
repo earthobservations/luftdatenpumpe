@@ -45,7 +45,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.7.0',
+      version='0.8.0',
       description='Process data from live API of luftdaten.info. Filter by station- '
                   'and sensor-id, apply reverse geocoding, output as JSON, store into '
                   'RDBMS databases and publish to MQTT.',
