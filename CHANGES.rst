@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Add missing sensor DS18B20
+- Fix PostgreSQL version in Grafana datasource JSON
 
 
 2019-01-19 0.8.1
