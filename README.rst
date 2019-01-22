@@ -79,22 +79,22 @@ Display verbose name from OSM address and station id on overlay.
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
 
-*****
-Demos
-*****
+*********
+Live data
+*********
+
+Canonical dashboards
+====================
+- `Feinstaub Verlauf <https://weather.hiveeyes.org/grafana/d/ioUrPwQiz/luftdaten-info-verlauf>`_
+- `Feinstaub Karte <https://weather.hiveeyes.org/grafana/d/AOerEQQmk/luftdaten-info-karte>`_
 
 Labs
 ====
-- `LDI Stations #1 » Select by name, country and state <https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state>`_
-- `LDI Stations #2 » Cascaded » Stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
-- `LDI Stations #3 » Cascaded » Measurements <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
-- `LDI Stations #4 » Select by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
-- `LDI Stations #5 » Map by location and sensor type <https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type>`_
-
-Live Data (legacy)
-==================
-- `Feinstaub Verlauf Berlin <https://luftdaten.hiveeyes.org/grafana/d/bEe6HJamk/feinstaub-verlauf-berlin>`_
-- `Feinstaub Karte Deutschland <https://luftdaten.hiveeyes.org/grafana/d/000000004/feinstaub-karte-deutschland>`_
+- `LDI Demo #1 » Stations by name, country and state <https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state>`_
+- `LDI Demo #2 » Cascaded stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
+- `LDI Demo #3 » Measurements by cascaded location selector <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
+- `LDI Demo #4 » Find stations by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
+- `LDI Demo #5 » Map by location and sensor type <https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type>`_
 
 
 ********
@@ -211,6 +211,10 @@ To make this work best, you should enable data durability with your Redis instan
 
 Install Luftdatenpumpe
 ======================
+::
+
+    apt install build-essential python3-dev libicu-dev
+
 ::
 
     pip install luftdatenpumpe

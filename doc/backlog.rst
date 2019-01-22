@@ -7,6 +7,8 @@ Luftdatenpumpe backlog
 Prio 1
 ******
 - [o] Add PM2.5 panel again?
+- [o] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
+- [o] Add "ALL" option for "Choose multiple stations" chooser
 
 
 ********
@@ -19,6 +21,11 @@ Prio 1.5
 - [o] Is it actually ok to read each sensor equally?
 - [o] Downsample data on CSV import to reduce data size?
 - [o] Read Parquet files from http://archive.luftdaten.info/parquet/
+- [o] Vanity URLs
+    - https://deutschland.maps.luftdaten.info
+    - https://china.maps.luftdaten.info
+    - https://europe.maps.luftdaten.info
+    - https://france.maps.luftdaten.info/
 
 
 ******
@@ -150,3 +157,19 @@ Done
 - [x] Remove --help from README
 - [x] Improve README re. setup
 - [x] Entrypoints for rendering Grafana JSONs
+- [x] WARNING: Skip import of /datalarge/var/spool/archive.luftdaten.info/2019-01-02/2019-01-02_ds18b20_sensor_8020.csv. Unknown sensor type
+- [x] Add station_id to "choose multiple stations" chooser
+- [x] Fix fix fix::
+
+    2019-01-21 02:54:44,787 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'sensordatavalues': [{'value': '81.40', 'value_type': 'humidity', 'id': 5790214143}, {'value': '0.20', 'value_type': 'temperature', 'id': 5790214142}], 'sensor': {'sensor_type': {'name': 'DHT22', 'manufacturer': 'various', 'id': 9}, 'pin': '7', 'id': 19755}, 'timestamp': '2019-01-21 01:50:56', 'id': 2724801826, 'location': {'longitude': '', 'latitude': '47.8120', 'altitude': '58.0', 'country': 'DE'}, 'sampling_rate': None}.
+    Traceback (most recent call last):
+      File "/opt/luftdatenpumpe/luftdatenpumpe/core.py", line 230, in request_live_data
+        reading = self.make_reading(item)
+      File "/opt/luftdatenpumpe/luftdatenpumpe/core.py", line 290, in make_reading
+        self.enrich_station(reading.station)
+      File "/opt/luftdatenpumpe/luftdatenpumpe/core.py", line 308, in enrich_station
+        station.position.geohash = geohash_encode(station.position.latitude, station.position.longitude)
+      File "/opt/luftdatenpumpe/luftdatenpumpe/geo.py", line 351, in geohash_encode
+        geohash = geohash2.encode(float(latitude), float(longitude))
+    TypeError: float() argument must be a string or a number, not 'NoneType'
+
