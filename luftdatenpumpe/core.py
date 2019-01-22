@@ -299,9 +299,10 @@ class LuftdatenPumpe:
     def enrich_station(self, station):
 
         # Sanity checks.
-        if 'latitude' not in station.position or 'longitude' not in station.position:
-            # TODO: Reenable this log message, but just emit once.
-            #log.warning('Could not enrich station information for {}'.format(station))
+        if ('latitude' not in station.position or 'longitude' not in station.position) or \
+            (station.position.latitude is None or station.position.longitude is None):
+            # TODO: Just emit this message once per X.
+            log.warning('Incomplete station position, skipping geospatial enrichment. Station: {}'.format(station))
             return
 
         # Compute geohash.

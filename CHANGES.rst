@@ -8,6 +8,7 @@ in progress
 - Add missing sensor DS18B20
 - Fix PostgreSQL version in Grafana datasource JSON
 - Add station id to "multiple stations" chooser on trend dashboard
+- Don't try to enrich incomplete station information
 
 
 2019-01-19 0.8.1
