@@ -1552,7 +1552,7 @@
           "multi": true,
           "name": "ldi_station_id",
           "options": [],
-          "query": "SELECT station_id AS __value, name AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city IN ($ldi_station_city) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
+          "query": "SELECT station_id AS __value, name_and_id AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city IN ($ldi_station_city) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
