@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Add missing sensor DS18B20
 
 
 2019-01-19 0.8.1

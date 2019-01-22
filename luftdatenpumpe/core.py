@@ -463,6 +463,14 @@ class LuftdatenPumpe:
             """
             fieldnames = ['temperature', 'humidity', 'pressure', 'altitude', 'pressure_sealevel']
 
+        elif self.sensor_matches(csvpath, ['ds18b20']):
+            """
+            DS18B20
+            sensor_id;sensor_type;location;lat;lon;timestamp;temperature
+            19319;DS18B20;9794;43.851;125.304;2019-01-02T00:04:02;-14.94
+            """
+            fieldnames = ['temperature']
+
         else:
             log.warning('Skip import of {}. Unknown sensor type'.format(csvpath))
             return
