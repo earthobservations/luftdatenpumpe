@@ -85,7 +85,7 @@ def resolve_target_handler(target, dry_run=False):
     url = Munch(urlparse(target)._asdict())
     log.debug('Resolving target: %s', json.dumps(url))
 
-    formatter = lambda x: x
+    formatter = json_formatter
     if '+' in url.scheme:
         format, scheme = url.scheme.split('+')
         url.scheme = scheme
