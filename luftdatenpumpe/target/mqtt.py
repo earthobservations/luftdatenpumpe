@@ -81,7 +81,7 @@ class MQTTAdapter(object):
             mqtt_message = json.dumps(message)
             self.publish(mqtt_message)
 
-    def flush(self):
+    def flush(self, final=False):
         pass
 
     def connect(self):
@@ -100,6 +100,8 @@ class MQTTAdapter(object):
 
         # Connect to broker
         self.mqttc.connect(self.host, self.port, self.keepalive)
+
+        self.mqttc.loop_start()
 
     def close(self):
         self.mqttc.disconnect()

@@ -7,6 +7,8 @@ in progress
 ===========
 - Add GIS capabilities through PostGIS
 - Set default format for "stream://" targets to "json"
+- Fix published messages getting lost when not starting
+  the MQTT main loop after connecting to MQTT broker
 
 
 2019-01-22 0.8.2
