@@ -115,6 +115,3 @@ Create dashboard with worldmap and table panels::
         http --session=grafana POST http://localhost:3000/api/dashboards/db
 
 .. note:: This references the station list JSON file created in one of the previous steps.
-
-
-.. todo:: Insert more detailed screenshots here.

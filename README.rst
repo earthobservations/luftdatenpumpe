@@ -22,10 +22,14 @@
 Luftdatenpumpe
 ##############
 
-.. image:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
+Process live and historical data from `luftdaten.info`_. Filter by station-id, sensor-id
+and sensor-type, apply reverse geocoding, store into timeseries and RDBMS_ databases
+(InfluxDB_ and PostGIS_), publish to MQTT_ or just output as JSON.
+
 For running advanced GIS queries against the created PostGIS_ database,
 please follow up at the `GIS documentation <doc-postgis_>`_.
 
+.. figure:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
     :target: https://github.com/hiveeyes/luftdatenpumpe
     :height: 200px
     :width: 200px
@@ -36,9 +40,10 @@ About
 *****
 1. Luftdatenpumpe_ acquires the measurement readings either from the livedata API
    of `luftdaten.info`_ or from its archived CSV files published to `archive.luftdaten.info`.
+   To minimize impact on the upstream servers, all data gets reasonably cached.
 
-2. While iterating the readings, it optionally applies a filter based on station-id, sensor-id or
-   sensor-type and collects information about all stations and sensors they are originating from.
+2. While iterating the readings, it optionally filters on station-id, sensor-id or sensor-type
+   and restrains information processing to the corresponding stations and sensors.
 
 3. Then, each station's location information gets enhanced by
 
@@ -224,8 +229,8 @@ Install Luftdatenpumpe
 
 .. note::
 
-    Please refer to the `virtualenv`_ page about further guidelines how to install
-    and use this software independently from your local python installation.
+    We recommend to use a Python `doc-virtualenv`_ to install and operate this
+    software independently from your local system-wide Python installation.
 
 
 *******
@@ -244,30 +249,41 @@ how to build such beautiful and interactive map- and graph-compositions.
 References
 **********
 
-Upstream luftdaten.info
-=======================
+luftdaten.info
+==============
 - http://luftdaten.info/
 - http://archive.luftdaten.info/
 - http://deutschland.maps.luftdaten.info/
 
-Technologies used
-=================
-Standing on the shoulders of giants.
-
-- https://github.com/grafana/grafana
-- https://grafana.com/plugins/grafana-worldmap-panel
-- https://www.postgresql.org/
-- https://github.com/influxdata/influxdb
-- https://github.com/vinsci/geohash/
-- https://github.com/openstreetmap/Nominatim
-
-Development
-===========
+Resources
+=========
 - `opendata-stuttgart/sensors-software: Support for InfluxDB and MQTT as backend <https://github.com/opendata-stuttgart/sensors-software/issues/33#issuecomment-272711445>`_.
 - https://getkotori.org/docs/applications/luftdaten.info/
 - https://community.hiveeyes.org/t/datenmischwerk/702
 - https://community.hiveeyes.org/t/environmental-metadata-library/1190
 - https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+- https://community.hiveeyes.org/t/ldi-dataplane-v2/1412
+
+Technologies
+============
+Standing on the shoulders of giants.
+
+Databases
+---------
+- https://github.com/influxdata/influxdb
+- https://dataset.readthedocs.io/
+- https://www.sqlalchemy.org/
+- https://www.postgresql.org/
+- https://postgis.net/
+- https://github.com/pramsey/pgsql-http
+- https://redis.io/
+
+Software and services
+---------------------
+- https://github.com/grafana/grafana
+- https://grafana.com/plugins/grafana-worldmap-panel
+- https://en.wikipedia.org/wiki/Geohash
+- https://nominatim.org/
 
 
 
@@ -303,10 +319,16 @@ Icons and pictograms
 
 
 
-.. _luftdaten.info: http://luftdaten.info/
+.. _doc-virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
 .. _doc-postgis: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/postgis.rst
+
+
+.. _luftdaten.info: https://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
+.. _integrating Luftdatenpumpe with Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/grafana.rst
+.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/running.rst
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+
 .. _The Hiveeyes Project: https://hiveeyes.org/
 
 .. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
@@ -323,8 +345,3 @@ Icons and pictograms
 .. _Grafana: https://github.com/grafana/grafana
 
 .. _jq: https://stedolan.github.io/jq/
-
-
-.. _virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
-.. _integrating Luftdatenpumpe with Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/grafana.rst
-.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/running.rst
