@@ -72,6 +72,7 @@ class InfluxDBStorage:
             record['tags']['geohash'] = reading.station.position.geohash
 
         # Store into buffer.
+        logging.debug('Recording: {}'.format(record))
         self.buffer.append(record)
 
         if self.is_udp and len(self.buffer) > 50:

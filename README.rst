@@ -23,6 +23,9 @@ Luftdatenpumpe
 ##############
 
 .. image:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
+For running advanced GIS queries against the created PostGIS_ database,
+please follow up at the `GIS documentation <doc-postgis_>`_.
+
     :target: https://github.com/hiveeyes/luftdatenpumpe
     :height: 200px
     :width: 200px
@@ -301,6 +304,7 @@ Icons and pictograms
 
 
 .. _luftdaten.info: http://luftdaten.info/
+.. _doc-postgis: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/postgis.rst
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 .. _The Hiveeyes Project: https://hiveeyes.org/
@@ -314,6 +318,7 @@ Icons and pictograms
 .. _MQTT: http://mqtt.org/
 
 .. _PostgreSQL: https://www.postgresql.org/
+.. _PostGIS: https://postgis.net/
 .. _InfluxDB: https://github.com/influxdata/influxdb
 .. _Grafana: https://github.com/grafana/grafana
 

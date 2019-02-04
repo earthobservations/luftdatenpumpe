@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
-# (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
+# (c) 2017-2019 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
 import dataset
 from copy import deepcopy
 from collections import OrderedDict
+from geoalchemy2 import Geometry    # Pulls in PostGIS capabilities into SQLAlchemy
 
 log = logging.getLogger(__name__)
 
@@ -19,9 +19,13 @@ class RDBMSStorage:
 
         self.dry_run = dry_run
 
+        # Connect to database.
         self.db = dataset.connect(uri)
 
-        # Optionally, empty all tables
+        # Add PostGIS extension.
+        self.db.query('CREATE EXTENSION IF NOT EXISTS postgis')
+
+        # Optionally, empty all tables.
         if empty_tables:
             for tablename in self.db.tables:
                 if tablename.startswith('ldi_'):
@@ -37,6 +41,9 @@ class RDBMSStorage:
         self.sensorstable = self.db['ldi_sensors']
         self.osmtable = self.db['ldi_osmdata']
 
+        # Add "geopoint" field to table.
+        self.db.query('ALTER TABLE ldi_stations ADD COLUMN IF NOT EXISTS "geopoint" geography(Point)')
+
     def emit(self, station):
         return self.store_station(station)
 
@@ -45,8 +52,16 @@ class RDBMSStorage:
 
     def store_station(self, station):
 
+        # Make up geoposition on the fly
+        # In mapping frameworks spatial coordinates are often in order of latitude and longitude.
+        # In spatial databases spatial coordinates are in x = longitude, and y = latitude.
+        # -- https://postgis.net/2013/08/18/tip_lon_lat/
+        # Example: Stuttgart == POINT(9.17721 48.77928)
+        if station.position and station.position.latitude and station.position.longitude:
+            station.position.geopoint = 'POINT({} {})'.format(station.position.longitude, station.position.latitude)
+
         # Debugging
-        #log.info(station)
+        #log.info('station: %s', station)
 
         # Station table
         stationdata = OrderedDict()
@@ -148,7 +163,9 @@ class RDBMSStorage:
         CREATE VIEW ldi_network AS
             SELECT
               ldi_stations.station_id,
-              ldi_stations.name, ldi_stations.latitude, ldi_stations.longitude, ldi_stations.altitude, ldi_stations.country, ldi_stations.geohash,
+              ldi_stations.name, ldi_stations.country, 
+              ldi_stations.longitude, ldi_stations.latitude, ldi_stations.altitude, 
+              ldi_stations.geohash, ldi_stations.geopoint,
               ldi_sensors.sensor_id, ldi_sensors.sensor_type,
               concat(ldi_osmdata.osm_state, ' » ', ldi_osmdata.osm_city) AS state_and_city,
               concat(ldi_stations.name, ' (#', CAST(ldi_stations.station_id AS text), ')') AS name_and_id,

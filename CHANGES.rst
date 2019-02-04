@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Add GIS capabilities through PostGIS
 
 
 2019-01-22 0.8.2
