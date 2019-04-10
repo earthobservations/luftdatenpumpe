@@ -220,9 +220,9 @@ class LuftdatenPumpe:
         timestamp = self.convert_timestamp(data[0]['timestamp'])
         log.info('Timestamp of first record: {}'.format(timestamp))
 
-        iterator = data
+        iterator = self.apply_filter(data)
         if self.progressbar:
-            iterator = tqdm(data)
+            iterator = tqdm(list(iterator))
 
         for item in iterator:
             try:
@@ -235,6 +235,33 @@ class LuftdatenPumpe:
             except Exception as ex:
                 log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
 
+    def apply_filter(self, data):
+
+        for item in data:
+
+            #log.info('item: %s', item)
+
+            # Decode JSON item
+            station_id = item['location']['id']
+            sensor_id = item['sensor']['id']
+
+            # If there is a filter defined, evaluate it.
+            # Skip further processing for specific country codes, station ids or sensor ids.
+            # TODO: Improve evaluating conditions.
+            if self.filter:
+                skip = False
+                if 'station' in self.filter:
+                    if station_id not in self.filter['station']:
+                        skip = True
+                if 'sensor' in self.filter:
+                    if sensor_id not in self.filter['sensor']:
+                        skip = True
+
+                if skip:
+                    continue
+
+            yield item
+
     def make_reading(self, item):
 
         #log.info('item: %s', item)
@@ -243,16 +270,6 @@ class LuftdatenPumpe:
         station_id = item['location']['id']
         sensor_id = item['sensor']['id']
         sensor_type = item['sensor']['sensor_type']['name']
-
-        # If there is a filter defined, evaluate it.
-        # For specific location|sensor ids, skip further processing.
-        if self.filter:
-            if 'station' in self.filter:
-                if station_id not in self.filter['station']:
-                    return
-            if 'sensor' in self.filter:
-                if sensor_id not in self.filter['sensor']:
-                    return
 
         # Build reading
         reading = Munch(
