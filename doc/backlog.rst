@@ -9,6 +9,51 @@ Prio 1
 - [o] Add PM2.5 panel again?
 - [o] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
 - [o] Add "ALL" option for "Choose multiple stations" chooser
+- [o] Cross-reference map- and trend-dashboards
+- [o] Link to https://pypi.org/project/luftdaten/ and https://github.com/dr-1/airqdata
+- [o] Remark about database license from https://github.com/dr-1/airqdata
+- [o] https://github.com/dr-1/airqdata/blob/master/airqdata/luftdaten.py
+
+    - clean_measurements
+    - search_proximity
+    - evaluate_near_sensors
+
+- [o] Decrease logo size: https://pypi.org/project/luftdatenpumpe/
+- [o] Spatial index on a geography table::
+
+        CREATE INDEX nyc_subway_stations_geog_gix
+        ON nyc_subway_stations_geog USING GIST (geog);
+
+    -- http://postgis.net/workshops/postgis-intro/geography.html
+
+- [o] Announce @ GitHub: ``luftdatenpumpe readings --station=28 --target=mqtt://mqtt.example.org/luftdaten.info/testdrive --target=stream://sys.stdout | jq .``
+- [o] Add stored procedure "osm_city_live" using the HTTP API.
+- [o] Progressbar for emitting data to target subsystems
+- [o] Better zoom level selector for map widgets. Autozoom by station selector?
+- [o] Larger form field sizes, e.g. for "query", see https://weather.hiveeyes.org/grafana/d/EWFuSqlmz/ldi-6-gis-distance-by-threshold?editview=templating&orgId=1&panelId=&fullscreen=&edit=dlslöö
+
+
+****
+Prod
+****
+::
+
+    2019-01-23 16:08:45,230 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T02:51:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+    Traceback (most recent call last):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+        if not self.csvdata_to_reading(record, reading, fieldnames):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+        reading.data[fieldname] = float(value)
+    ValueError: could not convert string to float: '985.56 1541213415071633'
+
+    2019-01-23 16:08:45,282 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T08:52:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+    Traceback (most recent call last):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+        if not self.csvdata_to_reading(record, reading, fieldnames):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+        reading.data[fieldname] = float(value)
+    ValueError: could not convert string to float: '985.97 1541235075187801'
+
 
 
 ********
@@ -63,6 +108,15 @@ Prio 2
   https://github.com/utkarshcmu/wizzy
 
 - [o] Docs? https://github.com/grafana/worldmap-panel/issues/176
+
+- [o] Email address for Nominatim::
+
+        email=<valid email address>
+
+        If you are making large numbers of request please include a valid email address or alternatively include your email address as part of the User-Agent string.
+        This information will be kept confidential and only used to contact you in the event of a problem, see Usage Policy for more details.
+
+    https://wiki.openstreetmap.org/wiki/Nominatim#Example_with_format.3Djsonv2
 
 
 ******
@@ -157,7 +211,7 @@ Done
 - [x] Remove --help from README
 - [x] Improve README re. setup
 - [x] Entrypoints for rendering Grafana JSONs
-- [x] WARNING: Skip import of /datalarge/var/spool/archive.luftdaten.info/2019-01-02/2019-01-02_ds18b20_sensor_8020.csv. Unknown sensor type
+- [x] New sensor type DS18B20, e.g. ``WARNING: Skip import of /var/spool/archive.luftdaten.info/2019-01-01/2019-01-01_ds18b20_sensor_11301.csv. Unknown sensor type``
 - [x] Add station_id to "choose multiple stations" chooser
 - [x] Fix fix fix::
 
