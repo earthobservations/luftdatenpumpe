@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-04-10 0.9.0
+================
 - Add GIS capabilities through PostGIS
 - Set default format for "stream://" targets to "json"
 - Fix published messages getting lost when not starting
