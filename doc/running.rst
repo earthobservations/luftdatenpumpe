@@ -15,6 +15,7 @@ luftdatenpumpe --help
 
     Options:
       --source=<source>             Data source, either "api" or "file://" [default: api].
+      --country=<countries>         Filter data by given country codes, comma-separated.
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
@@ -28,7 +29,11 @@ luftdatenpumpe --help
       --debug                       Enable debug messages
       -h --help                     Show this screen
 
+
     Station list examples:
+
+      # Display metadata for given countries in JSON format
+      luftdatenpumpe stations --country=BE,NL,LU
 
       # Display metadata for given stations in JSON format, with reverse geocoding
       luftdatenpumpe stations --station=28,1071 --reverse-geocode

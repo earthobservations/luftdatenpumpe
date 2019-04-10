@@ -242,6 +242,7 @@ class LuftdatenPumpe:
             #log.info('item: %s', item)
 
             # Decode JSON item
+            country_code = item['location']['country'].upper()
             station_id = item['location']['id']
             sensor_id = item['sensor']['id']
 
@@ -250,6 +251,9 @@ class LuftdatenPumpe:
             # TODO: Improve evaluating conditions.
             if self.filter:
                 skip = False
+                if 'country' in self.filter:
+                    if country_code not in self.filter['country']:
+                        skip = True
                 if 'station' in self.filter:
                     if station_id not in self.filter['station']:
                         skip = True

@@ -10,6 +10,7 @@ in progress
 - Fix published messages getting lost when not starting
   the MQTT main loop after connecting to MQTT broker
 - Refactor station list filter
+- Filter stations by country code
 
 
 2019-01-22 0.8.2

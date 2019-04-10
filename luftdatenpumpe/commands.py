@@ -28,6 +28,7 @@ def run():
 
     Options:
       --source=<source>             Data source, either "api" or "file://" [default: api].
+      --country=<countries>         Filter data by given country codes, comma-separated.
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
@@ -43,6 +44,9 @@ def run():
 
 
     Station list examples:
+
+      # Display metadata for given countries in JSON format
+      luftdatenpumpe stations --country=BE,NL,LU
 
       # Display metadata for given stations in JSON format, with reverse geocoding
       luftdatenpumpe stations --station=28,1071 --reverse-geocode
@@ -151,7 +155,7 @@ def run():
 
     # B. Data processing targets
 
-    # Optionally, decode filters by station id and/or sensor id
+    # Optionally apply filters by country code, station id and/or sensor id
     filter = {}
 
     # Lists of Integers.
@@ -163,6 +167,11 @@ def run():
     for filter_name in ['sensor-type']:
         if options[filter_name]:
             filter[filter_name] = list(map(str.lower, read_list(options[filter_name])))
+
+    # Lists of upper-case Strings.
+    for filter_name in ['country']:
+        if options[filter_name]:
+            filter[filter_name] = list(map(str.upper, read_list(options[filter_name])))
 
     log.info('Applying filter: {}'.format(filter))
 
