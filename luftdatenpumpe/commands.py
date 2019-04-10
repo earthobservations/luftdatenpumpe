@@ -44,10 +44,10 @@ def run():
 
     Station list examples:
 
-      # Display metadata for given stations in JSON format
+      # Display metadata for given stations in JSON format, with reverse geocoding
       luftdatenpumpe stations --station=28,1071 --reverse-geocode
 
-      # Display metadata for given sensors in JSON format
+      # Display metadata for given sensors in JSON format, with reverse geocoding
       luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
 
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
@@ -153,12 +153,17 @@ def run():
 
     # Optionally, decode filters by station id and/or sensor id
     filter = {}
+
+    # Lists of Integers.
     for filter_name in ['station', 'sensor']:
         if options[filter_name]:
             filter[filter_name] = list(map(int, read_list(options[filter_name])))
+
+    # Lists of lower-case Strings.
     for filter_name in ['sensor-type']:
         if options[filter_name]:
             filter[filter_name] = list(map(str.lower, read_list(options[filter_name])))
+
     log.info('Applying filter: {}'.format(filter))
 
     # Fake data source. Currently always LDI.

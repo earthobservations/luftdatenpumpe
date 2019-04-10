@@ -68,6 +68,10 @@ setup(name='luftdatenpumpe',
         "Topic :: Communications",
         "Topic :: Database",
         "Topic :: Internet",
+        "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+        "Topic :: Scientific/Engineering :: Atmospheric Science",
+        "Topic :: Scientific/Engineering :: GIS",
+        "Topic :: Scientific/Engineering :: Human Machine Interfaces",
         "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
         "Topic :: Scientific/Engineering :: Visualization",
@@ -75,6 +79,8 @@ setup(name='luftdatenpumpe',
         "Topic :: Software Development :: Libraries",
         "Topic :: System :: Archiving",
         "Topic :: System :: Networking :: Monitoring",
+        "Topic :: Text Processing",
+        "Topic :: Utilities",
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Operating System :: MacOS"
@@ -82,10 +88,12 @@ setup(name='luftdatenpumpe',
       author='Andreas Motl',
       author_email='andreas@hiveeyes.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
-      keywords='luftdaten.info opendata data acquisition ' +
-               'http rest json '
-               'rdbms sql mysql postgresql ' +
-               'influxdb mosquitto mqtt grafana',
+      keywords='luftdaten luftdaten.info air quality particulate matter pollution '
+               'opendata data acquisition transformation export '
+               'postgis postgresql influxdb grafana http rest json '
+               'rdbms sql mysql '
+               'mosquitto mqtt '
+               'openstreetmap nominatim',
       packages=find_packages(),
       include_package_data=True,
       package_data={

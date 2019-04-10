@@ -30,10 +30,10 @@ luftdatenpumpe --help
 
     Station list examples:
 
-      # Display metadata for given stations in JSON format
+      # Display metadata for given stations in JSON format, with reverse geocoding
       luftdatenpumpe stations --station=28,1071 --reverse-geocode
 
-      # Display metadata for given sensors in JSON format
+      # Display metadata for given sensors in JSON format, with reverse geocoding
       luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
 
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
@@ -64,8 +64,6 @@ luftdatenpumpe --help
     Archive data examples (InfluxDB):
 
       # Mirror archive of luftdaten.info
-      wget --mirror --continue http://archive.luftdaten.info/ --limit-rate=1.5M
-      wget --mirror --continue http://archive.luftdaten.info/ --accept-regex='2018-0[6789]'
       wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
 
       # Ingest station information from CSV archive files, store into PostgreSQL
@@ -73,6 +71,12 @@ luftdatenpumpe --help
 
       # Ingest readings from CSV archive files, store into InfluxDB
       luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
+
+      # Ingest most early readings
+      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2015-10-*
+
+      # Ingest most early PMS sensors
+      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2017-1*/*pms*.csv
 
 
     Live data examples (MQTT):

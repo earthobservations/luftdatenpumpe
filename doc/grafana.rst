@@ -40,7 +40,7 @@ Create station list file ``ldi-stations.json`` for Grafana Worldmap Panel.
 
 Define stations file::
 
-    stationsfile=/usr/local/share/grafana/public/json/ldi-stations.json
+    stationsfile=/usr/share/grafana/public/json/ldi-stations.json
     mkdir -p $(dirname $stationsfile)
 
 Write stations and metadata to RDBMS database (PostgreSQL)::
@@ -64,8 +64,8 @@ Create station list file for Grafana Worldmap Panel from RDBMS database (Postgre
 
 .. note::
 
-    On this system (macOS/Homebrew), Grafana is installed to ``/usr/local/share/grafana``.
-    You might have to adjust this to the environment you are running this program on.
+    On a macOS/Homebrew system, Grafana is installed to ``/usr/local/share/grafana``.
+    You might have to adjust the ``$stationsfile`` path to the environment you are running this program on.
 
 
 *********************

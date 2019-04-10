@@ -48,12 +48,18 @@ Sort by distance
 
     -- Find specified number of nearest stations through sorting by distance,
     -- display name and textual representation of coordinates.
-    SELECT name, ST_AsText(geopoint) AS geopoint FROM ldi_stations ORDER BY geopoint <-> 'POINT(9.18001 48.77844)' LIMIT 5;
+    SELECT name, ST_AsText(geopoint) AS geopoint
+    FROM ldi_stations
+    ORDER BY geopoint <-> 'POINT(9.18001 48.77844)'
+    LIMIT 5;
 
 ::
 
     -- Same as above, but display name and GeoJson representation of coordinates.
-    SELECT name, ST_AsGeoJson(geopoint) AS geojson FROM ldi_stations ORDER BY geopoint <-> 'POINT(9.18001 48.77844)' LIMIT 5;
+    SELECT name, ST_AsGeoJson(geopoint) AS geojson
+    FROM ldi_stations
+    ORDER BY geopoint <-> 'POINT(9.18001 48.77844)'
+    LIMIT 5;
 
 
 Match within range
@@ -95,7 +101,9 @@ Centroid of OSM input coordinates
     -- http://postgis.net/workshops/postgis-intro/advanced_geometry_construction.html
     -- https://postgis.net/docs/ST_Collect.html
     -- https://postgis.net/docs/ST_Centroid.html
-    SELECT ST_AsText(ST_Centroid(ST_Collect(geopoint::geometry))::geography) AS geopoint FROM ldi_network WHERE osm_city = 'Stuttgart';
+    SELECT ST_AsText(ST_Centroid(ST_Collect(geopoint::geometry))::geography) AS geopoint
+    FROM ldi_network
+    WHERE osm_city = 'Stuttgart';
 
 ::
 
@@ -106,7 +114,10 @@ Centroid of OSM input coordinates
     WITH center_of AS (
         SELECT ST_Centroid(ST_Collect(geopoint::geometry))::geography AS position FROM ldi_network WHERE osm_city = 'Stuttgart'
     )
-    SELECT name, ST_AsText(geopoint) AS geopoint FROM ldi_stations, center_of ORDER BY geopoint <-> center_of.position LIMIT 5;
+    SELECT name, ST_AsText(geopoint) AS geopoint
+    FROM ldi_stations, center_of
+    ORDER BY geopoint <-> center_of.position
+    LIMIT 5;
 
 ::
 

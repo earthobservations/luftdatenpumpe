@@ -122,6 +122,9 @@ Overview
     # Forward readings to MQTT
     luftdatenpumpe readings --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
 
+For a **full** overview about all program options including meaningful examples,
+you might just want to run ``luftdatenpumpe --help`` on your command line
+or visit `luftdatenpumpe --help`_.
 
 Details
 =======
@@ -150,10 +153,6 @@ Details
       -h --help                     Show this screen
 
 
-For a full overview about all options including many examples,
-please visit `luftdatenpumpe --help`_.
-
-
 
 *****
 Setup
@@ -168,7 +167,6 @@ We are mostly also running exactly these releases on our production servers.
 Add Hiveeyes package repository::
 
     wget -qO - https://packages.hiveeyes.org/hiveeyes/foss/debian/pubkey.txt | apt-key add -
-    apt install
 
 Add Hiveeyes package repository, e.g. by appending this to ``/etc/apt/sources.list``::
 
@@ -176,6 +174,7 @@ Add Hiveeyes package repository, e.g. by appending this to ``/etc/apt/sources.li
 
 Reindex package database::
 
+    apt install apt-transport-https
     apt update
 
 
@@ -183,9 +182,7 @@ Install packages
 ================
 Debian packages::
 
-    apt install apt-transport-https
     apt install postgis redis-server redis-tools influxdb grafana
-
 
 
 Configure PostgreSQL
@@ -204,6 +201,14 @@ Create read-only user::
     weatherbase=# CREATE ROLE readonly WITH LOGIN PASSWORD 'readonly';
     weatherbase=# GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO readonly;
     weatherbase=# GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
+
+.. note::
+
+    This probably has to be performed **after** the database has been created
+    and populated. All the tables and sequences have not been materialized
+    here after all at this point. So please bear with the current state of the
+    documentation and apply some own creativity to the outlined installation
+    process. This is really just a rough guide for moderately experienced users.
 
 
 Configure Redis
@@ -229,8 +234,23 @@ Install Luftdatenpumpe
 
 .. note::
 
-    We recommend to use a Python `doc-virtualenv`_ to install and operate this
+    We recommend to use a Python `virtualenv <doc-virtualenv_>`_ to install and operate this
     software independently from your local system-wide Python installation.
+
+.. note::
+
+    ``luftdatenpumpe`` depends on the PyICU package.
+    Sometimes, ``pkg-config`` is not able to find the appropriate ICU installation, like::
+
+        RuntimeError:
+        Please set the ICU_VERSION environment variable to the version of
+        ICU you have installed.
+
+    So, you might try to do things like::
+
+        $ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+        $ pkg-config --modversion icu-i18n
+        63.1
 
 
 *******
