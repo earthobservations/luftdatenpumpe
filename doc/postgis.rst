@@ -1,25 +1,27 @@
-#######
-PostGIS
-#######
-
-Luftdatenpumpe uses a PostGIS ``POINT`` to store the geoposition of LDI stations.
-
-In the query expression examples displayed below, we use the geocoordinates
-``POINT(9.1800132 48.7784485)`` for Stuttgart, Germany.
-
-This coordinate has been returned by asking Nominatim_ for
-`querying Nominatim for city==stuttgart <https://nominatim.hiveeyes.org/search.php?format=jsonv2&addressdetails=1&polygon_text=1&city=stuttgart>`_.
+###############################
+Luftdatenpumpe PostGIS tutorial
+###############################
 
 
 ************
 Introduction
 ************
+Luftdatenpumpe uses a PostGIS ``POINT`` to store the geoposition of LDI stations.
+
+In the query expression examples displayed below, we use the geocoordinates
+``POINT(9.1800132 48.7784485)`` for Stuttgart, Germany.
+
+This coordinate has been returned by
+`querying Nominatim for city==stuttgart <https://nominatim.hiveeyes.org/search.php?format=jsonv2&addressdetails=1&polygon_text=1&city=stuttgart>`_.
+
+
+*******
+Details
+*******
+
+See also:
 - http://postgis.net/workshops/postgis-intro/geography.html
 - http://postgis.net/workshops/postgis-intro/knn.html
-
-In order to enable GIS extensions on your PostgreSQL database, invoke::
-
-    CREATE EXTENSION postgis;
 
 
 Excerpts from the documentation

@@ -1,4 +1,4 @@
-.. image:: https://img.shields.io/badge/Python-2.7,%203.6-green.svg
+.. image:: https://img.shields.io/badge/Python-3.6,%203.7-green.svg
     :target: https://pypi.org/project/luftdatenpumpe/
 
 .. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
@@ -22,12 +22,13 @@
 Luftdatenpumpe
 ##############
 
-Process live and historical data from `luftdaten.info`_. Filter by station-id, sensor-id
-and sensor-type, apply reverse geocoding, store into timeseries and RDBMS_ databases
-(InfluxDB_ and PostGIS_), publish to MQTT_ or just output as JSON.
 
-For running advanced GIS queries against the created PostGIS_ database,
-please follow up at the `GIS documentation <doc-postgis_>`_.
+*****
+About
+*****
+Process live and historical data from `luftdaten.info`_. Filter by station-id, sensor-id
+and sensor-type, apply reverse geocoding, store into TSDB_ and RDBMS_ databases
+(InfluxDB_ and PostGIS_), publish to MQTT_ or just output as JSON.
 
 .. figure:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
     :target: https://github.com/hiveeyes/luftdatenpumpe
@@ -35,9 +36,10 @@ please follow up at the `GIS documentation <doc-postgis_>`_.
     :width: 200px
 
 
-*****
-About
-*****
+********
+Features
+********
+
 1. Luftdatenpumpe_ acquires the measurement readings either from the livedata API
    of `luftdaten.info`_ or from its archived CSV files published to `archive.luftdaten.info`.
    To minimize impact on the upstream servers, all data gets reasonably cached.
@@ -47,49 +49,59 @@ About
 
 3. Then, each station's location information gets enhanced by
 
-    - attaching its geospatial position as a Geohash_.
-    - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
+   - attaching its geospatial position as a Geohash_.
+   - attaching a synthetic real-world address resolved using the reverse geocoding service Nominatim_ by OpenStreetMap_.
 
 4. Information about stations can be
 
-    - displayed on STDOUT or STDERR in JSON format.
-    - filtered and transformed interactively through jq_, the swiss army knife of JSON manipulation.
-    - stored into RDBMS_ databases like PostgreSQL_ using the fine dataset_ package.
-      Being built on top of SQLAlchemy_, this supports all major databases.
+   - displayed on STDOUT or STDERR in JSON format.
+   - filtered and transformed interactively through jq_, the swiss army knife of JSON manipulation.
+   - stored into RDBMS_ databases like PostgreSQL_ using the fine dataset_ package.
+     Being built on top of SQLAlchemy_, this supports all major databases.
+   - queried using advanced geospatial features when running PostGIS_, please
+     follow up reading the `Luftdatenpumpe PostGIS tutorial <doc-postgis_>`_.
 
 5. Measurement readings can be
 
-    - displayed on STDOUT or STDERR in JSON format, which allows for piping into jq_ again.
-    - forwarded to MQTT_.
-    - stored to InfluxDB_ and then
-    - displayed in Grafana_.
+   - displayed on STDOUT or STDERR in JSON format, which allows for piping into jq_ again.
+   - forwarded to MQTT_.
+   - stored to InfluxDB_ and then
+   - displayed in Grafana_.
 
 
 ***********
 Screenshots
 ***********
-Display luftdaten.info (LDI) measurements on Grafana Worldmap Panel.
+Display luftdaten.info (LDI) stations and measurements in Grafana.
 
 
-Worldmap and address
-====================
-Map and station info display. Filter by different synthesized address components and sensor type.
+Filtering
+=========
+- Filter by different synthesized address components and sensor type.
+- Display measurements from filtered stations on Grafana Worldmap Panel.
+- Display filtered list of stations with corresponding information in tabular form.
+- Measurement values are held against configured thresholds so points are colored appropriately.
 
 .. image:: https://community.hiveeyes.org/uploads/default/original/2X/f/f455d3afcd20bfa316fefbe69e43ca2fe159e62d.png
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
 
-Map overlay
+Popup label
 ===========
-Display verbose name from OSM address and station id on overlay.
+- Humanized label computed from synthesized OpenStreetMap address.
+- Numeric station identifier.
+- Measurement value, unit and field name.
 
 .. image:: https://community.hiveeyes.org/uploads/default/original/2X/4/48eeda1a1d418eaf698b241a65080666abcf2497.png
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
 
-*********
-Live data
-*********
+********
+Examples
+********
+Some example installations, usually running live data feeds through them.
+
+.. todo:: Improve, add more dashboards from "weather.hiveeyes.org" and "vmm.hiveeyes.org".
 
 Canonical dashboards
 ====================
@@ -108,203 +120,59 @@ Labs
 ********
 Synopsis
 ********
-
-Overview
-========
 ::
 
     # List stations
     luftdatenpumpe stations --station=28,297 --reverse-geocode
 
-    # Write list of stations and metadata to PostgreSQL database
-    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql:///weatherbase
+    # Store list of stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
+    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
+
+    # Store readings into InfluxDB
+    luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
     # Forward readings to MQTT
     luftdatenpumpe readings --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
 
-For a **full** overview about all program options including meaningful examples,
+
+For a full overview about all program options including meaningful examples,
 you might just want to run ``luftdatenpumpe --help`` on your command line
 or visit `luftdatenpumpe --help`_.
 
-Details
-=======
-::
 
-    Usage:
-      luftdatenpumpe stations [options] [--target=<target>]...
-      luftdatenpumpe readings [options] [--target=<target>]...
-      luftdatenpumpe grafana --kind=<kind> --name=<name> [--variables=<variables>]
-      luftdatenpumpe --version
-      luftdatenpumpe (-h | --help)
-
-    Options:
-      --source=<source>             Data source, either "api" or "file://" [default: api].
-      --station=<stations>          Filter data by given location ids, comma-separated.
-      --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
-      --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
-      --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
-      --target=<target>             Data output target
-      --create-database-view        Create database view like "ldi_view" spanning all tables.
-      --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
-      --progress                    Show progress bar
-      --version                     Show version information
-      --dry-run                     Skip publishing to MQTT bus
-      --debug                       Enable debug messages
-      -h --help                     Show this screen
-
-
-
-*****
-Setup
-*****
-
-
-Configure package repository
-============================
-Hiveeyes is hosting recent releases of InfluxDB and Grafana there.
-We are mostly also running exactly these releases on our production servers.
-
-Add Hiveeyes package repository::
-
-    wget -qO - https://packages.hiveeyes.org/hiveeyes/foss/debian/pubkey.txt | apt-key add -
-
-Add Hiveeyes package repository, e.g. by appending this to ``/etc/apt/sources.list``::
-
-    deb https://packages.hiveeyes.org/hiveeyes/foss/debian/ testing main foundation
-
-Reindex package database::
-
-    apt install apt-transport-https
-    apt update
-
-
-Install packages
-================
-Debian packages::
-
-    apt install postgis redis-server redis-tools influxdb grafana
-
-
-Configure PostgreSQL
-====================
-Create user and database::
-
-    su - postgres
-    createuser --no-createdb --pwprompt hiveeyes
-    createdb --owner hiveeyes weatherbase
-
-Create read-only user::
-
-    psql
-
-    postgres=# \c weatherbase
-    weatherbase=# CREATE ROLE readonly WITH LOGIN PASSWORD 'readonly';
-    weatherbase=# GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO readonly;
-    weatherbase=# GRANT SELECT ON ALL TABLES IN SCHEMA public TO readonly;
-
-.. note::
-
-    This probably has to be performed **after** the database has been created
-    and populated. All the tables and sequences have not been materialized
-    here after all at this point. So please bear with the current state of the
-    documentation and apply some own creativity to the outlined installation
-    process. This is really just a rough guide for moderately experienced users.
-
-
-Configure Redis
-===============
-This program extensively uses a runtime cache based on Redis.
-To make this work best, you should enable data durability with your Redis instance.
-
-    The append-only file is an alternative, fully-durable strategy for Redis. It became available in version 1.1.
-    You can turn on the AOF in your Redis configuration file (e.g. `/etc/redis/redis.conf`)::
-
-        appendonly yes
-
-
-Install Luftdatenpumpe
-======================
-::
-
-    apt install build-essential python3-dev libicu-dev
-
-::
+************
+Installation
+************
+If you are running Python 3 already,
+installing the program should be as easy as::
 
     pip install luftdatenpumpe
 
-.. note::
+At this point, you should be able to conduct simple tests like
+``luftdatenpumpe stations`` as seen in the synopsis section above.
+At least, you should verify the installation succeeded by running::
 
-    We recommend to use a Python `virtualenv <doc-virtualenv_>`_ to install and operate this
-    software independently from your local system-wide Python installation.
+    luftdatenpumpe --version
 
-.. note::
-
-    ``luftdatenpumpe`` depends on the PyICU package.
-    Sometimes, ``pkg-config`` is not able to find the appropriate ICU installation, like::
-
-        RuntimeError:
-        Please set the ICU_VERSION environment variable to the version of
-        ICU you have installed.
-
-    So, you might try to do things like::
-
-        $ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
-        $ pkg-config --modversion icu-i18n
-        63.1
+However, you might have to resolve some prerequisites so you want to follow
+the detailed installation instructions at `install Luftdatenpumpe`_.
 
 
-*******
-Running
-*******
-At this point, you should try to conduct simple tests
-like outlined in the synopsis section above.
+****************
+Luftdaten-Viewer
+****************
+These installation instructions outline how to build a powerful and
+user-friendly interactive GIS system on top of PostGIS, InfluxDB,
+Grafana and Luftdatenpumpe.
 
-After that, you might want to advance into reading about
-`integrating Luftdatenpumpe with Grafana`_ in order to learn about
-how to build such beautiful and interactive map- and graph-compositions.
+This is for all readers who want to learn about how to setup the
+whole system to build such beautiful and interactive data
+visualization compositions of map-, graph- and other panel-widgets
+like outlined in the "Examples" section.
 
-
-
-**********
-References
-**********
-
-luftdaten.info
-==============
-- http://luftdaten.info/
-- http://archive.luftdaten.info/
-- http://deutschland.maps.luftdaten.info/
-
-Resources
-=========
-- `opendata-stuttgart/sensors-software: Support for InfluxDB and MQTT as backend <https://github.com/opendata-stuttgart/sensors-software/issues/33#issuecomment-272711445>`_.
-- https://getkotori.org/docs/applications/luftdaten.info/
-- https://community.hiveeyes.org/t/datenmischwerk/702
-- https://community.hiveeyes.org/t/environmental-metadata-library/1190
-- https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-- https://community.hiveeyes.org/t/ldi-dataplane-v2/1412
-
-Technologies
-============
-Standing on the shoulders of giants.
-
-Databases
----------
-- https://github.com/influxdata/influxdb
-- https://dataset.readthedocs.io/
-- https://www.sqlalchemy.org/
-- https://www.postgresql.org/
-- https://postgis.net/
-- https://github.com/pramsey/pgsql-http
-- https://redis.io/
-
-Software and services
----------------------
-- https://github.com/grafana/grafana
-- https://grafana.com/plugins/grafana-worldmap-panel
-- https://en.wikipedia.org/wiki/Geohash
-- https://nominatim.org/
-
+- `Luftdaten-Viewer Applications`_
+- `Luftdaten-Viewer Databases`_
+- `Luftdaten-Viewer Grafana`_
 
 
 *******
@@ -345,8 +213,13 @@ Icons and pictograms
 
 .. _luftdaten.info: https://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
-.. _integrating Luftdatenpumpe with Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/grafana.rst
-.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/running.rst
+
+.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/usage.rst
+.. _install Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/luftdatenpumpe.rst
+.. _Luftdaten-Viewer Applications: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications.rst
+.. _Luftdaten-Viewer Databases: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-databases.rst
+.. _Luftdaten-Viewer Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-grafana.rst
+
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 
 .. _The Hiveeyes Project: https://hiveeyes.org/
@@ -356,6 +229,7 @@ Icons and pictograms
 .. _Geohash: https://en.wikipedia.org/wiki/Geohash
 .. _dataset: https://dataset.readthedocs.io/
 .. _SQLAlchemy: https://www.sqlalchemy.org/
+.. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _MQTT: http://mqtt.org/
 

@@ -6,6 +6,10 @@ Luftdatenpumpe backlog
 ******
 Prio 1
 ******
+- [o] Add "read this section carefully" to documentation pages
+- [o] Add Sphinx documentation renderer, publish to /doc/luftdatenpumpe
+- [o] Add more "About us" to luftdaten-info-trend dashboard
+- [o] Use different tile server- and/or style?
 - [o] Add PM2.5 panel again?
 - [o] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
 - [o] Add "ALL" option for "Choose multiple stations" chooser
@@ -18,6 +22,7 @@ Prio 1
     - search_proximity
     - evaluate_near_sensors
 
+- [o] Add supervisord configuration (or Docker container) for running Redis, PostGIS, InfluxDB and Grafana
 - [o] Decrease logo size: https://pypi.org/project/luftdatenpumpe/
 - [o] Spatial index on a geography table::
 
@@ -31,6 +36,7 @@ Prio 1
 - [o] Progressbar for emitting data to target subsystems
 - [o] Better zoom level selector for map widgets. Autozoom by station selector?
 - [o] Larger form field sizes, e.g. for "query", see https://weather.hiveeyes.org/grafana/d/EWFuSqlmz/ldi-6-gis-distance-by-threshold?editview=templating&orgId=1&panelId=&fullscreen=&edit=dlslöö
+- [o] ``make clear-cache``
 
 
 ****
