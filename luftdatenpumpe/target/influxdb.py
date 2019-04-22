@@ -16,7 +16,7 @@ class InfluxDBStorage:
 
     capabilities = ['readings']
 
-    def __init__(self, dsn, measurement='ldi_readings', empty_tables=False, dry_run=False):
+    def __init__(self, dsn, measurement='ldi_readings', dry_run=False):
 
         self.dry_run = dry_run
         self.measurement = measurement
@@ -24,6 +24,7 @@ class InfluxDBStorage:
         self.buffer = []
         self.is_udp = False
 
+        # TODO: Use timeout value from settings.
         dsn_parts = urlparse(dsn)
         if dsn_parts.scheme.startswith('udp+'):
             self.is_udp = True

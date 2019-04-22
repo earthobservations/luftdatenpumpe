@@ -153,7 +153,7 @@ def reverse_geocode_fallback(latitude, longitude):
         # This has been fixed in geopy-1.12.0.
         # https://operations.osmfoundation.org/policies/nominatim/
         # https://github.com/geopy/geopy/issues/185
-        geolocator = Nominatim(user_agent=nominatim_user_agent)
+        geolocator = Nominatim(user_agent=nominatim_user_agent, timeout=3.0)
 
         # FIXME: When using "HTTP_PROXY" from environment, use scheme='http'
         # export HTTP_PROXY=http://weather.hiveeyes.org:8912/

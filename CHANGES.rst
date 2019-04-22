@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Improve RDBMS subsystem
+- Improve robustness, logging and error handling
 
 
 2019-04-10 0.9.0

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
-# (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
+# (c) 2017-2019 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import re
 import sys
@@ -48,12 +48,16 @@ class LuftdatenPumpe:
             cache_name='api.luftdaten.info', backend='redis', expire_after=300,
             user_agent=user_agent)
 
-        # Probe Redis for availability.
-        try:
-            self.session.cache.responses.get('test')
-        except redis.exceptions.ConnectionError as ex:
-            log.error('Unable to connect to Redis: %s', ex)
-            sys.exit(2)
+        # Disable request cache by overriding it with a vanilla requests session.
+        #import requests; self.session = requests.Session()
+
+        # Gracefully probe Redis for availability if cache is enabled.
+        if hasattr(self.session, 'cache'):
+            try:
+                self.session.cache.responses.get('test')
+            except redis.exceptions.ConnectionError as ex:
+                log.error('Unable to connect to Redis: %s', ex)
+                sys.exit(2)
 
     def get_readings(self):
 
@@ -212,24 +216,33 @@ class LuftdatenPumpe:
 
     def request_live_data(self):
 
-        log.info('Requesting Live API at {}'.format(self.uri))
+        # Fetch data from remote API.
+        log.info('Requesting luftdaten.info live API at {}'.format(self.uri))
         payload = self.session.get(self.uri).content.decode('utf-8')
         data = json.loads(payload)
         #pprint(data)
 
+        # Mungle timestamp to be formally in ISO 8601 format (UTC).
         timestamp = self.convert_timestamp(data[0]['timestamp'])
         log.info('Timestamp of first record: {}'.format(timestamp))
 
-        iterator = self.apply_filter(data)
+        # Apply data filter.
+        data = self.apply_filter(data)
+
+        # Optionally, add progress reporting.
         if self.progressbar:
-            iterator = tqdm(list(iterator))
+            data = list(data)
+            log.info('Acquired #{} items from luftdaten.info live API'.format(len(data)))
+            data = tqdm(data)
 
-        for item in iterator:
+        # Transform live API items to actual readings while optionally
+        # applying a number of transformation and enrichment steps.
+        for item in data:
             try:
-
                 reading = self.make_reading(item)
                 if reading is None:
                     continue
+
                 yield reading
 
             except Exception as ex:
