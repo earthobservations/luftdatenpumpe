@@ -25,10 +25,11 @@ requires = [
 
     # Adapters
     'paho-mqtt==1.4.0',
-    'dataset==1.1.0',
+    'dataset==1.1.2',
     'psycopg2-binary==2.7.6.1',
     'GeoAlchemy2==0.5.0',
     'influxdb==5.2.1',
+    'SQLAlchemy-Utils==0.33.11',
 
     # Geospatial
     'geohash2==1.1',

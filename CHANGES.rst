@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Improve RDBMS subsystem
 
 
 2019-04-10 0.9.0

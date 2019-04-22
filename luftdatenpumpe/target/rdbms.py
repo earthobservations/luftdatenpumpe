@@ -3,52 +3,126 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
-import dataset
 from copy import deepcopy
 from collections import OrderedDict
+
+import dataset
+from munch import munchify
 from geoalchemy2 import Geometry    # Pulls in PostGIS capabilities into SQLAlchemy
+from sqlalchemy_utils import drop_database
 
 log = logging.getLogger(__name__)
+
+
+class DatabaseError(Exception):
+    pass
 
 
 class RDBMSStorage:
 
     capabilities = ['stations']
 
-    def __init__(self, uri, empty_tables=False, dry_run=False):
+    artefacts = munchify([
+        {'name': 'ldi_stations', 'type': 'table', 'primary_id': 'station_id'},
+        {'name': 'ldi_osmdata', 'type': 'table', 'primary_id': 'station_id'},
+        {'name': 'ldi_sensors', 'type': 'table', 'primary_id': 'sensor_id'},
+        {'name': 'ldi_network', 'type': 'view'},
+    ])
+
+    def __init__(self, uri, dry_run=False):
 
         self.dry_run = dry_run
 
         # Connect to database.
         self.db = dataset.connect(uri)
 
-        # Add PostGIS extension.
-        self.db.query('CREATE EXTENSION IF NOT EXISTS postgis')
+        # Ping database.
+        self.ping_database()
 
-        # Optionally, empty all tables.
-        if empty_tables:
-            for tablename in self.db.tables:
-                if tablename.startswith('ldi_'):
-                    self.db.query('DELETE FROM {}'.format(tablename))
+        # Check for PostGIS extension.
+        self.ensure_postgis()
 
-        # Create tables.
-        self.db.create_table('ldi_stations', primary_id='station_id')
-        self.db.create_table('ldi_osmdata', primary_id='station_id')
-        self.db.create_table('ldi_sensors', primary_id='sensor_id')
+        # Deploy the database schema.
+        self.ensure_schema()
+
+        self.tame_library_loggers()
 
         # Assign table handles.
         self.stationtable = self.db['ldi_stations']
         self.sensorstable = self.db['ldi_sensors']
         self.osmtable = self.db['ldi_osmdata']
 
-        # Add "geopoint" field to table.
-        self.db.query('ALTER TABLE ldi_stations ADD COLUMN IF NOT EXISTS "geopoint" geography(Point)')
-
     def emit(self, station):
         return self.store_station(station)
 
     def flush(self, final=False):
         pass
+
+    def ping_database(self):
+        failure = None
+        try:
+            self.db.query('SELECT TRUE;')
+
+        except Exception as ex:
+            failure = f'Database operation failed. Reason: {ex}'
+            log.exception(failure, exc_info=False)
+
+        if failure:
+            raise DatabaseError(failure)
+
+    def ensure_postgis(self):
+
+        # TODO: Add PostGIS extension. However, this requires superuser permissions.
+        # self.db.query('CREATE EXTENSION IF NOT EXISTS postgis')
+
+        failure = None
+        try:
+            result = self.db.query('SELECT PostGIS_Full_Version();')
+            postgis_full_version = list(result)[0]['postgis_full_version']
+            log.info(f'PostGIS version: {postgis_full_version}')
+
+        except Exception as ex:
+
+            message = 'Database operation failed'
+            if 'function postgis_full_version() does not exist' in str(ex):
+                message = 'PostGIS extension not installed'
+
+            failure = f'{message}. Reason: {ex}'
+            log.exception(failure, exc_info=False)
+
+        if failure:
+            raise DatabaseError(failure)
+
+    def ensure_schema(self):
+
+        # Create tables.
+        for tableinfo in self.tableinfos:
+            self.db.create_table(tableinfo.name, primary_id=tableinfo.primary_id)
+
+        # FIXME: Funny enough, this workaround helps after upgrading to PostgreSQL 11.
+        repr(self.db._tables)
+
+        # Enforce "ldi_osmdata.osm_id" and "ldi_osmdata.osm_place_id" to be of "bigint" type.
+        # Otherwise: ``psycopg2.DataError: integer out of range`` with 'osm_id': 2678458514
+        ldi_osmdata = self.db.get_table('ldi_osmdata')
+        ldi_osmdata.create_column('osm_id', self.db.types.bigint)
+        ldi_osmdata.create_column('osm_place_id', self.db.types.bigint)
+
+        # Manually add "geopoint" field to the table because the "dataset"
+        # package does not implement appropriate heuristics for that.
+        self.db.query('ALTER TABLE ldi_stations ADD COLUMN IF NOT EXISTS "geopoint" geography(Point)')
+
+    @property
+    def tableinfos(self):
+        for artefact in self.artefacts:
+            if artefact.type == 'table':
+                yield artefact
+
+    @property
+    def viewinfos(self):
+        for artefact in self.artefacts:
+            if artefact.type == 'view':
+                yield artefact
 
     def store_station(self, station):
 
@@ -143,9 +217,9 @@ class RDBMSStorage:
         #log.info('SQLAlchemy dialects: %s', results)
         return results
 
-    def create_view(self):
+    def create_views(self):
 
-        # Inquire osmdata fields.
+        # Inquire fields from osmdata table.
         osmdata = self.db.query("""
             SELECT concat(TABLE_NAME, '.', COLUMN_NAME) AS name
             FROM INFORMATION_SCHEMA.COLUMNS
@@ -181,4 +255,67 @@ class RDBMSStorage:
             ORDER BY
               osm_country_code, state_and_city, name_and_id, sensor_type
         """.format(osmdata_columns_expression)
+
         self.db.query(view)
+
+    def grant_read_privileges(self, user):
+        sql = """
+        GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {user};
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO {user};
+        """.format(user=user)
+        self.db.query(sql)
+
+    def drop_tables(self):
+        log.info('Dropping views and tables in database %s', self.db)
+
+        for viewinfo in self.viewinfos:
+            self.db.query('DROP VIEW IF EXISTS {}'.format(viewinfo.name))
+
+        for tableinfo in self.tableinfos:
+            table = self.db.get_table(tableinfo.name)
+            table.drop()
+
+    def drop_database(self):
+        drop_database(self.db.engine.url)
+
+    def drop_data(self):
+        """
+        Prune data from all tables.
+        """
+        for tablename in self.db.tables:
+            if tablename.startswith('ldi_'):
+                log.info('Deleting data from table {}'.format(tablename))
+                self.db.query('DELETE FROM {}'.format(tablename))
+
+    def get_all_view_names(self):
+        from sqlalchemy import inspect
+        inspector = inspect(self.db.engine)
+        return inspector.get_view_names()
+
+    def get_database_name(self):
+        raise NotImplementedError('Defunct.')
+
+        # https://stackoverflow.com/questions/53554458/sqlalchemy-get-database-name-from-engine/53558430#53558430
+        from sqlalchemy import inspect
+        inspector = inspect(self.db.engine)
+        print(inspector)
+        print(dir(inspector))
+        print('url:', self.db.engine.url)
+        #name = inspector.default_schema_name
+        name = inspector.name
+        return name
+
+    def get_all_table_names(self):
+        raise NotImplementedError('Defunct.')
+
+        for table in self.db._tables.values():
+            log.info('Dropping table %s', table.name)
+            try:
+                table.drop()
+            except:
+                log.warning('Skipped dropping table/view "%s"', table.name)
+
+    @staticmethod
+    def tame_library_loggers():
+        logger = logging.getLogger('alembic.runtime.migration')
+        logger.disabled = True

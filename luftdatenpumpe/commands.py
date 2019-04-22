@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-# (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
-# (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
+# (c) 2017-2019 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
+# (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import sys
 import json
@@ -10,7 +11,7 @@ from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.grafana import get_artefact
 from luftdatenpumpe.target import resolve_target_handler
-from luftdatenpumpe.util import normalize_options, setup_logging, read_list, read_pairs
+from luftdatenpumpe.util import normalize_options, setup_logging, read_list, read_pairs, exception_traceback
 from luftdatenpumpe.core import LuftdatenPumpe
 from luftdatenpumpe.engine import LuftdatenEngine
 
@@ -22,6 +23,7 @@ def run():
     Usage:
       luftdatenpumpe stations [options] [--target=<target>]...
       luftdatenpumpe readings [options] [--target=<target>]...
+      luftdatenpumpe database [--target=<target>]... [--create-views] [--grant-user=<username>] [--drop-data] [--drop-tables] [--drop-database]
       luftdatenpumpe grafana --kind=<kind> --name=<name> [--variables=<variables>]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
@@ -34,7 +36,6 @@ def run():
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
-      --create-database-view        Create database view like "ldi_view" spanning all tables.
       --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
@@ -130,16 +131,53 @@ def run():
     # Debugging
     #log.info('Options: {}'.format(json.dumps(options, indent=4)))
 
+    # A. Maintenance targets
+    run_maintenance(options)
 
-    # A. Utility targets
+    # B. Data processing targets
+    run_engine(options)
 
-    # Create database view and exit.
-    if options['create-database-view']:
-        log.info('Creating database view')
+
+def run_maintenance(options):
+
+    # A. Maintenance targets
+    # Create database view "ldi_network" spanning all "ldi_*" tables.
+    if options['database']:
+
+        if not options['target']:
+            message = 'No target for database operation given'
+            log.error(message)
+            raise NotImplementedError(message)
+
         for target in options['target']:
             if target.startswith('postgresql:'):
                 handler = resolve_target_handler(target)
-                handler.create_view()
+
+                try:
+
+                    if options['drop-data']:
+                        handler.drop_data()
+
+                    if options['drop-tables']:
+                        handler.drop_tables()
+
+                    if options['drop-database']:
+                        handler.drop_database()
+
+                    if options['create-views']:
+                        log.info('Creating database views')
+                        handler.create_views()
+
+                    if options['grant-user']:
+                        log.info('Granting read privileges to "%s"', options['grant-user'])
+                        handler.grant_read_privileges(options['grant-user'])
+
+                except Exception as ex:
+                    log.exception('Database operation failed. Reason: %s', ex, exc_info=False)
+
+            else:
+                log.warning('Can not run database operation on "%s"', target)
+
         sys.exit()
 
     # Generate Grafana datasource and dashboard JSON and exit.
@@ -147,11 +185,13 @@ def run():
         options.variables = read_pairs(options.variables)
         log.info('Generating Grafana artefact '
                  'kind={}, name={}, variables={}'.format(
-                    options.kind, options.name, json.dumps(options.variables)))
+            options.kind, options.name, json.dumps(options.variables)))
         thing = get_artefact(options.kind, options.name, variables=options.variables)
         print(thing)
         sys.exit()
 
+
+def run_engine(options):
 
     # B. Data processing targets
 
@@ -222,5 +262,10 @@ def run():
 
     # Create and run output processing engine.
     log.info('Will publish data to {}'.format(options['target']))
-    engine = LuftdatenEngine(kind, options['target'], options.get('dry-run', False))
+    engine = LuftdatenEngine(
+        kind,
+        options['target'],
+        progressbar=options['progress'],
+        dry_run=options.get('dry-run', False)
+    )
     engine.process(data)
