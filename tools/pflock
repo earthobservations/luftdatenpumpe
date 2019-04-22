@@ -1,0 +1,12 @@
+#!/bin/bash
+# "pflock" prevents multiple invocations of the same program
+
+echoerr() { echo "$@" 1>&2; }
+#echoerr() { /usr/bin/logger "$@"; }
+
+program=$1
+name=$( basename $program )
+shift
+command="${program} $@"
+echoerr "pflock is running command: ${command}"
+flock -xn "/var/lock/program-${name}.pflock" -c "${command}"

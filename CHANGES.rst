@@ -8,6 +8,7 @@ in progress
 - Improve RDBMS subsystem
 - Improve robustness, logging and error handling
 - Add resources and documentation for running as cron job
+- Allow customizing the Grafana panels from the command line
 
 
 2019-04-10 0.9.0

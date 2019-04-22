@@ -1,0 +1,39 @@
+# /etc/cron.d/luftdatenpumpe
+
+# Feed data from environmental information services into the system.
+#
+# See also:
+# - https://github.com/hiveeyes/luftdatenpumpe
+# - https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
+
+# ATTENTION: DISABLED due to maintenance work.
+#exit
+
+# Configure shell and $PATH.
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Suppress all emails.
+# Otherwise, the file `/var/spool/mail/mail`
+# will grow by about 1GB in just two days!
+MAILTO=""
+
+# m	h	dom mon dow	user	command
+
+
+# -----------------------
+# luftdaten.info (LDI) v2
+# -----------------------
+
+# Acquire live data from luftdaten.info JSON API and store into PostGIS and InfluxDB.
+
+rdbms_uri="postgresql://luftdatenpumpe@localhost/weatherbase"
+tsdb_uri="influxdb://luftdatenpumpe@localhost/luftdaten_info"
+ldi_stations_file="/var/lib/grafana/data/json/ldi-stations.json"
+
+# Produce station list once a day at 00:30
+30	0	* * *		workbench	pflock luftdatenpumpe stations --reverse-geocode --target=${rdbms_uri}
+45	0	* * *		grafana		pflock luftdatenpumpe stations --source=${rdbms_uri} --target=json.grafana.kn+stream://sys.stdout | safewrite ${ldi_stations_file}
+
+# Run data import each 10 minutes
+*/10	*	* * *	workbench	pflock luftdatenpumpe readings --target=${tsdb_uri} >/dev/null 2>&1

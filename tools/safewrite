@@ -1,0 +1,19 @@
+#!/bin/bash
+# "safewrite" writes stdin to file only when yielding data
+
+output=$1
+shift
+
+buffer="$(cat -)"
+
+echoerr() { echo "$@" 1>&2; }
+
+#echo "buffer: ${buffer}"
+if [[ ! -z "$buffer" ]]; then
+  #echo good
+  echoerr "Writing to $output"
+  echo "$buffer" > $output
+  echoerr "Writing to $output succeeded"
+else
+  echoerr "Writing to $output failed"
+fi
