@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-04-22 0.10.0
+=================
 - Improve RDBMS subsystem
 - Improve robustness, logging and error handling
 - Add resources and documentation for running as cron job
