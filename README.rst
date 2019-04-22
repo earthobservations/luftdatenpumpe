@@ -219,6 +219,7 @@ Icons and pictograms
 .. _Luftdaten-Viewer Applications: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications.rst
 .. _Luftdaten-Viewer Databases: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-databases.rst
 .. _Luftdaten-Viewer Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-grafana.rst
+.. _Luftdaten-Viewer Cron Job: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-cronjob.rst
 
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 

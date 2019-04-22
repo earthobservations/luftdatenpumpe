@@ -2,51 +2,17 @@
 Luftdaten-Viewer Applications
 #############################
 
-**********
-Foundation
-**********
 
-Configure package repository
-============================
-Hiveeyes is hosting recent releases of InfluxDB and Grafana there.
-We are mostly also running exactly these releases on our production servers.
+*******
+Install
+*******
+- `Luftdaten-Viewer Applications for Debian`_
+- `Luftdaten-Viewer Applications for CentOS`_
+- `Luftdaten-Viewer Applications for macOS`_
 
-Add Hiveeyes package repository::
-
-    wget -qO - https://packages.hiveeyes.org/hiveeyes/foss/debian/pubkey.txt | apt-key add -
-
-Add Hiveeyes package repository, e.g. by appending this to ``/etc/apt/sources.list``::
-
-    deb https://packages.hiveeyes.org/hiveeyes/foss/debian/ testing main foundation
-
-Reindex package database::
-
-    apt install apt-transport-https
-    apt update
-
-
-Install packages
-================
-
-Debian
-------
-::
-
-    apt install influxdb postgis redis-server redis-tools grafana
-
-CentOS
-------
-::
-
-    rpm -Uvh https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
-    yum -y install postgresql11-server postgis2_11
-
-
-macOS/Homebrew
---------------
-::
-
-    brew install influxdb postgis redis grafana
+.. _Luftdaten-Viewer Applications for Debian: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications-debian.rst
+.. _Luftdaten-Viewer Applications for CentOS: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications-centos.rst
+.. _Luftdaten-Viewer Applications for macOS: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications-macos.rst
 
 
 Configure Redis

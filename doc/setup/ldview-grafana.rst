@@ -99,9 +99,11 @@ Prerequisites
     http --session=grafana $GRAFANA_URL --auth=admin:admin
 
 
-.. note:: When running on localhost, use this URL instead::
+.. note::
 
-    export GRAFANA_URL=http://localhost:3000
+    When running on localhost, use this URL instead::
+
+        export GRAFANA_URL=http://localhost:3000
 
 Datasources
 ===========

@@ -20,6 +20,11 @@ Enable PostGIS extension::
     psql weatherbase
     CREATE EXTENSION postgis;
 
+Optionally drop users first::
+
+    DROP ROLE IF EXISTS luftdatenpumpe;
+    DROP ROLE IF EXISTS grafana;
+
 Create users::
 
     CREATE ROLE luftdatenpumpe WITH LOGIN;
@@ -53,9 +58,7 @@ Database schema
 As visible by an administrator.
 ::
 
-    $ psql -U luftdatenpumpe -h localhost -d weatherbase
-
-    weatherbase=> \dtv ldi_*
+    psql -U luftdatenpumpe -h localhost -d weatherbase --command '\dtv ldi_*'
 
                    List of relations
      Schema |     Name     | Type  |     Owner
@@ -88,6 +91,7 @@ Create and provision InfluxDB database
 ::
 
     luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+
 
 Sanity checks
 =============
