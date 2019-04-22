@@ -5,7 +5,7 @@
     "uid": null,
     "version": 0,
     "schemaVersion": 16,
-    "title": "luftdaten.info trend",
+    "title": "{{ dashboardTitle or "luftdaten.info trend" }}",
     "tags": ["luftdaten.info", "trend"],
     "timezone": "browser",
     "editable": false,
