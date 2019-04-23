@@ -40,3 +40,24 @@ Python
 - https://github.com/fabaff/python-luftdaten
 - https://pypi.org/project/airqdata/
 - https://github.com/dr-1/airqdata
+
+
+Misc
+====
+- http://www.ise.tu-berlin.de/fileadmin/fg308/publications/2018/borges_et_al_open_enviromental_data.pdf
+- http://aircitizen.org/en/
+- http://www.openmaps.online/LuftdatenInfoTimeslider/
+- https://github.com/OpenDEM/LuftdatenInfoTimeslider
+- https://smartplatform.readthedocs.io/
+- https://buildmedia.readthedocs.org/media/pdf/smartplatform/latest/smartplatform.pdf
+- https://justobjects.nl/category/smartemission/
+- https://justobjects.nl/emit-6-airsenseur-calibration/
+- https://smartemission.nl/
+- https://data.smartemission.nl/
+- https://data.smartemission.nl/smartapp/
+- https://data.smartemission.nl/heron
+- https://heron-mc.org/
+- https://data.smartemission.nl/grafana/d/kHCobhViz/allsensordata
+- https://data.smartemission.nl/grafana-dc/d/HVSBmbHmz/airsenseur-netherlands-deploy
+- https://github.com/luftdata
+- https://luftdata.se/

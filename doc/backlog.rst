@@ -6,16 +6,27 @@ Luftdatenpumpe backlog
 ******
 Prio 1
 ******
+
+
+*************
+Documentation
+*************
 - [o] Add "read this section carefully" to documentation pages
-- [o] Add Sphinx documentation renderer, publish to /doc/luftdatenpumpe
+- [o] Add Sphinx documentation renderer, publish to hiveeyes.org/doc/luftdatenpumpe
 - [o] Add more "About us" to luftdaten-info-trend dashboard
-- [o] Use different tile server- and/or style?
-- [o] Add PM2.5 panel again?
-- [o] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
-- [o] Add "ALL" option for "Choose multiple stations" chooser
 - [o] Cross-reference map- and trend-dashboards
 - [o] Link to https://pypi.org/project/luftdaten/ and https://github.com/dr-1/airqdata
 - [o] Remark about database license from https://github.com/dr-1/airqdata
+- [o] Decrease logo size: https://pypi.org/project/luftdatenpumpe/
+- [o] Announce @ GitHub: ``luftdatenpumpe readings --station=28 --target=mqtt://mqtt.example.org/luftdaten.info/testdrive --target=stream://sys.stdout | jq .``
+
+
+********
+Prio 1.5
+********
+- [o] Use different tile server- and/or style?
+- [o] Add PM2.5 panel again?
+- [o] Add "ALL" option for "Choose multiple stations" chooser
 - [o] https://github.com/dr-1/airqdata/blob/master/airqdata/luftdaten.py
 
     - clean_measurements
@@ -23,7 +34,6 @@ Prio 1
     - evaluate_near_sensors
 
 - [o] Add supervisord configuration (or Docker container) for running Redis, PostGIS, InfluxDB and Grafana
-- [o] Decrease logo size: https://pypi.org/project/luftdatenpumpe/
 - [o] Spatial index on a geography table::
 
         CREATE INDEX nyc_subway_stations_geog_gix
@@ -31,40 +41,15 @@ Prio 1
 
     -- http://postgis.net/workshops/postgis-intro/geography.html
 
-- [o] Announce @ GitHub: ``luftdatenpumpe readings --station=28 --target=mqtt://mqtt.example.org/luftdaten.info/testdrive --target=stream://sys.stdout | jq .``
 - [o] Add stored procedure "osm_city_live" using the HTTP API.
-- [o] Progressbar for emitting data to target subsystems
 - [o] Better zoom level selector for map widgets. Autozoom by station selector?
 - [o] Larger form field sizes, e.g. for "query", see https://weather.hiveeyes.org/grafana/d/EWFuSqlmz/ldi-6-gis-distance-by-threshold?editview=templating&orgId=1&panelId=&fullscreen=&edit=dlslöö
 - [o] ``make clear-cache``
 
 
-****
-Prod
-****
-::
-
-    2019-01-23 16:08:45,230 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T02:51:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
-    Traceback (most recent call last):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
-        if not self.csvdata_to_reading(record, reading, fieldnames):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
-        reading.data[fieldname] = float(value)
-    ValueError: could not convert string to float: '985.56 1541213415071633'
-
-    2019-01-23 16:08:45,282 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T08:52:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
-    Traceback (most recent call last):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
-        if not self.csvdata_to_reading(record, reading, fieldnames):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
-        reading.data[fieldname] = float(value)
-    ValueError: could not convert string to float: '985.97 1541235075187801'
-
-
-
-********
-Prio 1.5
-********
+******
+Prio 2
+******
 - [o] grafanimate: Monthly gif for fast progress and daily video for atmo.
 - [o] grafanimate: Add "coverage" dashboard
 - [o] grafanimate: Render 2015-2018 for each year
@@ -79,9 +64,9 @@ Prio 1.5
     - https://france.maps.luftdaten.info/
 
 
-******
-Prio 2
-******
+********
+Prio 2.5
+********
 - [o] Use https://grafana.com/plugins/ryantxu-ajax-panel to show other content
 - [o] What to do with high P1/P2 values > 1.000 and more?
 - [o] CSV import: Add more sensor types
@@ -233,3 +218,25 @@ Done
         geohash = geohash2.encode(float(latitude), float(longitude))
     TypeError: float() argument must be a string or a number, not 'NoneType'
 
+- [x] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
+- [x] Progressbar for emitting data to target subsystems
+
+Spotted this::
+
+    2019-01-23 16:08:45,230 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T02:51:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+    Traceback (most recent call last):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+        if not self.csvdata_to_reading(record, reading, fieldnames):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+        reading.data[fieldname] = float(value)
+    ValueError: could not convert string to float: '985.56 1541213415071633'
+
+    2019-01-23 16:08:45,282 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T08:52:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+    Traceback (most recent call last):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+        if not self.csvdata_to_reading(record, reading, fieldnames):
+      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+        reading.data[fieldname] = float(value)
+    ValueError: could not convert string to float: '985.97 1541235075187801'
+
+Update: Seems to work already, see ``luftdatenpumpe readings --network=ldi --sensor=17950 --reverse-geocode``.

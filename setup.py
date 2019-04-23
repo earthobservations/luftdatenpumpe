@@ -90,11 +90,14 @@ setup(name='luftdatenpumpe',
       author_email='andreas@hiveeyes.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
       keywords='luftdaten luftdaten.info air quality particulate matter pollution '
+               'sensor network observation '
                'opendata data acquisition transformation export '
-               'postgis postgresql influxdb grafana http rest json '
+               'geospatial temporal timeseries '
+               'http rest json api '
                'rdbms sql mysql '
                'mosquitto mqtt '
-               'openstreetmap nominatim',
+               'openstreetmap nominatim '
+               'postgis postgresql influxdb grafana 52north',
       packages=find_packages(),
       include_package_data=True,
       package_data={

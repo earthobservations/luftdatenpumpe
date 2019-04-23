@@ -72,7 +72,7 @@ Features
 ***********
 Screenshots
 ***********
-Display luftdaten.info (LDI) stations and measurements in Grafana.
+Luftdaten-Viewer displays stations and measurements from luftdaten.info (LDI) in Grafana.
 
 
 Filtering
@@ -101,12 +101,28 @@ Examples
 ********
 Some example installations, usually running live data feeds through them.
 
-.. todo:: Improve, add more dashboards from "weather.hiveeyes.org" and "vmm.hiveeyes.org".
 
-Canonical dashboards
-====================
-- `Feinstaub Verlauf <https://weather.hiveeyes.org/grafana/d/ioUrPwQiz/luftdaten-info-verlauf>`_
-- `Feinstaub Karte <https://weather.hiveeyes.org/grafana/d/AOerEQQmk/luftdaten-info-karte>`_
+luftdaten.info
+==============
+Implemented by `luftdaten_info.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/luftdaten_info.py>`_
+
+Dashboards
+----------
+- `LDI Feinstaub Karte Europa <https://weather.hiveeyes.org/grafana/d/AOerEQQmk/luftdaten-info-karte>`_
+- `LDI Feinstaub Verlauf <https://weather.hiveeyes.org/grafana/d/ioUrPwQiz/luftdaten-info-verlauf>`_
+- `Vergleich LDI Umweltdaten vs. DWD Wetterdaten <https://weather.hiveeyes.org/grafana/d/NP0wTOtmk/weather-hiveeyes-org>`_
+- `Vergleich LDI Feuchtigkeitswerte BME280 vs. DHT22 mit DWD-Daten <https://weather.hiveeyes.org/grafana/d/BJo-dOfik/vergleich-bme280-and-dht22-sensoren-mit-dwd>`_
+- `LDI Karte und Kompensation <https://weather.hiveeyes.org/grafana/d/FUygU7_mk/wtf-ldi-karte-und-kompensation-dev>`_
+- `LDI Feuchtekorrektur PM10 <https://weather.hiveeyes.org/grafana/d/IgmFilaiz/wtf-pm10-feuchtekorrektur-ldi>`_
+
+References
+----------
+- https://luftdaten.info/
+- https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+- https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
+
+
+
 
 Labs
 ====
@@ -122,17 +138,20 @@ Synopsis
 ********
 ::
 
-    # List stations
-    luftdatenpumpe stations --station=28,297 --reverse-geocode
+    # List networks
+    luftdatenpumpe networks
 
-    # Store list of stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
-    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
+    # List LDI stations
+    luftdatenpumpe stations --network=ldi --station=28,297 --reverse-geocode
 
-    # Store readings into InfluxDB
-    luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+    # Store list of LDI stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
+    luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
-    # Forward readings to MQTT
-    luftdatenpumpe readings --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
+    # Store LDI readings into InfluxDB
+    luftdatenpumpe readings --network=ldi --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+
+    # Forward LDI readings to MQTT
+    luftdatenpumpe readings --network=ldi --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
 
 
 For a full overview about all program options including meaningful examples,
