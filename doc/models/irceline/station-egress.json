@@ -1,0 +1,63 @@
+{
+  "station_id": 1220,
+  "station_label": "45R511 - Marcinelle",
+  "position": {
+    "latitude": 50.37759210212818,
+    "longitude": 4.424700450402466,
+    "country": "BE",
+    "geohash": "u0gnsdvywzzf"
+  },
+  "location": {
+    "place_id": 98755272,
+    "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+    "osm_type": "way",
+    "osm_id": 103728360,
+    "lat": "50.3772511",
+    "lon": "4.42524475",
+    "display_name": "R.C.S.C. Charleroi (centre d'entrainement de l'\u00e9cole des jeunes), Rue du Bois Plant\u00e9, Marcinelle, Charleroi, Hainaut, Wallonie, 6001, Belgi\u00eb / Belgique / Belgien",
+    "boundingbox": [
+      "50.3767152",
+      "50.377787",
+      "4.4245479",
+      "4.4259416"
+    ],
+    "address": {
+      "country_code": "BE",
+      "country": "Belgi\u00eb / Belgique / Belgien",
+      "state": "Wallonie",
+      "county": "Charleroi",
+      "postcode": "6001",
+      "city": "Charleroi",
+      "city_district": "Marcinelle",
+      "road": "Rue du Bois Plant\u00e9"
+    },
+    "address_more": {
+      "pitch": "R.C.S.C. Charleroi (centre d'entrainement de l'\u00e9cole des jeunes)"
+    }
+  },
+  "name": "Rue du Bois Plant\u00e9, Marcinelle, Charleroi, Wallonie, BE",
+  "sensors": [
+    {
+      "sensor_id": 7152,
+      "sensor_phenomenon_id": 6001,
+      "sensor_phenomenon_label": "Particulate Matter < 2.5 \u00b5m",
+      "sensor_procedure_id": 7152,
+      "sensor_procedure_label": "7152 - GRIMM - procedure",
+      "sensor_feature_id": 1220,
+      "sensor_feature_label": "45R511 - Marcinelle",
+      "sensor_service_id": 1,
+      "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+    },
+    {
+      "sensor_id": 7151,
+      "sensor_phenomenon_id": 5,
+      "sensor_phenomenon_label": "Particulate Matter < 10 \u00b5m",
+      "sensor_procedure_id": 7151,
+      "sensor_procedure_label": "7151 - GRIMM - procedure",
+      "sensor_feature_id": 1220,
+      "sensor_feature_label": "45R511 - Marcinelle",
+      "sensor_service_id": 1,
+      "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+    }
+  ]
+}

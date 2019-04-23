@@ -16,7 +16,7 @@ from luftdatenpumpe.util import normalize_options, setup_logging, read_pairs, Ap
 
 log = logging.getLogger(__name__)
 
-network_list = ['ldi']
+network_list = ['ldi', 'be-irceline-sos']
 
 
 def run():

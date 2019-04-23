@@ -8,6 +8,17 @@ Prio 1
 ******
 
 
+********
+IRCELINE
+********
+Supporting the Flanders Environment Agency (VMM).
+
+- [o] Add IRCELINE SOS
+- [o] Add IRCELINE RIOIFDM
+- [o] Call SOS API with locale=de,fr,en
+- [o] Add EPSG:31370
+
+
 *************
 Documentation
 *************

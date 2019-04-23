@@ -5,6 +5,7 @@ import logging
 
 from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.source.luftdaten_info import LuftdatenPumpe
+from luftdatenpumpe.source.irceline import IrcelinePumpe
 from luftdatenpumpe.util import read_list
 
 log = logging.getLogger(__name__)
@@ -16,6 +17,9 @@ def resolve_source_handler(options, dry_run=False):
     # TODO: Add more data sources.
     if options.network == 'ldi':
         datapump_class = LuftdatenPumpe
+
+    elif options.network == 'be-irceline-sos':
+        datapump_class = IrcelinePumpe
 
     else:
         message = f'Network "{options.network}" not implemented'

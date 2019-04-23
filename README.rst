@@ -122,6 +122,22 @@ References
 - https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
 
 
+IRCELINE
+========
+Implemented by `irceline.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/irceline.py>`_
+
+Dashboards
+----------
+- `luftdaten.info trend vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
+- `luftdaten.info map vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
+
+References
+----------
+- http://www.irceline.be/en
+- http://deus.irceline.be/
+- https://en.vmm.be/
+- https://project-corona.eu/
+- http://geo.irceline.be/sos/static/doc/api-doc/
 
 
 Labs

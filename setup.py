@@ -89,7 +89,10 @@ setup(name='luftdatenpumpe',
       author='Andreas Motl',
       author_email='andreas@hiveeyes.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
-      keywords='luftdaten luftdaten.info air quality particulate matter pollution '
+      keywords='luftdaten.info irceline '
+               'air quality particulate matter pollution '
+               'feinstaub luftdaten '
+               'ogc sos '
                'sensor network observation '
                'opendata data acquisition transformation export '
                'geospatial temporal timeseries '
