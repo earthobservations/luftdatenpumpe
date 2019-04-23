@@ -1,4 +1,4 @@
-# /etc/cron.d/luftdatenpumpe
+# /etc/cron.d/luftdaten-viewer
 
 # Feed data from environmental information services into the system.
 #

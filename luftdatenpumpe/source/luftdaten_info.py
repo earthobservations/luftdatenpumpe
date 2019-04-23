@@ -3,83 +3,25 @@
 # (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import re
-import sys
 import json
-import redis
 import logging
 
 from tqdm import tqdm
-from munch import Munch, munchify
+from munch import Munch
 from tablib import Dataset
-from requests_cache import CachedSession
-from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
-from luftdatenpumpe.target import RDBMSStorage
+from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
 from luftdatenpumpe.util import exception_traceback, find_files
 
-from . import __appname__ as APP_NAME
-from . import __version__ as APP_VERSION
 
 log = logging.getLogger(__name__)
 
 
-class LuftdatenPumpe:
+class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     # Live data API URI for luftdaten.info
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
-    def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False):
-        self.source = source
-        self.reverse_geocode = reverse_geocode
-        self.dry_run = dry_run
-        self.progressbar = progressbar
-        self.filter = filter
-
-        # Quick mode only imports the first few datasets to speed things up.
-        self.quick_mode = quick_mode
-
-        # Cache responses from the luftdaten.info API for five minutes.
-        # TODO: Make backend configurable.
-
-        # Configure User-Agent string.
-        user_agent = APP_NAME + '/' + APP_VERSION
-
-        # Configure cached requests session.
-        self.session = CachedSession(
-            cache_name='api.luftdaten.info', backend='redis', expire_after=300,
-            user_agent=user_agent)
-
-        # Disable request cache by overriding it with a vanilla requests session.
-        #import requests; self.session = requests.Session()
-
-        # Gracefully probe Redis for availability if cache is enabled.
-        if hasattr(self.session, 'cache'):
-            try:
-                self.session.cache.responses.get('test')
-            except redis.exceptions.ConnectionError as ex:
-                log.error('Unable to connect to Redis: %s', ex)
-                sys.exit(2)
-
-    def get_readings(self):
-
-        if self.source == 'api':
-            data = self.request_live_data()
-
-        elif self.source.startswith('file://'):
-            path = self.source.replace('file://', '')
-            data = self.import_archive(path)
-
-        else:
-            raise ValueError('Unknown data source: {}'.format(self.source))
-
-        if data is None:
-            raise KeyError('No data selected. Please check connectivity and filter definition.')
-
-        return data
-
     def get_stations(self):
-
-        if self.source.startswith('postgresql://'):
-            return self.make_stations()
 
         stations = {}
         field_candidates = ['station_id', 'name', 'position', 'location']
@@ -123,96 +65,6 @@ class LuftdatenPumpe:
             results.append(station)
 
         return results
-
-    def make_stations(self):
-        """
-        Re-make station information from PostgreSQL database.
-
-        Example::
-
-            {
-                "station_id": 28,
-                "name": "Ulmer Stra\u00dfe, Wangen, Stuttgart, Baden-W\u00fcrttemberg, DE",
-                "position": {
-                    "latitude": 48.778,
-                    "longitude": 9.236,
-                    "altitude": 223.7,
-                    "country": "DE",
-                    "geohash": "u0wt6pv2qqhz"
-                },
-                "location": {
-                    "place_id": "10504194",
-                    "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
-                    "osm_type": "way",
-                    "osm_id": "115374184",
-                    "lat": "48.777845",
-                    "lon": "9.23582396156841",
-                    "display_name": "Kulturhaus ARENA, 241, Ulmer Stra\u00dfe, Wangen, Stuttgart, Regierungsbezirk Stuttgart, Baden-W\u00fcrttemberg, 70327, Deutschland",
-                    "boundingbox": [
-                        "48.7775199",
-                        "48.778185",
-                        "9.2353783",
-                        "9.236272"
-                    ],
-                    "address": {
-                        "country_code": "DE",
-                        "country": "Deutschland",
-                        "state": "Baden-W\u00fcrttemberg",
-                        "state_district": "Regierungsbezirk Stuttgart",
-                        "county": "Stuttgart",
-                        "postcode": "70327",
-                        "city": "Stuttgart",
-                        "city_district": "Wangen",
-                        "suburb": "Wangen",
-                        "road": "Ulmer Stra\u00dfe",
-                        "house_number": "241",
-                        "neighbourhood": "Wangen"
-                    },
-                    "address_more": {
-                        "building": "Kulturhaus ARENA"
-                    }
-                },
-                "sensors": [
-                    {
-                        "sensor_id": 658,
-                        "sensor_type": "SDS011"
-                    },
-                    {
-                        "sensor_id": 657,
-                        "sensor_type": "DHT22"
-                    }
-                ]
-            }
-        """
-
-        entries = []
-
-        sql = """
-            SELECT *
-            FROM ldi_stations, ldi_osmdata
-            WHERE
-              ldi_stations.station_id = ldi_osmdata.station_id
-            ORDER BY
-              ldi_stations.station_id
-        """
-
-        storage = RDBMSStorage(self.source)
-        for station in storage.db.query(sql):
-            station = munchify(station)
-            entry = {
-                "station_id": station.station_id,
-                "name": station.name,
-                "position": {
-                    "latitude": station.latitude,
-                    "longitude": station.longitude,
-                    "altitude": station.altitude,
-                    "country": station.country,
-                    "geohash": station.geohash
-                }
-            }
-            entries.append(munchify(entry))
-
-        return entries
 
     def request_live_data(self):
 
@@ -330,53 +182,6 @@ class LuftdatenPumpe:
 
         return reading
 
-    def enrich_station(self, station):
-
-        # Sanity checks.
-        if ('latitude' not in station.position or 'longitude' not in station.position) or \
-            (station.position.latitude is None or station.position.longitude is None):
-            # TODO: Just emit this message once per X.
-            log.warning('Incomplete station position, skipping geospatial enrichment. Station: {}'.format(station))
-            return
-
-        # Compute geohash.
-        station.position.geohash = geohash_encode(station.position.latitude, station.position.longitude)
-
-        # Compute human readable location name.
-        if self.reverse_geocode:
-
-            try:
-
-                # Reverse-geocode position.
-                station.location = resolve_location(
-                    latitude=station.position.latitude,
-                    longitude=station.position.longitude,
-                    geohash=station.position.geohash,
-                    country_code=station.position.country,
-                )
-
-                # Improve location information.
-                improve_location(station.location)
-
-                # Format address into single label.
-                station.name = format_address(station.location)
-
-                try:
-                    if station.name.lower() == station.position.country.lower():
-                        del station['name']
-                except:
-                    pass
-
-            except Exception as ex:
-                log.error(u'Problem with reverse geocoder for station {}: {}\n{}'.format(station, ex, exception_traceback()))
-
-            if 'name' not in station:
-                station.name = u'Station #{}'.format(station.station_id)
-                try:
-                    station.name += ', ' + station.position.country
-                except:
-                    pass
-
     @staticmethod
     def convert_timestamp(timestamp):
         # Mungle timestamp to be formally in ISO 8601 format (UTC).
@@ -397,13 +202,8 @@ class LuftdatenPumpe:
         data = list(find_files(path))
         log.info('Processing {} files'.format(len(data)))
 
-        # Optionally add progressbar indicator.
-        iterator = data
-        if self.progressbar:
-            iterator = tqdm(list(data))
-
-        # Process all files.
-        for csvpath in iterator:
+        # Process all files, optionally add progressbar indicator.
+        for csvpath in self.wrap_progress(data):
             readings = self.import_csv(csvpath)
             if readings is None:
                 continue

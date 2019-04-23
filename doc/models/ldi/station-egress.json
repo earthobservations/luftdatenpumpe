@@ -1,0 +1,51 @@
+{
+  "station_id": 12804,
+  "name": "Heideland, Mortsel, Antwerpen, Vlaanderen, BE",
+  "position": {
+    "latitude": 51.176,
+    "longitude": 4.452,
+    "altitude": 13.0,
+    "country": "BE",
+    "exact_location": 0,
+    "geohash": "u155jk3cg1gg"
+  },
+  "location": {
+    "place_id": 133002341,
+    "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+    "osm_type": "way",
+    "osm_id": 243280470,
+    "lat": "51.176091",
+    "lon": "4.45184339443692",
+    "display_name": "I MARIA A GOUBAU FECIT, 2A, Heideland, Mortsel, Antwerpen, Vlaanderen, 2640, Belgi\u00eb / Belgique / Belgien",
+    "boundingbox": [
+      "51.1759464",
+      "51.1762333",
+      "4.4516462",
+      "4.4520392"
+    ],
+    "address": {
+      "country_code": "BE",
+      "country": "Belgi\u00eb / Belgique / Belgien",
+      "state": "Vlaanderen",
+      "county": "Antwerpen",
+      "postcode": "2640",
+      "town": "Mortsel",
+      "road": "Heideland",
+      "house_number": "2A",
+      "city": "Mortsel"
+    },
+    "address_more": {
+      "building": "I MARIA A GOUBAU FECIT"
+    }
+  },
+  "sensors": [
+    {
+      "sensor_id": 24685,
+      "sensor_type": "SDS011"
+    },
+    {
+      "sensor_id": 24686,
+      "sensor_type": "DHT22"
+    }
+  ]
+}

@@ -3,13 +3,16 @@
 # License: GNU Affero General Public License, Version 3
 import json
 import logging
+import dataset
 from copy import deepcopy
+from munch import munchify
 from collections import OrderedDict
 
-import dataset
-from munch import munchify
-from geoalchemy2 import Geometry    # Pulls in PostGIS capabilities into SQLAlchemy
+from geoalchemy2 import Geometry    # Pulls PostGIS capabilities into SQLAlchemy. Don't remove.
 from sqlalchemy_utils import drop_database
+
+from luftdatenpumpe.util import sanitize_dbsymbol
+
 
 log = logging.getLogger(__name__)
 
@@ -22,19 +25,22 @@ class RDBMSStorage:
 
     capabilities = ['stations']
 
-    artefacts = munchify([
-        {'name': 'ldi_stations', 'type': 'table', 'primary_id': 'station_id'},
-        {'name': 'ldi_osmdata', 'type': 'table', 'primary_id': 'station_id'},
-        {'name': 'ldi_sensors', 'type': 'table', 'primary_id': 'sensor_id'},
-        {'name': 'ldi_network', 'type': 'view'},
-    ])
-
-    def __init__(self, uri, dry_run=False):
+    def __init__(self, uri, network=None, dry_run=False):
 
         self.dry_run = dry_run
 
+        self.network = network or 'default'
+        self.realm = sanitize_dbsymbol(self.network)
+
         # Connect to database.
         self.db = dataset.connect(uri)
+
+        self.artefacts = munchify([
+            {'name': f'{self.realm}_stations', 'type': 'table', 'primary_id': 'station_id', 'primary_type': self.db.types.bigint},
+            {'name': f'{self.realm}_osmdata', 'type': 'table', 'primary_id': 'station_id', 'primary_type': self.db.types.bigint},
+            {'name': f'{self.realm}_sensors', 'type': 'table', 'primary_id': 'sensor_id', 'primary_type': self.db.types.bigint},
+            {'name': f'{self.realm}_network', 'type': 'view'},
+        ])
 
         # Ping database.
         self.ping_database()
@@ -48,9 +54,9 @@ class RDBMSStorage:
         self.tame_library_loggers()
 
         # Assign table handles.
-        self.stationtable = self.db['ldi_stations']
-        self.sensorstable = self.db['ldi_sensors']
-        self.osmtable = self.db['ldi_osmdata']
+        self.stationtable = self.db[f'{self.realm}_stations']
+        self.sensorstable = self.db[f'{self.realm}_sensors']
+        self.osmtable = self.db[f'{self.realm}_osmdata']
 
     def emit(self, station):
         return self.store_station(station)
@@ -97,20 +103,35 @@ class RDBMSStorage:
 
         # Create tables.
         for tableinfo in self.tableinfos:
-            self.db.create_table(tableinfo.name, primary_id=tableinfo.primary_id)
+            self.db.create_table(tableinfo.name, primary_id=tableinfo.primary_id, primary_type=tableinfo.get('primary_type'))
 
         # FIXME: Funny enough, this workaround helps after upgrading to PostgreSQL 11.
         repr(self.db._tables)
 
-        # Enforce "ldi_osmdata.osm_id" and "ldi_osmdata.osm_place_id" to be of "bigint" type.
+        # Enforce "xox_stations.(latitude,longitude,altitude)"  to be of "float" type.
+        stations_table = self.db.get_table(f'{self.realm}_stations')
+        stations_table.create_column('latitude', self.db.types.float)
+        stations_table.create_column('longitude', self.db.types.float)
+        stations_table.create_column('altitude', self.db.types.float)
+
+        # Enforce "xox_osmdata.osm_id" and "xox_osmdata.osm_place_id" to be of "bigint" type.
         # Otherwise: ``psycopg2.DataError: integer out of range`` with 'osm_id': 2678458514
-        ldi_osmdata = self.db.get_table('ldi_osmdata')
-        ldi_osmdata.create_column('osm_id', self.db.types.bigint)
-        ldi_osmdata.create_column('osm_place_id', self.db.types.bigint)
+        osmdata_table = self.db.get_table(f'{self.realm}_osmdata')
+        osmdata_table.create_column('osm_id', self.db.types.bigint)
+        osmdata_table.create_column('osm_place_id', self.db.types.bigint)
 
         # Manually add "geopoint" field to the table because the "dataset"
         # package does not implement appropriate heuristics for that.
-        self.db.query('ALTER TABLE ldi_stations ADD COLUMN IF NOT EXISTS "geopoint" geography(Point)')
+
+        # EPSG:4326
+        # geography(Point,4326)
+        self.db.query(f'ALTER TABLE {self.realm}_stations ADD COLUMN IF NOT EXISTS "geopoint" geography(Point,4326)')
+
+        # TODO: Convert to EPSG:4258.
+
+        # TODO: Convert to EPSG:31370.
+        #self.db.query(f'ALTER TABLE {self.realm}_stations ADD COLUMN IF NOT EXISTS "geopoint_31370" geometry(Point,31370)')
+
 
     @property
     def tableinfos(self):
@@ -133,6 +154,10 @@ class RDBMSStorage:
         # Example: Stuttgart == POINT(9.17721 48.77928)
         if station.position and station.position.latitude and station.position.longitude:
             station.position.geopoint = 'POINT({} {})'.format(station.position.longitude, station.position.latitude)
+
+            # TODO: Convert to EPSG:31370.
+            #station.position.geopoint_31370 = f"ST_GeomFromText('POINT({station.position.longitude} {station.position.latitude})', 4326)"
+            #station.position.geopoint_31370 = 'POINT({} {})'.format(station.position.longitude, station.position.latitude)
 
         # Debugging
         #log.info('station: %s', station)
@@ -194,7 +219,7 @@ class RDBMSStorage:
         #print(dir(self.stationtable.table))
 
         # https://dataset.readthedocs.io/en/latest/quickstart.html#running-custom-sql-queries
-        expression = 'SELECT * FROM ldi_stations, ldi_osmdata WHERE ldi_stations.station_id = ldi_osmdata.station_id'
+        expression = f'SELECT * FROM {self.realm}_stations, {self.realm}_osmdata WHERE {self.realm}_stations.station_id = {self.realm}_osmdata.station_id'
         print('### Expression:', expression)
         result = self.db.query(expression)
         for record in result:
@@ -219,11 +244,13 @@ class RDBMSStorage:
 
     def create_views(self):
 
+        prefix = self.realm
+
         # Inquire fields from osmdata table.
-        osmdata = self.db.query("""
+        osmdata = self.db.query(f"""
             SELECT concat(TABLE_NAME, '.', COLUMN_NAME) AS name
             FROM INFORMATION_SCHEMA.COLUMNS
-            WHERE TABLE_NAME='ldi_osmdata' AND COLUMN_NAME NOT IN ('station_id')
+            WHERE TABLE_NAME='{prefix}_osmdata' AND COLUMN_NAME NOT IN ('station_id')
             ORDER BY ORDINAL_POSITION
         """)
         osmdata_columns = []
@@ -232,29 +259,29 @@ class RDBMSStorage:
 
         # Create unified view.
         osmdata_columns_expression = ', '.join(osmdata_columns)
-        view = """
-        DROP VIEW IF EXISTS ldi_network;
-        CREATE VIEW ldi_network AS
+        view = f"""
+        DROP VIEW IF EXISTS {prefix}_network;
+        CREATE VIEW {prefix}_network AS
             SELECT
-              ldi_stations.station_id,
-              ldi_stations.name, ldi_stations.country, 
-              ldi_stations.longitude, ldi_stations.latitude, ldi_stations.altitude, 
-              ldi_stations.geohash, ldi_stations.geopoint,
-              ldi_sensors.sensor_id, ldi_sensors.sensor_type,
-              concat(ldi_osmdata.osm_state, ' » ', ldi_osmdata.osm_city) AS state_and_city,
-              concat(ldi_stations.name, ' (#', CAST(ldi_stations.station_id AS text), ')') AS name_and_id,
-              concat(ldi_osmdata.osm_country, ' (', ldi_osmdata.osm_country_code, ')') AS country_and_countrycode,
-              concat(concat_ws(', ', ldi_osmdata.osm_state, ldi_osmdata.osm_country), ' (', ldi_osmdata.osm_country_code, ')') AS state_and_country,
-              concat(concat_ws(', ', ldi_osmdata.osm_city, ldi_osmdata.osm_state, ldi_osmdata.osm_country), ' (', ldi_osmdata.osm_country_code, ')') AS city_and_state_and_country,
-              {}
+              {prefix}_stations.station_id,
+              {prefix}_stations.name, {prefix}_stations.country, 
+              {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude, 
+              {prefix}_stations.geohash, {prefix}_stations.geopoint,
+              {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type,
+              concat({prefix}_osmdata.osm_state, ' » ', {prefix}_osmdata.osm_city) AS state_and_city,
+              concat({prefix}_stations.name, ' (#', CAST({prefix}_stations.station_id AS text), ')') AS name_and_id,
+              concat({prefix}_osmdata.osm_country, ' (', {prefix}_osmdata.osm_country_code, ')') AS country_and_countrycode,
+              concat(concat_ws(', ', {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS state_and_country,
+              concat(concat_ws(', ', {prefix}_osmdata.osm_city, {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS city_and_state_and_country,
+              {osmdata_columns_expression}
             FROM
-              ldi_stations, ldi_osmdata, ldi_sensors
+              {prefix}_stations, {prefix}_osmdata, {prefix}_sensors
             WHERE
-              ldi_stations.station_id = ldi_osmdata.station_id AND
-              ldi_stations.station_id = ldi_sensors.station_id
+              {prefix}_stations.station_id = {prefix}_osmdata.station_id AND
+              {prefix}_stations.station_id = {prefix}_sensors.station_id
             ORDER BY
               osm_country_code, state_and_city, name_and_id, sensor_type
-        """.format(osmdata_columns_expression)
+        """
 
         self.db.query(view)
 
@@ -283,7 +310,7 @@ class RDBMSStorage:
         Prune data from all tables.
         """
         for tablename in self.db.tables:
-            if tablename.startswith('ldi_'):
+            if tablename.startswith(f'{self.realm}_'):
                 log.info('Deleting data from table {}'.format(tablename))
                 self.db.query('DELETE FROM {}'.format(tablename))
 

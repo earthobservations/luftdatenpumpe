@@ -5,12 +5,77 @@
 import os
 import sys
 import glob
+import json
 import logging
 import traceback
 from six import StringIO
-from munch import munchify
+from docopt import docopt
+from munch import Munch, munchify
 from collections import OrderedDict
 
+
+log = logging.getLogger(__name__)
+
+
+class Application:
+
+    def __init__(self, name=None, version=None, docopt_recipe=None):
+
+        self.name = name
+        self.version = version
+        self.docopt_recipe = docopt_recipe
+
+        self.settings = Munch()
+        self.options = Munch()
+
+        self.initialize()
+
+    def initialize(self):
+
+        # Honor "LDA_" environment variables.
+        argv = self.get_argv_with_environment()
+
+        #print(argv)
+
+        # Parse command line arguments.
+        self.options = normalize_options(docopt(self.docopt_recipe, argv=argv, version=f'{self.name} {self.version}'))
+
+        # Setup logging.
+        self.setup_logging()
+
+    def setup_logging(self):
+        debug = self.options.get('debug')
+        log_level = logging.INFO
+        if debug:
+            log_level = logging.DEBUG
+
+        setup_logging(log_level)
+
+    def log_options(self):
+        # Debugging
+        log.info('Options: {}'.format(json.dumps(self.options, indent=4)))
+
+    def get_argv_with_environment(self):
+
+        envvar_prefix = 'LDP_'
+
+        argv = sys.argv[1:]
+
+        def search_argv_option(barename):
+            optname = '--' + barename
+            for arg in argv:
+                if optname in arg:
+                    return True
+            return False
+
+        for name, value in os.environ.items():
+            if name.startswith(envvar_prefix):
+                optname = name.replace(envvar_prefix, '').lower()
+                if not search_argv_option(optname):
+                    option = f'--{optname}={value}'
+                    argv.append(option)
+
+        return argv
 
 def setup_logging(level=logging.INFO):
     log_format = '%(asctime)-15s [%(name)-30s] %(levelname)-7s: %(message)s'
@@ -28,6 +93,7 @@ def normalize_options(options):
     normalized = {}
     for key, value in options.items():
         key = key.strip('--<>')
+        #key = key.replace('--<>', '')
         normalized[key] = value
     return munchify(normalized)
 
@@ -125,3 +191,7 @@ def find_files_walk(path, suffix):
                 yield realname
 
 find_files = find_files_glob
+
+
+def sanitize_dbsymbol(symbol):
+    return symbol.replace('-', '_')

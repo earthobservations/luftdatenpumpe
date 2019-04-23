@@ -8,27 +8,31 @@ import json
 import logging
 from docopt import docopt, DocoptExit
 from luftdatenpumpe import __appname__, __version__
-from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.grafana import get_artefact
-from luftdatenpumpe.target import resolve_target_handler
-from luftdatenpumpe.util import normalize_options, setup_logging, read_list, read_pairs, exception_traceback
-from luftdatenpumpe.core import LuftdatenPumpe
+from luftdatenpumpe.source import resolve_source_handler
+from luftdatenpumpe.source.rdbms import stations_from_rdbms
 from luftdatenpumpe.engine import LuftdatenEngine
+from luftdatenpumpe.util import normalize_options, setup_logging, read_pairs, Application
 
 log = logging.getLogger(__name__)
+
+network_list = ['ldi']
 
 
 def run():
     """
     Usage:
-      luftdatenpumpe stations [options] [--target=<target>]...
-      luftdatenpumpe readings [options] [--target=<target>]...
-      luftdatenpumpe database [--target=<target>]... [--create-views] [--grant-user=<username>] [--drop-data] [--drop-tables] [--drop-database]
-      luftdatenpumpe grafana --kind=<kind> --name=<name> [--variables=<variables>]
+      luftdatenpumpe networks
+      luftdatenpumpe stations --network=<network> [options] [--target=<target>]...
+      luftdatenpumpe readings --network=<network> [options] [--target=<target>]...
+      luftdatenpumpe database --network=<network> [--target=<target>]... [--create-views] [--grant-user=<username>] [--drop-data] [--drop-tables] [--drop-database]
+      luftdatenpumpe grafana --network=<network> --kind=<kind> --name=<name> [--variables=<variables>]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
 
     Options:
+      --network=<network>           Which sensor network/database to use.
+                                    Inquire available networks by running "luftdatenpumpe networks".
       --source=<source>             Data source, either "api" or "file://" [default: api].
       --country=<countries>         Filter data by given country codes, comma-separated.
       --station=<stations>          Filter data by given location ids, comma-separated.
@@ -44,16 +48,33 @@ def run():
       -h --help                     Show this screen
 
 
-    Station list examples:
+    Network list example:
+
+      # Display list of supported sensor networks
+      luftdatenpumpe networks
+
+    Basic station list examples:
 
       # Display metadata for given countries in JSON format
-      luftdatenpumpe stations --country=BE,NL,LU
+      luftdatenpumpe stations --network=ldi --database=ldi --country=BE,NL,LU
 
       # Display metadata for given stations in JSON format, with reverse geocoding
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode
+      luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode
+
+
+    Heads up!
+
+      From now on, let's pretend we always want to operate on data coming from the
+      sensor network "luftdaten.info". which is identified by "--network=ldi". To
+      make this more convenient, we use an environment variable to signal this
+      to subsequent invocations of "luftdatenpumpe" by running::
+
+        export LDP_NETWORK=ldi
+
+    Further examples:
 
       # Display metadata for given sensors in JSON format, with reverse geocoding
-      luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
+      luftdatenpumpe stations --sensor=28,1071 --reverse-geocode
 
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
@@ -118,23 +139,21 @@ def run():
 
     """
 
-    # Parse command line arguments
-    options = normalize_options(docopt(run.__doc__, version=__appname__ + ' ' + __version__))
+    # Bootstrap application.
+    application = Application(name=__appname__, version=__version__, docopt_recipe=run.__doc__)
 
-    # Setup logging
-    debug = options.get('debug')
-    log_level = logging.INFO
-    if debug:
-        log_level = logging.DEBUG
-    setup_logging(log_level)
+    options = application.options
 
-    # Debugging
-    #log.info('Options: {}'.format(json.dumps(options, indent=4)))
+    # 1. Run some sanity checks on ingress parameters.
+    if options.networks:
+        log.info('List of available networks: %s', network_list)
+        sys.exit(0)
+    check_options(options)
 
-    # A. Maintenance targets
+    # 2. Dispatch to maintenance targets.
     run_maintenance(options)
 
-    # B. Data processing targets
+    # 3. Dispatch to data processing targets.
     run_engine(options)
 
 
@@ -149,9 +168,10 @@ def run_maintenance(options):
             log.error(message)
             raise NotImplementedError(message)
 
+        engine = get_engine(options)
         for target in options['target']:
             if target.startswith('postgresql:'):
-                handler = resolve_target_handler(target)
+                handler = engine.resolve_target_handler(target)
 
                 try:
 
@@ -191,65 +211,60 @@ def run_maintenance(options):
         sys.exit()
 
 
-def run_engine(options):
+def check_options(options):
 
-    # B. Data processing targets
+    # A. Sanity checks
+    if not options.network:
+        message = '--network parameter missing'
+        log.error(message)
+        raise DocoptExit(message)
 
-    # Optionally apply filters by country code, station id and/or sensor id
-    filter = {}
+    # A.2 Resolve data source handler class from network identifier.
+    options.network = options.network.lower()
 
-    # Lists of Integers.
-    for filter_name in ['station', 'sensor']:
-        if options[filter_name]:
-            filter[filter_name] = list(map(int, read_list(options[filter_name])))
+    # A.3 Resolve data domain (stations vs. readings).
+    options.domain = None
+    for flavor in ['stations', 'readings']:
+        if options[flavor]:
+            options.domain = flavor
+            break
 
-    # Lists of lower-case Strings.
-    for filter_name in ['sensor-type']:
-        if options[filter_name]:
-            filter[filter_name] = list(map(str.lower, read_list(options[filter_name])))
 
-    # Lists of upper-case Strings.
-    for filter_name in ['country']:
-        if options[filter_name]:
-            filter[filter_name] = list(map(str.upper, read_list(options[filter_name])))
+def get_engine(options):
 
-    log.info('Applying filter: {}'.format(filter))
-
-    # Fake data source. Currently always LDI.
-    # TODO: Add more data sources.
-    datasource = 'ldi'
-    datasource_humanized = datasource.upper()
-
-    # Default output target is STDOUT.
-    if not options['target']:
-        options['target'] = ['json+stream://sys.stdout']
-
-    # Optionally disable Nominatim cache.
-    if options['disable-nominatim-cache']:
-        # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
-        disable_nominatim_cache()
-
-    # The main workhorse.
-    pump = LuftdatenPumpe(
-        source=options['source'],
-        filter=filter,
-        reverse_geocode=options['reverse-geocode'],
-        progressbar=options['progress'],
+    # Create and run output processing engine.
+    log.info(f'Will publish data to {options.target}')
+    engine = LuftdatenEngine(
+        network=options.network,
+        domain=options.domain,
+        targets=options.target,
+        progressbar=options.progress,
         dry_run=options['dry-run'],
     )
 
+    return engine
+
+
+def get_data(options):
+
+    pump = resolve_source_handler(options)
+
+    network_humanized = options.network.upper()
+
     # Acquire data.
-    data = None
-    kind = None
-    if options['stations']:
-        kind = 'stations'
-        log.info('Acquiring list of stations from {}. source={}'.format(datasource_humanized, options['source']))
-        data = pump.get_stations()
+    if options.domain == 'stations':
+        log.info('Acquiring list of stations from {}. source={}'.format(network_humanized, options['source']))
+
+        if options.source.startswith('postgresql://'):
+            data = stations_from_rdbms(options.source, options.network)
+
+        else:
+            data = pump.get_stations()
+
         log.info('Acquired #{} stations'.format(len(data)))
 
-    elif options['readings']:
-        kind = 'readings'
-        log.info('Acquiring readings from {}. source={}'.format(datasource_humanized, options['source']))
+    elif options.domain == 'readings':
+        log.info('Acquiring readings from {}. source={}'.format(network_humanized, options['source']))
         data = pump.get_readings()
 
     else:
@@ -260,12 +275,10 @@ def run_engine(options):
         log.error('No data to process')
         sys.exit(2)
 
-    # Create and run output processing engine.
-    log.info('Will publish data to {}'.format(options['target']))
-    engine = LuftdatenEngine(
-        kind,
-        options['target'],
-        progressbar=options['progress'],
-        dry_run=options.get('dry-run', False)
-    )
+    return data
+
+
+def run_engine(options):
+    data = get_data(options)
+    engine = get_engine(options)
     engine.process(data)
