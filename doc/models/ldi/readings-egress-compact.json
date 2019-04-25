@@ -1,0 +1,158 @@
+[
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:03:16Z",
+          "sensor_id": 2129,
+          "sensor_type": "SDS011"
+        },
+        "data": {
+          "P1": 13.8,
+          "P2": 12.47
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:03:17Z",
+          "sensor_id": 2130,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 54.2,
+          "temperature": 22.3
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 28,
+      "position": {
+        "latitude": 48.778,
+        "longitude": 9.236,
+        "altitude": 223.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u0wt6pv2qqhz"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:04:16Z",
+          "sensor_id": 657,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 58.7,
+          "temperature": 16.9
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:05:44Z",
+          "sensor_id": 2129,
+          "sensor_type": "SDS011"
+        },
+        "data": {
+          "P1": 16.17,
+          "P2": 13.55
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:05:44Z",
+          "sensor_id": 2130,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 54.3,
+          "temperature": 22.3
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 28,
+      "position": {
+        "latitude": 48.778,
+        "longitude": 9.236,
+        "altitude": 223.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u0wt6pv2qqhz"
+      }
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:07:03Z",
+          "sensor_id": 657,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 59.0,
+          "temperature": 16.6
+        }
+      }
+    ]
+  }
+]

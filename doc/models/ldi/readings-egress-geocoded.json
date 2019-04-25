@@ -1,0 +1,332 @@
+[
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      },
+      "location": {
+        "place_id": "6818780",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "25686473",
+        "lat": "52.54394525",
+        "lon": "13.3738370010676",
+        "display_name": "17, Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, 13347, Deutschland",
+        "boundingbox": [
+          "52.5438614",
+          "52.5440293",
+          "13.3736783",
+          "13.3739954"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "postcode": "13347",
+          "city": "Berlin",
+          "city_district": "Mitte",
+          "suburb": "Gesundbrunnen",
+          "road": "Gerichtstra\u00dfe",
+          "house_number": "17",
+          "state": "Berlin"
+        }
+      },
+      "name": "Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:03:16Z",
+          "sensor_id": 2129,
+          "sensor_type": "SDS011"
+        },
+        "data": {
+          "P1": 13.8,
+          "P2": 12.47
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      },
+      "location": {
+        "place_id": "6818780",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "25686473",
+        "lat": "52.54394525",
+        "lon": "13.3738370010676",
+        "display_name": "17, Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, 13347, Deutschland",
+        "boundingbox": [
+          "52.5438614",
+          "52.5440293",
+          "13.3736783",
+          "13.3739954"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "postcode": "13347",
+          "city": "Berlin",
+          "city_district": "Mitte",
+          "suburb": "Gesundbrunnen",
+          "road": "Gerichtstra\u00dfe",
+          "house_number": "17",
+          "state": "Berlin"
+        }
+      },
+      "name": "Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:03:17Z",
+          "sensor_id": 2130,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 54.2,
+          "temperature": 22.3
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 28,
+      "position": {
+        "latitude": 48.778,
+        "longitude": 9.236,
+        "altitude": 223.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u0wt6pv2qqhz"
+      },
+      "location": {
+        "place_id": "10504194",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "115374184",
+        "lat": "48.777845",
+        "lon": "9.23582396156841",
+        "display_name": "Kulturhaus ARENA, 241, Ulmer Stra\u00dfe, Wangen, Stuttgart, Regierungsbezirk Stuttgart, Baden-W\u00fcrttemberg, 70327, Deutschland",
+        "boundingbox": [
+          "48.7775199",
+          "48.778185",
+          "9.2353783",
+          "9.236272"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "state": "Baden-W\u00fcrttemberg",
+          "state_district": "Regierungsbezirk Stuttgart",
+          "county": "Stuttgart",
+          "postcode": "70327",
+          "city": "Stuttgart",
+          "city_district": "Wangen",
+          "suburb": "Wangen",
+          "road": "Ulmer Stra\u00dfe",
+          "house_number": "241",
+          "neighbourhood": "Wangen"
+        },
+        "address_more": {
+          "building": "Kulturhaus ARENA"
+        }
+      },
+      "name": "Ulmer Stra\u00dfe, Wangen, Stuttgart, Baden-W\u00fcrttemberg, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:04:16Z",
+          "sensor_id": 657,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 58.7,
+          "temperature": 16.9
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      },
+      "location": {
+        "place_id": "6818780",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "25686473",
+        "lat": "52.54394525",
+        "lon": "13.3738370010676",
+        "display_name": "17, Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, 13347, Deutschland",
+        "boundingbox": [
+          "52.5438614",
+          "52.5440293",
+          "13.3736783",
+          "13.3739954"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "postcode": "13347",
+          "city": "Berlin",
+          "city_district": "Mitte",
+          "suburb": "Gesundbrunnen",
+          "road": "Gerichtstra\u00dfe",
+          "house_number": "17",
+          "state": "Berlin"
+        }
+      },
+      "name": "Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:05:44Z",
+          "sensor_id": 2129,
+          "sensor_type": "SDS011"
+        },
+        "data": {
+          "P1": 16.17,
+          "P2": 13.55
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1071,
+      "position": {
+        "latitude": 52.544,
+        "longitude": 13.374,
+        "altitude": 38.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u33dbm6duz90"
+      },
+      "location": {
+        "place_id": "6818780",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "25686473",
+        "lat": "52.54394525",
+        "lon": "13.3738370010676",
+        "display_name": "17, Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, 13347, Deutschland",
+        "boundingbox": [
+          "52.5438614",
+          "52.5440293",
+          "13.3736783",
+          "13.3739954"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "postcode": "13347",
+          "city": "Berlin",
+          "city_district": "Mitte",
+          "suburb": "Gesundbrunnen",
+          "road": "Gerichtstra\u00dfe",
+          "house_number": "17",
+          "state": "Berlin"
+        }
+      },
+      "name": "Gerichtstra\u00dfe, Gesundbrunnen, Mitte, Berlin, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:05:44Z",
+          "sensor_id": 2130,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 54.3,
+          "temperature": 22.3
+        }
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 28,
+      "position": {
+        "latitude": 48.778,
+        "longitude": 9.236,
+        "altitude": 223.7,
+        "country": "DE",
+        "exact_location": 0,
+        "geohash": "u0wt6pv2qqhz"
+      },
+      "location": {
+        "place_id": "10504194",
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": "115374184",
+        "lat": "48.777845",
+        "lon": "9.23582396156841",
+        "display_name": "Kulturhaus ARENA, 241, Ulmer Stra\u00dfe, Wangen, Stuttgart, Regierungsbezirk Stuttgart, Baden-W\u00fcrttemberg, 70327, Deutschland",
+        "boundingbox": [
+          "48.7775199",
+          "48.778185",
+          "9.2353783",
+          "9.236272"
+        ],
+        "address": {
+          "country_code": "DE",
+          "country": "Deutschland",
+          "state": "Baden-W\u00fcrttemberg",
+          "state_district": "Regierungsbezirk Stuttgart",
+          "county": "Stuttgart",
+          "postcode": "70327",
+          "city": "Stuttgart",
+          "city_district": "Wangen",
+          "suburb": "Wangen",
+          "road": "Ulmer Stra\u00dfe",
+          "house_number": "241",
+          "neighbourhood": "Wangen"
+        },
+        "address_more": {
+          "building": "Kulturhaus ARENA"
+        }
+      },
+      "name": "Ulmer Stra\u00dfe, Wangen, Stuttgart, Baden-W\u00fcrttemberg, DE"
+    },
+    "observations": [
+      {
+        "meta": {
+          "timestamp": "2019-04-24T18:07:03Z",
+          "sensor_id": 657,
+          "sensor_type": "DHT22"
+        },
+        "data": {
+          "humidity": 59.0,
+          "temperature": 16.6
+        }
+      }
+    ]
+  }
+]
