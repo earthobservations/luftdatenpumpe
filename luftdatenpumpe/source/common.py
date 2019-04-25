@@ -81,8 +81,8 @@ class AbstractLuftdatenPumpe:
         if ('latitude' not in station.position or 'longitude' not in station.position) or \
            (station.position.latitude is None or station.position.longitude is None):
 
-            # TODO: Just emit this message once per X.
-            log.warning('Incomplete station position, skipping geospatial enrichment. Station: {}'.format(station))
+            # Just emit this message once per station.
+            StationGeocodingFailed.emit_warning(station.station_id)
             return
 
         # Compute geohash.
@@ -98,7 +98,7 @@ class AbstractLuftdatenPumpe:
                     latitude=station.position.latitude,
                     longitude=station.position.longitude,
                     geohash=station.position.geohash,
-                    country_code=station.position.country,
+                    country_code=station.position.get('country'),
                 )
 
                 # Improve location information.
@@ -107,17 +107,18 @@ class AbstractLuftdatenPumpe:
                 # Format address into single label.
                 station.name = format_address(station.location)
 
+                # Apply some fixups.
                 try:
                     if station.name.lower() == station.position.country.lower():
                         del station['name']
                 except:
                     pass
 
-            except Exception as ex:
-                log.error(u'Problem with reverse geocoder for station {}: {}\n{}'.format(station, ex, exception_traceback()))
+            except Exception:
+                log.exception(f'Failed computing humanized name for station {station}')
 
             if 'name' not in station:
-                station.name = u'Station #{}'.format(station.station_id)
+                station.name = f'Station #{station.station_id}'
                 try:
                     station.name += ', ' + station.position.country
                 except:
@@ -128,3 +129,15 @@ class AbstractLuftdatenPumpe:
             return tqdm(list(data))
         else:
             return data
+
+
+class StationGeocodingFailed:
+
+    stations_with_warnings = {}
+
+    @classmethod
+    def emit_warning(cls, station_id):
+        if station_id in cls.stations_with_warnings:
+            return
+        log.warning(f'Incomplete station position, skipping geospatial enrichment for station "{station_id}"')
+        cls.stations_with_warnings[station_id] = True

@@ -92,31 +92,31 @@ def run():
     Live data examples (InfluxDB):
 
       # Store into InfluxDB running on "localhost"
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://localhost:8086/luftdaten_info
+      luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
       # Store into InfluxDB, with UDP
       luftdatenpumpe readings --station=28,1071 --target=udp+influxdb://localhost:4445/luftdaten_info
 
       # Store into InfluxDB, with authentication
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://username:password@localhost:8086/luftdaten_info
+      luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
-    Archive data examples (InfluxDB):
+    LDI CSV archive data examples (InfluxDB):
 
-      # Mirror archive of luftdaten.info
-      wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info http://archive.luftdaten.info/
+      # Mirror archive of luftdaten.info, limiting to 2015 only
+      wget --mirror --continue --no-host-directories --directory-prefix=/var/spool/archive.luftdaten.info --accept-regex='2015' http://archive.luftdaten.info/
 
       # Ingest station information from CSV archive files, store into PostgreSQL
-      luftdatenpumpe stations --source=file:///var/spool/archive.luftdaten.info --target=postgresql://luftdatenpumpe@localhost/weatherbase --reverse-geocode --progress
+      luftdatenpumpe stations --network=ldi --source=file:///var/spool/archive.luftdaten.info --target=postgresql://luftdatenpumpe@localhost/weatherbase --reverse-geocode --progress
 
       # Ingest readings from CSV archive files, store into InfluxDB
-      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://localhost:8086/luftdaten_info --progress
+      luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info --progress
 
       # Ingest most early readings
-      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2015-10-*
+      luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info/2015-10-*
 
       # Ingest most early PMS sensors
-      luftdatenpumpe readings --source=file:///var/spool/archive.luftdaten.info/2017-1*/*pms*.csv
+      luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info/2017-1*/*pms*.csv
 
 
     Live data examples (MQTT):
@@ -134,7 +134,7 @@ def run():
       luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
       # Write readings to STDERR, MQTT and InfluxDB
-      luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://localhost:8086/luftdaten_info
+      luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
     """
@@ -203,9 +203,8 @@ def run_maintenance(options):
     # Generate Grafana datasource and dashboard JSON and exit.
     elif options['grafana']:
         options.variables = read_pairs(options.variables)
-        log.info('Generating Grafana artefact '
-                 'kind={}, name={}, variables={}'.format(
-            options.kind, options.name, json.dumps(options.variables)))
+        log.info(f'Generating Grafana artefact '
+                 f'kind={options.kind}, name={options.name}, variables={json.dumps(options.variables)}')
         thing = get_artefact(options.kind, options.name, variables=options.variables)
         print(thing)
         sys.exit()
@@ -253,7 +252,7 @@ def get_data(options):
 
     # Acquire data.
     if options.domain == 'stations':
-        log.info('Acquiring list of stations from {}. source={}'.format(network_humanized, options['source']))
+        log.info(f'Acquiring list of stations from "{network_humanized}". source={options.source}')
 
         if options.source.startswith('postgresql://'):
             data = stations_from_rdbms(options.source, options.network)
@@ -261,10 +260,10 @@ def get_data(options):
         else:
             data = pump.get_stations()
 
-        log.info('Acquired #{} stations'.format(len(data)))
+        log.info(f'Acquired #{len(data)} stations')
 
     elif options.domain == 'readings':
-        log.info('Acquiring readings from {}. source={}'.format(network_humanized, options['source']))
+        log.info(f'Acquiring readings from "{network_humanized}". source={options.source}')
         data = pump.get_readings()
 
     else:

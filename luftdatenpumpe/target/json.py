@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 def json_formatter(data):
     if isinstance(data, types.GeneratorType):
         data = list(data)
-    return json.dumps(data, indent=4)
+    return json.dumps(data, indent=2)
 
 
 def json_grafana_formatter_base(stations):

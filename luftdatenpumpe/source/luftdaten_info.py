@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 # (c) 2017-2019 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
+# (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import re
 import json
 import logging
-
 from tqdm import tqdm
 from munch import Munch
 from tablib import Dataset
+from operator import itemgetter
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import exception_traceback, find_files
-
+from luftdatenpumpe.util import exception_traceback, find_files, is_nan
 
 log = logging.getLogger(__name__)
 
