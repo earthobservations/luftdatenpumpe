@@ -17,8 +17,20 @@ log = logging.getLogger(__name__)
 
 
 class LuftdatenPumpe(AbstractLuftdatenPumpe):
+    """
+    Ingest air quality measurements from the
+    luftdaten.info citizen network.
 
-    # Live data API URI for luftdaten.info
+    - https://luftdaten.info/
+    - https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+    - https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
+
+    """
+
+    # Sensor network identifier.
+    network = 'ldi'
+
+    # Live data API URI for luftdaten.info.
     uri = 'https://api.luftdaten.info/static/v1/data.json'
 
     def get_stations(self):
@@ -27,46 +39,42 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         field_candidates = ['station_id', 'name', 'position', 'location']
         for reading in self.get_readings():
 
-            # Location ID for the reading
+            # LDI Location ID is "station_id" here.
             station_id = reading.station.station_id
 
-            # Sensor information from the reading
-            sensor_info = Munch({
-                'sensor_id': reading.station.sensor_id,
-                'sensor_type': reading.station.sensor_type,
-            })
+            # New station found: Acquire its information from the reading itself.
+            if station_id not in stations:
+                station = Munch()
+                for field in field_candidates:
+                    if field in reading.station:
+                        station[field] = reading.station[field]
+                station.sensors = []
 
-            # Acquire additional sensors from reading.
-            # This continues with the next loop iteration as
-            # location information has already been transferred.
-            if station_id in stations:
-                station = stations[station_id]
-                sensor_id = reading.station.sensor_id
-                if not any(map(lambda item: item.sensor_id == sensor_id, station['sensors'])):
-                    station['sensors'].append(sensor_info)
-                continue
-
-            # New station found: Acquire its information from reading
-            station = Munch()
-            for field in field_candidates:
-                if field in reading.station:
-                    station[field] = reading.station[field]
-
-            # Acquire first sensor from reading
-            station['sensors'] = [sensor_info]
-
-            # Collect location if not empty
-            if station:
+                # Record station.
                 stations[station_id] = station
 
-        results = []
-        for key in sorted(stations.keys()):
-            station = stations[key]
-            results.append(station)
+            # Use recorded station.
+            station = stations[station_id]
 
+            # Deduce sensor information from the reading itself.
+            for observation in reading.observations:
+
+                # Don't list sensors twice.
+                if any(map(lambda item: item.sensor_id == observation.meta.sensor_id, station['sensors'])):
+                    continue
+
+                # Build and record sensor information.
+                sensor_info = Munch({
+                    'sensor_id': observation.meta.sensor_id,
+                    'sensor_type': observation.meta.sensor_type,
+                })
+                station['sensors'].append(sensor_info)
+
+        # List of stations sorted by station identifier.
+        results = sorted(stations.values(), key=itemgetter('station_id'))
         return results
 
-    def request_live_data(self):
+    def get_readings_from_api(self):
 
         # Fetch data from remote API.
         log.info('Requesting luftdaten.info live API at {}'.format(self.uri))
@@ -135,52 +143,67 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
         #log.info('item: %s', item)
 
-        # Decode JSON item
+        # Decode JSON item.
         station_id = item['location']['id']
         sensor_id = item['sensor']['id']
         sensor_type = item['sensor']['sensor_type']['name']
 
-        # Build reading
-        reading = Munch(
-            station=Munch(),
+        # Build observation.
+        observation = Munch(
+            meta=Munch(),
             data=Munch(),
         )
+        entry = Munch(
+            station=Munch(),
+            # LDI just has single observations.
+            observations=[observation],
+        )
 
-        # Insert timestamp in appropriate format
-        reading.data.time = self.convert_timestamp(item['timestamp'])
+        # Set station metadata.
+        entry.station.station_id = station_id
 
-        # Insert baseline metadata information
-        reading.station.station_id = station_id
-        reading.station.sensor_id = sensor_id
-        reading.station.sensor_type = sensor_type
+        # Set observation metadata.
+        observation.meta.timestamp = self.convert_timestamp(item['timestamp'])
+        observation.meta.sensor_id = sensor_id
+        observation.meta.sensor_type = sensor_type
 
-        # Collect position information
+        # Collect position information.
         del item['location']['id']
-        reading.station.position = Munch()
+        entry.station.position = Munch()
         for key, value in item['location'].items():
             if key in ['latitude', 'longitude', 'altitude']:
                 try:
                     value = float(value)
                 except:
                     value = None
-            reading.station.position[key] = value
+            entry.station.position[key] = value
 
-        # Collect sensor values
+        # Collect sensor values.
         if 'sensordatavalues' in item:
             for sensor in item['sensordatavalues']:
                 name = sensor['value_type']
-                value = float(sensor['value'])
-                reading.data[name] = value
+                value = sensor['value']
 
-        # Add more detailed location information
-        self.enrich_station(reading.station)
+                # Skip NaN values.
+                # Prevent "influxdb.exceptions.InfluxDBClientError: 400".
+                # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number
+                # unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.6 1556133773000000000': invalid number dropped=0"}
+                # TODO: Emit warning here?
+                if is_nan(value):
+                    continue
 
-        log.debug('Reading: %s', json.dumps(reading))
+                value = float(value)
+                observation.data[name] = value
 
-        # Debugging
+        # Add more detailed location information.
+        self.enrich_station(entry.station)
+
+        log.debug('Observation: %s', json.dumps(observation))
+
+        # Debugging.
         #break
 
-        return reading
+        return entry
 
     @staticmethod
     def convert_timestamp(timestamp):
@@ -191,7 +214,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             timestamp += 'Z'
         return timestamp
 
-    def import_archive(self, path):
+    def get_readings_from_csv(self, path):
 
         # Optionally append suffix appropriately.
         suffix = '.csv'
@@ -325,31 +348,40 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             payload = open(csvpath).read()
 
         if payload is None:
-            log.error('Could not read CSV file %s', csvpath)
+            log.error(f'Could not read CSV file "{csvpath}')
             return
 
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
-        imported_data = Dataset().load(payload, format='csv', delimiter=';')
+        try:
+            imported_data = Dataset().load(payload, format='csv', delimiter=';')
+        except Exception:
+            log.exception(f'Error decoding CSV from file {csvpath}')
+            return
+
         records = imported_data.dict
 
         # Iterate all CSV records.
         for record in records:
 
-            item = self.make_item(record)
+            #print('record:', record)
+            csv_record = self.read_csv_record(record)
+            #print('csv_record:', csv_record)
             try:
-                reading = self.make_reading(item)
+                reading = self.make_reading(csv_record)
                 if reading is None:
                     continue
 
-                if not self.csvdata_to_reading(record, reading, fieldnames):
+                if not self.make_observations(record, reading, fieldnames):
                     continue
+
+                log.debug(f'CSV reading:\n{json.dumps(reading, indent=2)}')
 
                 yield reading
 
             except Exception as ex:
-                log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
+                log.exception(f'Could not make observation from {csv_record}')
 
-    def csvdata_to_reading(self, record, reading, fieldnames):
+    def make_observations(self, record, reading, fieldnames):
 
         # Indicator whether we found any data.
         has_data = False
@@ -365,18 +397,26 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             value = record[fieldname].strip()
 
             # Skip empty or non-numeric values.
-            if not value or value.lower() == 'nan':
+            # TODO: Emit warning here?
+            if is_nan(value):
                 continue
 
-            # Actually use this reading, casting to float.
-            reading.data[fieldname] = float(value)
+            # Skip non-float values.
+            # TODO: Emit warning here?
+            try:
+                value = float(value)
+            except:
+                pass
+
+            # Actually use this reading. LDI has single observations only.
+            reading.observations[0]['data'][fieldname] = value
 
             # Signal positive dataness.
             has_data = True
 
         return has_data
 
-    def make_item(self, csvitem):
+    def read_csv_record(self, csvitem):
 
         log.debug(csvitem)
 

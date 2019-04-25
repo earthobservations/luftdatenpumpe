@@ -21,6 +21,7 @@ log = logging.getLogger(__name__)
 
 class AbstractLuftdatenPumpe:
 
+    network = None
     uri = None
 
     def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False):
@@ -61,11 +62,11 @@ class AbstractLuftdatenPumpe:
     def get_readings(self):
 
         if self.source == 'api':
-            data = self.request_live_data()
+            data = self.get_readings_from_api()
 
         elif self.source.startswith('file://'):
             path = self.source.replace('file://', '')
-            data = self.import_archive(path)
+            data = self.get_readings_from_csv(path)
 
         else:
             raise ValueError('Unknown data source: {}'.format(self.source))
@@ -74,6 +75,12 @@ class AbstractLuftdatenPumpe:
             raise KeyError('No data selected. Please check connectivity and filter definition.')
 
         return data
+
+    def get_readings_from_api(self):
+        raise NotImplementedError(f'Readings not implemented by sensor network adapter "{self.network}".')
+
+    def get_readings_from_csv(self):
+        raise NotImplementedError(f'Readings not implemented by sensor network adapter "{self.network}".')
 
     def enrich_station(self, station):
 

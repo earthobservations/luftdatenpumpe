@@ -114,6 +114,6 @@ class LuftdatenEngine:
             handler = MQTTAdapter(target, dry_run=dry_run)
 
         elif url.scheme == 'influxdb':
-            handler = InfluxDBStorage(target, dry_run=dry_run)
+            handler = InfluxDBStorage(target, network=self.network, dry_run=dry_run)
 
         return handler
