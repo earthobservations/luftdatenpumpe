@@ -6,17 +6,50 @@ Luftdatenpumpe backlog
 ******
 Prio 1
 ******
+- Data plane refactoring
+    - Put "sensor_id" into "data/reading" item
+    - Fused output (sensors && data/readings)
+    - Streamline processing of multiple readings
+
+- "ldi_"readings or not!?
 
 
 ********
 IRCELINE
 ********
-Supporting the Flanders Environment Agency (VMM).
+Supporting the Flanders Environment Agency (VMM). Thanks likewise for supporting us.
 
-- [o] Add IRCELINE SOS
+IRCELINE Basics
+===============
+- [o] Add IRCELINE SOS data plane
+- [o] Add IRCELINE SOS to Grafana and documentation
+- [o] Add filtering for SOS API, esp. by station id
+- [o] Add time control, date => start, stop parameters or begin/end
+
+IRCELINE Advanced
+=================
 - [o] Add IRCELINE RIOIFDM
 - [o] Call SOS API with locale=de,fr,en
 - [o] Add EPSG:31370
+- [o] Paging does not work on ``/timeseries``, neither using ``limit`` nor ``size``.
+
+    - http://geo.irceline.be/sos/static/doc/api-doc/#general-paging
+    - https://wiki.52north.org/SensorWeb/SensorWebClientRESTInterfaceV0#Paging
+
+- [o] Q: The measurement interval is hourly?
+
+- [o] Q: No "altitude" information available?::
+
+    "position": {
+        "country": "BE",
+        "latitude": 51.21325060421094,
+        "longitude": 4.239930592809773,
+        "altitude": null,
+        "geohash": "u15527p6v9c7"
+    }
+
+- [o] Improve caching for SOS REST API taking the measurement interval into account
+- [o] Progressively/chunked fetching of timeseries information.
 
 
 *************
@@ -44,6 +77,11 @@ Prio 1.5
     - search_proximity
     - evaluate_near_sensors
 
+- [o] Geospatial queries against SOS REST
+
+    - Stations around a given point
+      http://geo.irceline.be/sos/static/doc/api-doc/#stations
+
 - [o] Add supervisord configuration (or Docker container) for running Redis, PostGIS, InfluxDB and Grafana
 - [o] Spatial index on a geography table::
 
@@ -56,6 +94,7 @@ Prio 1.5
 - [o] Better zoom level selector for map widgets. Autozoom by station selector?
 - [o] Larger form field sizes, e.g. for "query", see https://weather.hiveeyes.org/grafana/d/EWFuSqlmz/ldi-6-gis-distance-by-threshold?editview=templating&orgId=1&panelId=&fullscreen=&edit=dlslöö
 - [o] ``make clear-cache``
+- [o] Improve selectors: stations+sensors, observations or all together
 
 
 ******

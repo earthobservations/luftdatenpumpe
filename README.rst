@@ -69,6 +69,33 @@ Features
    - displayed in Grafana_.
 
 
+********
+Synopsis
+********
+::
+
+    # List networks
+    luftdatenpumpe networks
+
+    # List LDI stations
+    luftdatenpumpe stations --network=ldi --station=28,297 --reverse-geocode
+
+    # Store list of LDI stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
+    luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
+
+    # Store LDI readings into InfluxDB
+    luftdatenpumpe readings --network=ldi --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+
+    # Forward LDI readings to MQTT
+    luftdatenpumpe readings --network=ldi --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
+
+
+For a full overview about all program options including meaningful examples,
+you might just want to run ``luftdatenpumpe --help`` on your command line
+or visit `luftdatenpumpe --help`_.
+
+
+
 ***********
 Screenshots
 ***********
@@ -96,83 +123,10 @@ Popup label
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
 
-********
-Examples
-********
-Some example installations, usually running live data feeds through them.
-
-
-luftdaten.info
-==============
-Implemented by `luftdaten_info.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/luftdaten_info.py>`_
-
-Dashboards
-----------
-- `LDI Feinstaub Karte Europa <https://weather.hiveeyes.org/grafana/d/AOerEQQmk/luftdaten-info-karte>`_
-- `LDI Feinstaub Verlauf <https://weather.hiveeyes.org/grafana/d/ioUrPwQiz/luftdaten-info-verlauf>`_
-- `Vergleich LDI Umweltdaten vs. DWD Wetterdaten <https://weather.hiveeyes.org/grafana/d/NP0wTOtmk/weather-hiveeyes-org>`_
-- `Vergleich LDI Feuchtigkeitswerte BME280 vs. DHT22 mit DWD-Daten <https://weather.hiveeyes.org/grafana/d/BJo-dOfik/vergleich-bme280-and-dht22-sensoren-mit-dwd>`_
-- `LDI Karte und Kompensation <https://weather.hiveeyes.org/grafana/d/FUygU7_mk/wtf-ldi-karte-und-kompensation-dev>`_
-- `LDI Feuchtekorrektur PM10 <https://weather.hiveeyes.org/grafana/d/IgmFilaiz/wtf-pm10-feuchtekorrektur-ldi>`_
-
-References
-----------
-- https://luftdaten.info/
-- https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-- https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
-
-
-IRCELINE
-========
-Implemented by `irceline.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/irceline.py>`_
-
-Dashboards
-----------
-- `luftdaten.info trend vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
-- `luftdaten.info map vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
-
-References
-----------
-- http://www.irceline.be/en
-- http://deus.irceline.be/
-- https://en.vmm.be/
-- https://project-corona.eu/
-- http://geo.irceline.be/sos/static/doc/api-doc/
-
-
-Labs
-====
-- `LDI Demo #1 » Stations by name, country and state <https://weather.hiveeyes.org/grafana/d/yDbjQ7Piz/amo-ldi-stations-1-select-by-name-country-and-state>`_
-- `LDI Demo #2 » Cascaded stations <https://weather.hiveeyes.org/grafana/d/Oztw1OEmz/amo-ldi-stations-2-cascaded-stations>`_
-- `LDI Demo #3 » Measurements by cascaded location selector <https://weather.hiveeyes.org/grafana/d/lT4lLcEiz/amo-ldi-stations-3-cascaded-measurements>`_
-- `LDI Demo #4 » Find stations by sensor type <https://weather.hiveeyes.org/grafana/d/kMIweoPik/amo-ldi-stations-4-select-by-sensor-type>`_
-- `LDI Demo #5 » Map by location and sensor type <https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type>`_
-
-
-********
-Synopsis
-********
-::
-
-    # List networks
-    luftdatenpumpe networks
-
-    # List LDI stations
-    luftdatenpumpe stations --network=ldi --station=28,297 --reverse-geocode
-
-    # Store list of LDI stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
-    luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
-
-    # Store LDI readings into InfluxDB
-    luftdatenpumpe readings --network=ldi --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
-
-    # Forward LDI readings to MQTT
-    luftdatenpumpe readings --network=ldi --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
-
-
-For a full overview about all program options including meaningful examples,
-you might just want to run ``luftdatenpumpe --help`` on your command line
-or visit `luftdatenpumpe --help`_.
+************
+Testimonials
+************
+Enjoy readings about Luftdatenpumpe installations at `Testimonials for Luftdatenpumpe`_.
 
 
 ************
@@ -197,13 +151,12 @@ the detailed installation instructions at `install Luftdatenpumpe`_.
 Luftdaten-Viewer
 ****************
 These installation instructions outline how to build a powerful and
-user-friendly interactive GIS system on top of PostGIS, InfluxDB,
-Grafana and Luftdatenpumpe.
+user-friendly interactive GIS system on top of PostGIS, InfluxDB and
+Grafana.
 
-This is for all readers who want to learn about how to setup the
-whole system to build such beautiful and interactive data
-visualization compositions of map-, graph- and other panel-widgets
-like outlined in the "Examples" section.
+Learn how to setup the whole system to build similar interactive
+data visualization compositions of map-, graph- and other
+panel-widgets like outlined in the "Examples" section.
 
 - `Luftdaten-Viewer Applications`_
 - `Luftdaten-Viewer Databases`_
@@ -249,6 +202,7 @@ Icons and pictograms
 .. _luftdaten.info: https://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
 
+.. _Testimonials for Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/testimonials.rst
 .. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/usage.rst
 .. _install Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/luftdatenpumpe.rst
 .. _Luftdaten-Viewer Applications: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications.rst
