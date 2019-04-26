@@ -1,0 +1,45 @@
+[
+  {
+    "station": {
+      "station_id": 1234,
+      "station_label": "47E013 - Vorst",
+      "position": {
+        "country": "BE",
+        "latitude": 50.811700894020774,
+        "longitude": 4.328384665101021,
+        "altitude": null,
+        "geohash": "u15143zzdetd"
+      }
+    },
+    "data": [
+      {
+        "time": "2019-04-25T05:00:00+02:00",
+        "nitrogen-dioxide": 5.0,
+        "nitrogen-monoxide": 0.0
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1720,
+      "station_label": "42R803 - Antwerpen (Park Spoor Noord)",
+      "position": {
+        "country": "BE",
+        "latitude": 51.22862981306374,
+        "longitude": 4.428454177535564,
+        "altitude": null,
+        "geohash": "u155kvbsqkyb"
+      }
+    },
+    "data": [
+      {
+        "time": "2019-04-25T05:00:00+02:00",
+        "particulate-matter-2-5-m": 3.5,
+        "nitrogen-dioxide": 16.0,
+        "nitrogen-monoxide": 0.5,
+        "particulate-matter-10-m": 8.1,
+        "black-carbon": 0.415
+      }
+    ]
+  }
+]

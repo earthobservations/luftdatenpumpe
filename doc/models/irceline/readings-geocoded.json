@@ -1,0 +1,103 @@
+[
+  {
+    "station": {
+      "station_id": 1234,
+      "station_label": "47E013 - Vorst",
+      "position": {
+        "country": "BE",
+        "latitude": 50.811700894020774,
+        "longitude": 4.328384665101021,
+        "altitude": null,
+        "geohash": "u15143zzdetd"
+      },
+      "location": {
+        "place_id": 83037814,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 31170838,
+        "lat": "50.81095875",
+        "lon": "4.32823554404889",
+        "display_name": "Forest Domaine, Avenue Victor Rousseau - Victor Rousseaulaan, Forest - Vorst, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, 1190, Belgi\u00eb / Belgique / Belgien",
+        "boundingbox": [
+          "50.8093011",
+          "50.8125204",
+          "4.3274115",
+          "4.3294017"
+        ],
+        "address": {
+          "country_code": "BE",
+          "country": "Belgi\u00eb / Belgique / Belgien",
+          "state": "R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest",
+          "county": "Brussel-Hoofdstad - Bruxelles-Capitale",
+          "postcode": "1190",
+          "town": "Forest - Vorst",
+          "road": "Avenue Victor Rousseau - Victor Rousseaulaan",
+          "city": "Forest - Vorst"
+        },
+        "address_more": {
+          "sports_centre": "Forest Domaine"
+        }
+      },
+      "name": "Avenue Victor Rousseau - Victor Rousseaulaan, Forest - Vorst, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, BE"
+    },
+    "data": [
+      {
+        "time": "2019-04-25T05:00:00+02:00",
+        "nitrogen-dioxide": 5.0,
+        "nitrogen-monoxide": 0.0
+      }
+    ]
+  },
+  {
+    "station": {
+      "station_id": 1720,
+      "station_label": "42R803 - Antwerpen (Park Spoor Noord)",
+      "position": {
+        "country": "BE",
+        "latitude": 51.22862981306374,
+        "longitude": 4.428454177535564,
+        "altitude": null,
+        "geohash": "u155kvbsqkyb"
+      },
+      "location": {
+        "place_id": 183310142,
+        "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+        "osm_type": "way",
+        "osm_id": 507260958,
+        "lat": "51.22825605",
+        "lon": "4.42832221791237",
+        "display_name": "72-74, Vis\u00e9straat, Antwerpen-Noord, Antwerpen, Vlaanderen, 2060, Belgi\u00eb / Belgique / Belgien",
+        "boundingbox": [
+          "51.2282061",
+          "51.2283116",
+          "4.4281658",
+          "4.4284119"
+        ],
+        "address": {
+          "country_code": "BE",
+          "country": "Belgi\u00eb / Belgique / Belgien",
+          "state": "Vlaanderen",
+          "county": "Antwerpen",
+          "postcode": "2060",
+          "city": "Antwerpen",
+          "city_district": "Antwerpen",
+          "road": "Vis\u00e9straat",
+          "house_number": "72-74",
+          "neighbourhood": "Antwerpen-Noord",
+          "suburb": "Antwerpen-Noord"
+        }
+      },
+      "name": "Vis\u00e9straat, Antwerpen-Noord, Antwerpen, Vlaanderen, BE"
+    },
+    "data": [
+      {
+        "time": "2019-04-25T05:00:00+02:00",
+        "particulate-matter-2-5-m": 3.5,
+        "nitrogen-dioxide": 16.0,
+        "nitrogen-monoxide": 0.5,
+        "particulate-matter-10-m": 8.1,
+        "black-carbon": 0.415
+      }
+    ]
+  }
+]

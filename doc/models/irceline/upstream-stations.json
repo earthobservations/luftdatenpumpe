@@ -1,0 +1,218 @@
+[
+  {
+    "properties": {
+      "timeseries": {
+        "10744": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "10744",
+            "label": "10744 - FIDAS 200 - procedure"
+          },
+          "feature": {
+            "id": "1720",
+            "label": "42R803 - Antwerpen (Park Spoor Noord)"
+          },
+          "procedure": {
+            "id": "10744",
+            "label": "10744 - FIDAS 200 - procedure"
+          },
+          "phenomenon": {
+            "id": "6001",
+            "label": "Particulate Matter < 2.5 µm"
+          },
+          "category": {
+            "id": "6001",
+            "label": "Particulate Matter < 2.5 µm"
+          }
+        },
+        "10741": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "10741",
+            "label": "10741 -  - procedure"
+          },
+          "feature": {
+            "id": "1720",
+            "label": "42R803 - Antwerpen (Park Spoor Noord)"
+          },
+          "procedure": {
+            "id": "10741",
+            "label": "10741 -  - procedure"
+          },
+          "phenomenon": {
+            "id": "8",
+            "label": "Nitrogen dioxide"
+          },
+          "category": {
+            "id": "8",
+            "label": "Nitrogen dioxide"
+          }
+        },
+        "10740": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "10740",
+            "label": "10740 -  - procedure"
+          },
+          "feature": {
+            "id": "1720",
+            "label": "42R803 - Antwerpen (Park Spoor Noord)"
+          },
+          "procedure": {
+            "id": "10740",
+            "label": "10740 -  - procedure"
+          },
+          "phenomenon": {
+            "id": "38",
+            "label": "Nitrogen monoxide"
+          },
+          "category": {
+            "id": "38",
+            "label": "Nitrogen monoxide"
+          }
+        },
+        "10743": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "10743",
+            "label": "10743 - FIDAS 200 - procedure"
+          },
+          "feature": {
+            "id": "1720",
+            "label": "42R803 - Antwerpen (Park Spoor Noord)"
+          },
+          "procedure": {
+            "id": "10743",
+            "label": "10743 - FIDAS 200 - procedure"
+          },
+          "phenomenon": {
+            "id": "5",
+            "label": "Particulate Matter < 10 µm"
+          },
+          "category": {
+            "id": "5",
+            "label": "Particulate Matter < 10 µm"
+          }
+        },
+        "10742": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "10742",
+            "label": "10742 - THIS 42C - procedure"
+          },
+          "feature": {
+            "id": "1720",
+            "label": "42R803 - Antwerpen (Park Spoor Noord)"
+          },
+          "procedure": {
+            "id": "10742",
+            "label": "10742 - THIS 42C - procedure"
+          },
+          "phenomenon": {
+            "id": "391",
+            "label": "Black Carbon"
+          },
+          "category": {
+            "id": "391",
+            "label": "Black Carbon"
+          }
+        }
+      },
+      "id": 1720,
+      "label": "42R803 - Antwerpen (Park Spoor Noord)"
+    },
+    "geometry": {
+      "coordinates": [
+        4.428454177535564,
+        51.22862981306374,
+        "NaN"
+      ],
+      "type": "Point"
+    },
+    "type": "Feature"
+  },
+  {
+    "properties": {
+      "timeseries": {
+        "7186": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "7186",
+            "label": "7186 - Unknown device - procedure"
+          },
+          "feature": {
+            "id": "1234",
+            "label": "47E013 - Vorst"
+          },
+          "procedure": {
+            "id": "7186",
+            "label": "7186 - Unknown device - procedure"
+          },
+          "phenomenon": {
+            "id": "8",
+            "label": "Nitrogen dioxide"
+          },
+          "category": {
+            "id": "8",
+            "label": "Nitrogen dioxide"
+          }
+        },
+        "7185": {
+          "service": {
+            "id": "1",
+            "label": "IRCEL - CELINE: timeseries-api (SOS 2.0)"
+          },
+          "offering": {
+            "id": "7185",
+            "label": "7185 - Unknown device - procedure"
+          },
+          "feature": {
+            "id": "1234",
+            "label": "47E013 - Vorst"
+          },
+          "procedure": {
+            "id": "7185",
+            "label": "7185 - Unknown device - procedure"
+          },
+          "phenomenon": {
+            "id": "38",
+            "label": "Nitrogen monoxide"
+          },
+          "category": {
+            "id": "38",
+            "label": "Nitrogen monoxide"
+          }
+        }
+      },
+      "id": 1234,
+      "label": "47E013 - Vorst"
+    },
+    "geometry": {
+      "coordinates": [
+        4.328384665101021,
+        50.811700894020774,
+        "NaN"
+      ],
+      "type": "Point"
+    },
+    "type": "Feature"
+  }
+]

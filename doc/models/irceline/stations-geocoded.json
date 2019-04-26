@@ -1,0 +1,212 @@
+[
+  {
+    "station_id": 1234,
+    "station_label": "47E013 - Vorst",
+    "position": {
+      "country": "BE",
+      "latitude": 50.811700894020774,
+      "longitude": 4.328384665101021,
+      "altitude": null,
+      "geohash": "u15143zzdetd"
+    },
+    "location": {
+      "place_id": 83037814,
+      "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+      "osm_type": "way",
+      "osm_id": 31170838,
+      "lat": "50.81095875",
+      "lon": "4.32823554404889",
+      "display_name": "Forest Domaine, Avenue Victor Rousseau - Victor Rousseaulaan, Forest - Vorst, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, 1190, Belgi\u00eb / Belgique / Belgien",
+      "boundingbox": [
+        "50.8093011",
+        "50.8125204",
+        "4.3274115",
+        "4.3294017"
+      ],
+      "address": {
+        "country_code": "BE",
+        "country": "Belgi\u00eb / Belgique / Belgien",
+        "state": "R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest",
+        "county": "Brussel-Hoofdstad - Bruxelles-Capitale",
+        "postcode": "1190",
+        "town": "Forest - Vorst",
+        "road": "Avenue Victor Rousseau - Victor Rousseaulaan",
+        "city": "Forest - Vorst"
+      },
+      "address_more": {
+        "sports_centre": "Forest Domaine"
+      }
+    },
+    "name": "Avenue Victor Rousseau - Victor Rousseaulaan, Forest - Vorst, Brussel-Hoofdstad - Bruxelles-Capitale, R\u00e9gion de Bruxelles-Capitale - Brussels Hoofdstedelijk Gewest, BE",
+    "sensors": [
+      {
+        "sensor_id": 7186,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 8,
+        "sensor_category_label": "Nitrogen dioxide",
+        "sensor_phenomenon_id": 8,
+        "sensor_phenomenon_label": "Nitrogen dioxide",
+        "sensor_offering_id": 7186,
+        "sensor_offering_label": "7186 - Unknown device - procedure",
+        "sensor_feature_id": 1234,
+        "sensor_feature_label": "47E013 - Vorst",
+        "sensor_procedure_id": 7186,
+        "sensor_procedure_label": "7186 - Unknown device - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Nitrogen dioxide",
+        "sensor_fieldname": "nitrogen-dioxide"
+      },
+      {
+        "sensor_id": 7185,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 38,
+        "sensor_category_label": "Nitrogen monoxide",
+        "sensor_phenomenon_id": 38,
+        "sensor_phenomenon_label": "Nitrogen monoxide",
+        "sensor_offering_id": 7185,
+        "sensor_offering_label": "7185 - Unknown device - procedure",
+        "sensor_feature_id": 1234,
+        "sensor_feature_label": "47E013 - Vorst",
+        "sensor_procedure_id": 7185,
+        "sensor_procedure_label": "7185 - Unknown device - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Nitrogen monoxide",
+        "sensor_fieldname": "nitrogen-monoxide"
+      }
+    ]
+  },
+  {
+    "station_id": 1720,
+    "station_label": "42R803 - Antwerpen (Park Spoor Noord)",
+    "position": {
+      "country": "BE",
+      "latitude": 51.22862981306374,
+      "longitude": 4.428454177535564,
+      "altitude": null,
+      "geohash": "u155kvbsqkyb"
+    },
+    "location": {
+      "place_id": 183310142,
+      "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright",
+      "osm_type": "way",
+      "osm_id": 507260958,
+      "lat": "51.22825605",
+      "lon": "4.42832221791237",
+      "display_name": "72-74, Vis\u00e9straat, Antwerpen-Noord, Antwerpen, Vlaanderen, 2060, Belgi\u00eb / Belgique / Belgien",
+      "boundingbox": [
+        "51.2282061",
+        "51.2283116",
+        "4.4281658",
+        "4.4284119"
+      ],
+      "address": {
+        "country_code": "BE",
+        "country": "Belgi\u00eb / Belgique / Belgien",
+        "state": "Vlaanderen",
+        "county": "Antwerpen",
+        "postcode": "2060",
+        "city": "Antwerpen",
+        "city_district": "Antwerpen",
+        "road": "Vis\u00e9straat",
+        "house_number": "72-74",
+        "neighbourhood": "Antwerpen-Noord",
+        "suburb": "Antwerpen-Noord"
+      }
+    },
+    "name": "Vis\u00e9straat, Antwerpen-Noord, Antwerpen, Vlaanderen, BE",
+    "sensors": [
+      {
+        "sensor_id": 10744,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 6001,
+        "sensor_category_label": "Particulate Matter < 2.5 \u00b5m",
+        "sensor_phenomenon_id": 6001,
+        "sensor_phenomenon_label": "Particulate Matter < 2.5 \u00b5m",
+        "sensor_offering_id": 10744,
+        "sensor_offering_label": "10744 - FIDAS 200 - procedure",
+        "sensor_feature_id": 1720,
+        "sensor_feature_label": "42R803 - Antwerpen (Park Spoor Noord)",
+        "sensor_procedure_id": 10744,
+        "sensor_procedure_label": "10744 - FIDAS 200 - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Particulate Matter < 2.5 \u00b5m",
+        "sensor_fieldname": "particulate-matter-2-5-m"
+      },
+      {
+        "sensor_id": 10741,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 8,
+        "sensor_category_label": "Nitrogen dioxide",
+        "sensor_phenomenon_id": 8,
+        "sensor_phenomenon_label": "Nitrogen dioxide",
+        "sensor_offering_id": 10741,
+        "sensor_offering_label": "10741 -  - procedure",
+        "sensor_feature_id": 1720,
+        "sensor_feature_label": "42R803 - Antwerpen (Park Spoor Noord)",
+        "sensor_procedure_id": 10741,
+        "sensor_procedure_label": "10741 -  - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Nitrogen dioxide",
+        "sensor_fieldname": "nitrogen-dioxide"
+      },
+      {
+        "sensor_id": 10740,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 38,
+        "sensor_category_label": "Nitrogen monoxide",
+        "sensor_phenomenon_id": 38,
+        "sensor_phenomenon_label": "Nitrogen monoxide",
+        "sensor_offering_id": 10740,
+        "sensor_offering_label": "10740 -  - procedure",
+        "sensor_feature_id": 1720,
+        "sensor_feature_label": "42R803 - Antwerpen (Park Spoor Noord)",
+        "sensor_procedure_id": 10740,
+        "sensor_procedure_label": "10740 -  - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Nitrogen monoxide",
+        "sensor_fieldname": "nitrogen-monoxide"
+      },
+      {
+        "sensor_id": 10743,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 5,
+        "sensor_category_label": "Particulate Matter < 10 \u00b5m",
+        "sensor_phenomenon_id": 5,
+        "sensor_phenomenon_label": "Particulate Matter < 10 \u00b5m",
+        "sensor_offering_id": 10743,
+        "sensor_offering_label": "10743 - FIDAS 200 - procedure",
+        "sensor_feature_id": 1720,
+        "sensor_feature_label": "42R803 - Antwerpen (Park Spoor Noord)",
+        "sensor_procedure_id": 10743,
+        "sensor_procedure_label": "10743 - FIDAS 200 - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Particulate Matter < 10 \u00b5m",
+        "sensor_fieldname": "particulate-matter-10-m"
+      },
+      {
+        "sensor_id": 10742,
+        "sensor_service_id": 1,
+        "sensor_service_label": "IRCEL - CELINE: timeseries-api (SOS 2.0)",
+        "sensor_category_id": 391,
+        "sensor_category_label": "Black Carbon",
+        "sensor_phenomenon_id": 391,
+        "sensor_phenomenon_label": "Black Carbon",
+        "sensor_offering_id": 10742,
+        "sensor_offering_label": "10742 - THIS 42C - procedure",
+        "sensor_feature_id": 1720,
+        "sensor_feature_label": "42R803 - Antwerpen (Park Spoor Noord)",
+        "sensor_procedure_id": 10742,
+        "sensor_procedure_label": "10742 - THIS 42C - procedure",
+        "sensor_type": "unknown",
+        "sensor_label": "Black Carbon",
+        "sensor_fieldname": "black-carbon"
+      }
+    ]
+  }
+]

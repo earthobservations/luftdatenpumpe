@@ -1,0 +1,42 @@
+{
+  "10744": {
+    "values": [
+      {
+        "timestamp": 1556056800000,
+        "value": 18.5
+      },
+      {
+        "timestamp": 1556060400000,
+        "value": 18
+      },
+      {
+        "timestamp": 1556064000000,
+        "value": 19
+      },
+      {
+        "timestamp": 1556067600000,
+        "value": 18.5
+      }
+    ]
+  },
+  "7185": {
+    "values": [
+      {
+        "timestamp": 1556056800000,
+        "value": 0
+      },
+      {
+        "timestamp": 1556060400000,
+        "value": 0
+      },
+      {
+        "timestamp": 1556064000000,
+        "value": 0
+      },
+      {
+        "timestamp": 1556067600000,
+        "value": 0
+      }
+    ]
+  }
+}
