@@ -50,7 +50,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.10.0',
+      version='0.11.0',
       description='Process live and historical data from luftdaten.info. Filter by station-id, '
                   'sensor-id and sensor-type, apply reverse geocoding, store into TSDB and '
                   'RDBMS databases, publish to MQTT or just output as JSON.',
