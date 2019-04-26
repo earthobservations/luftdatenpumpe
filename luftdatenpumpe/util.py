@@ -3,11 +3,15 @@
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import os
+import re
 import sys
 import glob
 import json
 import logging
 import traceback
+import unicodedata
+from itertools import zip_longest
+
 from six import StringIO
 from docopt import docopt
 from munch import Munch, munchify
@@ -76,6 +80,7 @@ class Application:
                     argv.append(option)
 
         return argv
+
 
 def setup_logging(level=logging.INFO):
     log_format = '%(asctime)-15s [%(name)-36s] %(levelname)-7s: %(message)s'
@@ -195,6 +200,30 @@ find_files = find_files_glob
 
 def sanitize_dbsymbol(symbol):
     return symbol.replace('-', '_')
+
+
+def slugify(value):
+    """
+    Slugify function from django.utils.text, slightly modified.
+
+    Converts to lowercase, removes non-word characters (alphanumerics and
+    underscores) and converts spaces to hyphens. Also strips leading and
+    trailing whitespace.
+
+    Update 2019-04-26.
+    Account for strings like "wind speed (scalar)" being
+    converted to things like "wind-speed-scalar-".
+    So, also strip these leftovers.
+
+    https://stackoverflow.com/questions/5574042/string-slugification-in-python/27264385#27264385
+    """
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub('[^\w\s-]', '-', value).strip().lower()
+    value = re.sub('[-\s]+', '-', value)
+    value = value.strip('-')
+    return value
+
+
 def is_nan(value):
     return value is None or str(value).lower() == 'nan'
 
@@ -207,3 +236,27 @@ def run_once(f):
             return f(*args, **kwargs)
     wrapper.has_run = False
     return wrapper
+
+
+def grouper(iterable, n, fillvalue=None):
+    """
+    Collect data into fixed-length chunks or blocks
+    https://docs.python.org/3/library/itertools.html#itertools-recipes
+    """
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return zip_longest(*args, fillvalue=fillvalue)
+
+
+def remove_all(data, element):
+    while True:
+        try:
+            data.remove(element)
+        except ValueError:
+            break
+    return data
+
+
+def chunks(iterable, chunksize):
+    for group in grouper(iterable, chunksize):
+        yield remove_all(list(group), None)

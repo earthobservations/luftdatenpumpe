@@ -31,6 +31,9 @@ requires = [
     'influxdb==5.2.2',
     'SQLAlchemy-Utils==0.33.11',
 
+    # Date/Time
+    'rfc3339==6.0',
+
     # Geospatial
     'geohash2==1.1',
     'geopy==1.19.0',

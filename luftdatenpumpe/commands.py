@@ -16,7 +16,7 @@ from luftdatenpumpe.util import normalize_options, setup_logging, read_pairs, Ap
 
 log = logging.getLogger(__name__)
 
-network_list = ['ldi', 'be-irceline-sos']
+network_list = ['ldi', 'irceline']
 
 
 def run():
@@ -24,9 +24,9 @@ def run():
     Usage:
       luftdatenpumpe networks
       luftdatenpumpe stations --network=<network> [options] [--target=<target>]...
-      luftdatenpumpe readings --network=<network> [options] [--target=<target>]...
+      luftdatenpumpe readings --network=<network> [options] [--target=<target>]... [--timespan=<timespan>]
       luftdatenpumpe database --network=<network> [--target=<target>]... [--create-views] [--grant-user=<username>] [--drop-data] [--drop-tables] [--drop-database]
-      luftdatenpumpe grafana --network=<network> --kind=<kind> --name=<name> [--variables=<variables>]
+      luftdatenpumpe grafana --network=<network> --kind=<kind> --name=<name> [--variables=<variables>] [--fields=<fields>]
       luftdatenpumpe --version
       luftdatenpumpe (-h | --help)
 
@@ -38,6 +38,7 @@ def run():
       --station=<stations>          Filter data by given location ids, comma-separated.
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
+      --timespan=<timespan>         Filter readings by time range, only for SOS API (e.g. IRCELINE).
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
       --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
@@ -200,12 +201,11 @@ def run_maintenance(options):
 
         sys.exit()
 
-    # Generate Grafana datasource and dashboard JSON and exit.
+    # Generate JSON for Grafana datasource or dashboard and exit.
     elif options['grafana']:
         options.variables = read_pairs(options.variables)
-        log.info(f'Generating Grafana artefact '
-                 f'kind={options.kind}, name={options.name}, variables={json.dumps(options.variables)}')
-        thing = get_artefact(options.kind, options.name, variables=options.variables)
+        options.fields = read_pairs(options.fields)
+        thing = get_artefact(options.kind, options.name, variables=options.variables, fields=options.fields)
         print(thing)
         sys.exit()
 
@@ -248,11 +248,9 @@ def get_data(options):
 
     pump = resolve_source_handler(options)
 
-    network_humanized = options.network.upper()
-
     # Acquire data.
     if options.domain == 'stations':
-        log.info(f'Acquiring list of stations from "{network_humanized}". source={options.source}')
+        log.info(f'Acquiring list of stations from network "{options.network}" with source "{options.source}"')
 
         if options.source.startswith('postgresql://'):
             data = stations_from_rdbms(options.source, options.network)
@@ -263,7 +261,7 @@ def get_data(options):
         log.info(f'Acquired #{len(data)} stations')
 
     elif options.domain == 'readings':
-        log.info(f'Acquiring readings from "{network_humanized}". source={options.source}')
+        log.info(f'Acquiring readings from network "{options.network}" with source "{options.source}"')
         data = pump.get_readings()
 
     else:

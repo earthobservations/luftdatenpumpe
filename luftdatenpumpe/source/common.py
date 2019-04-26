@@ -10,7 +10,6 @@ import redis
 from tqdm import tqdm
 from requests_cache import CachedSession
 from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
-from luftdatenpumpe.util import exception_traceback
 
 from luftdatenpumpe import __appname__ as APP_NAME
 from luftdatenpumpe import __version__ as APP_VERSION
@@ -131,11 +130,22 @@ class AbstractLuftdatenPumpe:
                 except:
                     pass
 
-    def wrap_progress(self, data):
-        if self.progressbar:
-            return tqdm(list(data))
+    def apply_filter(self, data):
+        if self.filter:
+            return self.filter_rule(data)
         else:
             return data
+
+    def wrap_progress(self, data, stepsize=False):
+        # Optionally, add progress reporting.
+        if self.progressbar:
+            data = list(data)
+            total = len(data)
+            if stepsize is not False:
+                total *= stepsize
+            log.info(f'Processing #{total} items')
+            data = tqdm(data, unit_scale=stepsize)
+        return data
 
 
 class StationGeocodingFailed:

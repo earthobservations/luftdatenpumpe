@@ -89,15 +89,9 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Apply data filter.
         data = self.apply_filter(data)
 
-        # Optionally, add progress reporting.
-        if self.progressbar:
-            data = list(data)
-            log.info('Acquired #{} items from luftdaten.info live API'.format(len(data)))
-            data = tqdm(data)
-
         # Transform live API items to actual readings while optionally
         # applying a number of transformation and enrichment steps.
-        for item in data:
+        for item in self.wrap_progress(data):
             try:
                 reading = self.make_reading(item)
                 if reading is None:
@@ -108,7 +102,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             except Exception as ex:
                 log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
 
-    def apply_filter(self, data):
+    def filter_rule(self, data):
 
         for item in data:
 
@@ -122,20 +116,19 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             # If there is a filter defined, evaluate it.
             # Skip further processing for specific country codes, station ids or sensor ids.
             # TODO: Improve evaluating conditions.
-            if self.filter:
-                skip = False
-                if 'country' in self.filter:
-                    if country_code not in self.filter['country']:
-                        skip = True
-                if 'station' in self.filter:
-                    if station_id not in self.filter['station']:
-                        skip = True
-                if 'sensor' in self.filter:
-                    if sensor_id not in self.filter['sensor']:
-                        skip = True
+            skip = False
+            if 'country' in self.filter:
+                if country_code not in self.filter['country']:
+                    skip = True
+            if 'station' in self.filter:
+                if station_id not in self.filter['station']:
+                    skip = True
+            if 'sensor' in self.filter:
+                if sensor_id not in self.filter['sensor']:
+                    skip = True
 
-                if skip:
-                    continue
+            if skip:
+                continue
 
             yield item
 

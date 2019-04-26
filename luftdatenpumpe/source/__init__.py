@@ -3,6 +3,8 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 
+from munch import Munch
+
 from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.source.luftdaten_info import LuftdatenPumpe
 from luftdatenpumpe.source.irceline import IrcelinePumpe
@@ -18,7 +20,7 @@ def resolve_source_handler(options, dry_run=False):
     if options.network == 'ldi':
         datapump_class = LuftdatenPumpe
 
-    elif options.network == 'be-irceline-sos':
+    elif options.network == 'irceline':
         datapump_class = IrcelinePumpe
 
     else:
@@ -30,7 +32,7 @@ def resolve_source_handler(options, dry_run=False):
     # B. Data processing targets
 
     # Optionally apply filters by country code, station id and/or sensor id
-    filter = {}
+    filter = Munch()
 
     # Lists of Integers.
     for filter_name in ['station', 'sensor']:
@@ -47,7 +49,11 @@ def resolve_source_handler(options, dry_run=False):
         if options[filter_name]:
             filter[filter_name] = list(map(str.upper, read_list(options[filter_name])))
 
-    log.info('Applying filter: {}'.format(filter))
+    if options.timespan:
+        filter.timespan = options.timespan
+
+    if filter:
+        log.info('Applying filter: {}'.format(filter))
 
     # Default output target is STDOUT.
     if not options['target']:
