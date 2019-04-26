@@ -5,18 +5,21 @@
     "uid": null,
     "version": 0,
     "schemaVersion": 16,
-    "title": "{{ dashboardTitle or "luftdaten.info trend" }}",
-    "tags": ["luftdaten.info", "trend"],
+    "title": "{{ dashboardTitle or 'Luftdaten-Viewer » ' + sensorNetwork.upper() + ' » Trend' }}",
+    "tags": [
+      "luftdaten-viewer",
+      "trend"
+    ],
     "timezone": "browser",
-    "editable": false,
+    "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
     "style": "light",
     "time": {
-      "from": "now-7d",
+      "from": "now-{{ timeFromOffset or '7d' }}",
       "to": "now"
     },
-    "refresh": "13m",
+    "refresh": "{{ timeRefresh or '10m' }}",
     "annotations": {
       "list": [
         {
@@ -31,30 +34,6 @@
       ]
     },
     "links": [
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ GitHub",
-        "type": "link",
-        "url": "https://github.com/hiveeyes/luftdatenpumpe"
-      },
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ Hiveeyes",
-        "type": "link",
-        "url": "https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199"
-      },
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ Kotori",
-        "type": "link",
-        "url": "https://getkotori.org/docs/applications/luftdaten.info/"
-      },
       {
         "icon": "external link",
         "tags": [],
@@ -78,6 +57,22 @@
         "title": "luftdaten.info archive",
         "type": "link",
         "url": "http://archive.luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ GitHub",
+        "type": "link",
+        "url": "https://github.com/hiveeyes/luftdatenpumpe"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ Hiveeyes",
+        "type": "link",
+        "url": "https://community.hiveeyes.org/t/ldi-dataplane-v2/1412"
       }
     ],
     "panels": [
@@ -91,25 +86,24 @@
         },
         "id": 20,
         "panels": [],
-        "repeat": "ldi_station_id",
+        "repeat": "{{ sensorNetwork }}_station_id",
         "scopedVars": {
         },
-        "title": "Measurements for $ldi_station_id",
+        "title": "Measurements for ${{ sensorNetwork }}_station_id",
         "type": "row"
       },
       {
         "aliasColors": {
-          "P10": "#AEA2E0",
-          "P10 in 15 min": "#705DA0",
-          "P2,5": "#BF1B00",
-          "P2.5": "#BF1B00",
-          "P2.5 in 15min": "#890F02",
+          "PM10": "#AEA2E0",
+          "PM10 in 15 min": "#705DA0",
+          "PM2.5": "#BF1B00",
+          "PM2.5 in 15min": "#890F02",
           "humidity": "#82B5D8"
         },
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "decimals": 1,
         "editable": true,
         "error": false,
@@ -147,25 +141,25 @@
         },
         "seriesOverrides": [
           {
-            "alias": "P10 in 15 min",
+            "alias": "PM10 in 15 min",
             "fill": 1,
             "linewidth": 3,
             "yaxis": 1
           },
           {
-            "alias": "P2.5 in 15min",
+            "alias": "PM2.5 in 15min",
             "fill": 1,
             "linewidth": 3,
             "yaxis": 1
           },
           {
-            "alias": "P10",
+            "alias": "PM10",
             "lines": false,
             "pointradius": 1,
             "points": true
           },
           {
-            "alias": "P2.5",
+            "alias": "PM2.5",
             "lines": false,
             "pointradius": 1,
             "points": true
@@ -181,12 +175,12 @@
         "steppedLine": false,
         "targets": [
           {
-            "alias": "P2.5",
+            "alias": "PM2.5",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P1"
+                "name": "{{ fields['pm10'] }}"
               }
             ],
             "groupBy": [
@@ -204,7 +198,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -215,7 +209,7 @@
               [
                 {
                   "params": [
-                    "P2"
+                    "{{ fields['pm2-5'] }}"
                   ],
                   "type": "field"
                 },
@@ -229,17 +223,17 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
           {
-            "alias": "P2.5 in 15min",
+            "alias": "PM2.5 in 15min",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P2"
+                "name": "{{ fields['pm2-5'] }}"
               }
             ],
             "groupBy": [
@@ -257,7 +251,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -268,7 +262,7 @@
               [
                 {
                   "params": [
-                    "P2"
+                    "{{ fields['pm2-5'] }}"
                   ],
                   "type": "field"
                 },
@@ -282,17 +276,17 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
           {
-            "alias": "P10",
+            "alias": "PM10",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P1"
+                "name": "{{ fields['pm10'] }}"
               }
             ],
             "groupBy": [
@@ -310,7 +304,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -321,7 +315,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -335,17 +329,17 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
           {
-            "alias": "P10 in 15 min",
+            "alias": "PM10 in 15 min",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P1"
+                "name": "{{ fields['pm10'] }}"
               }
             ],
             "groupBy": [
@@ -363,7 +357,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -374,7 +368,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -388,7 +382,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
@@ -409,7 +403,7 @@
                 "type": "fill"
               }
             ],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -434,7 +428,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
@@ -458,7 +452,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "P10, P2.5 and humidity",
+        "title": "PM10, PM2.5 and humidity",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -505,10 +499,10 @@
         },
         "id": 21,
         "panels": [],
-        "repeat": "ldi_station_id",
+        "repeat": "{{ sensorNetwork }}_station_id",
         "scopedVars": {
         },
-        "title": "EU Limits for particulates @ $ldi_station_id",
+        "title": "EU Limits for particulates @ ${{ sensorNetwork }}_station_id",
         "type": "row"
       },
       {
@@ -520,7 +514,7 @@
           "rgba(237, 129, 40, 0.89)",
           "rgba(245, 54, 54, 0.9)"
         ],
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "format": "none",
         "gauge": {
           "maxValue": 100,
@@ -578,7 +572,7 @@
             "alias": "",
             "dsType": "influxdb",
             "groupBy": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -589,7 +583,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -603,14 +597,14 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
         ],
         "thresholds": "25,50",
         "timeFrom": "24h",
-        "title": "P10",
+        "title": "PM10",
         "type": "singlestat",
         "valueFontSize": "100%",
         "valueMaps": [
@@ -631,7 +625,7 @@
           "rgba(237, 129, 40, 0.89)",
           "rgba(245, 54, 54, 0.9)"
         ],
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "format": "none",
         "gauge": {
           "maxValue": 100,
@@ -689,7 +683,7 @@
             "alias": "",
             "dsType": "influxdb",
             "groupBy": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -700,7 +694,7 @@
               [
                 {
                   "params": [
-                    "P2"
+                    "{{ fields['pm2-5'] }}"
                   ],
                   "type": "field"
                 },
@@ -714,14 +708,14 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
         ],
         "thresholds": "15,30",
         "timeFrom": "24h",
-        "title": "P2.5 (no limit)",
+        "title": "PM2.5 (no limit)",
         "type": "singlestat",
         "valueFontSize": "100%",
         "valueMaps": [
@@ -742,7 +736,7 @@
           "rgba(237, 129, 40, 0.89)",
           "rgba(245, 54, 54, 0.9)"
         ],
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "format": "none",
         "gauge": {
           "maxValue": 100,
@@ -800,7 +794,7 @@
             "alias": "",
             "dsType": "influxdb",
             "groupBy": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -811,7 +805,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -825,14 +819,14 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
         ],
         "thresholds": "20,40",
         "timeFrom": "1y",
-        "title": "P10",
+        "title": "PM10",
         "type": "singlestat",
         "valueFontSize": "100%",
         "valueMaps": [
@@ -853,7 +847,7 @@
           "rgba(237, 129, 40, 0.89)",
           "rgba(245, 54, 54, 0.9)"
         ],
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "format": "none",
         "gauge": {
           "maxValue": 100,
@@ -910,7 +904,7 @@
           {
             "dsType": "influxdb",
             "groupBy": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -921,7 +915,7 @@
               [
                 {
                   "params": [
-                    "P2"
+                    "{{ fields['pm2-5'] }}"
                   ],
                   "type": "field"
                 },
@@ -935,14 +929,14 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
         ],
         "thresholds": "12.5,25",
         "timeFrom": "1y",
-        "title": "P2.5",
+        "title": "PM2.5",
         "type": "singlestat",
         "valueFontSize": "100%",
         "valueMaps": [
@@ -964,8 +958,8 @@
         },
         "id": 22,
         "panels": [],
-        "repeat": "ldi_station_id",
-        "title": "Particulates and weather for $ldi_station_id",
+        "repeat": "{{ sensorNetwork }}_station_id",
+        "title": "Particulates and weather for ${{ sensorNetwork }}_station_id",
         "type": "row"
       },
       {
@@ -973,7 +967,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "decimals": 1,
         "editable": true,
         "error": false,
@@ -1009,13 +1003,13 @@
         "renderer": "flot",
         "seriesOverrides": [
           {
-            "alias": "P10",
+            "alias": "PM10",
             "color": "#F9D9F9",
             "linewidth": 4,
             "yaxis": 1
           },
           {
-            "alias": "P2,5",
+            "alias": "PM2.5",
             "color": "#806EB7",
             "linewidth": 4,
             "yaxis": 1
@@ -1026,12 +1020,12 @@
         "steppedLine": false,
         "targets": [
           {
-            "alias": "P10",
+            "alias": "PM10",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P1"
+                "name": "{{ fields['pm10'] }}"
               }
             ],
             "groupBy": [
@@ -1049,7 +1043,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -1060,7 +1054,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -1074,17 +1068,17 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
           {
-            "alias": "P2.5",
+            "alias": "PM2.5",
             "dsType": "influxdb",
             "fields": [
               {
                 "func": "mean",
-                "name": "P2"
+                "name": "{{ fields['pm2-5'] }}"
               }
             ],
             "groupBy": [
@@ -1102,7 +1096,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -1113,7 +1107,7 @@
               [
                 {
                   "params": [
-                    "P2"
+                    "{{ fields['pm2-5'] }}"
                   ],
                   "type": "field"
                 },
@@ -1127,7 +1121,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
@@ -1144,7 +1138,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Particles @ $ldi_station_id",
+        "title": "Particles @ ${{ sensorNetwork }}_station_id",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1186,7 +1180,7 @@
         "bars": false,
         "dashLength": 10,
         "dashes": false,
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "decimals": 1,
         "editable": true,
         "error": false,
@@ -1236,7 +1230,7 @@
             "fields": [
               {
                 "func": "mean",
-                "name": "P2"
+                "name": "{{ fields['pm2-5'] }}"
               }
             ],
             "groupBy": [
@@ -1254,7 +1248,7 @@
               }
             ],
             "groupByTags": [],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -1279,7 +1273,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           },
@@ -1289,7 +1283,7 @@
             "fields": [
               {
                 "func": "mean",
-                "name": "P2"
+                "name": "{{ fields['pm2-5'] }}"
               }
             ],
             "groupBy": [
@@ -1308,7 +1302,7 @@
             ],
             "groupByTags": [],
             "hide": false,
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -1333,7 +1327,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
@@ -1350,7 +1344,7 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "Weather @ $ldi_station_id",
+        "title": "Weather @ ${{ sensorNetwork }}_station_id",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -1416,7 +1410,7 @@
         "type": "text"
       },
       {
-        "content": "# What is luftdaten.info\n\n## About\n[luftdaten.info] is a community project from Stuttgart, Germany. Due to its geographical location \nand microclimatic situation, Stuttgart has high particulate matter (PM) levels on a regular basis.\nPeople at [OK Lab Stuttgart], a project supported by [Code for Germany] of [Open Knowledge Foundation] fame \nconstructed cost-effective particulate sensors easily to rebuild by everyone to provide an alternative to \nmonitoring systems from governmental agencies.\n\nThe sensor readings from [DIY fine dust sensors] are acquired by the backend application [feinstaub-api], \ndisplayed on the [luftdaten.info map] and archived at the [luftdaten.info archive].\n\n## Growth\nThe project is a classical civic-tech with a crowdsourcing approach, it is growing steadily and is \ngetting more and more even international attention. \n\n- [2016] luftdaten.info is in the process of installing low cost, crowdfunded sensor nodes across many \ncities in Germany to measure PM levels.\n\n- [2018] In the meanwhile, there are more than 6,000 sensor nodes online. Mainly located around\nEurope, they start to spread across the whole world.\n\n## Quotes\n> There is certainly growing awareness of the issue among Stuttgart residents. \n  Luftdaten is in the process of installing low cost, crowdfunded sensors across \n  the city to measure PM levels [...].\n\n> “I wanted to build cost-effective sensors, given the less than reliable government \n  data and coverage regarding air pollution,” explains Jan Lutz, a social entrepreneur \n  who runs Luftdaten’s website.\n\n> “But I think in five years Stuttgart will be like Detroit or something, because there \n  is simply no innovation” he adds. “The automobile industry continues to produce more cars, \n  which is basically two tonnes of steel transporting a 70kg human. It’s an overkill, \n  and not sustainable in the long run.”\n\n> -- *[Source: The Guardian, 2017]*\n\n\n[luftdaten.info]: http://luftdaten.info\n[OK Lab Stuttgart]: https://codefor.de/stuttgart/\n[Code for Germany]: https://codefor.de/\n[Open Knowledge Foundation]: https://okfn.de/\n[feinstaub-api]: https://github.com/opendata-stuttgart/feinstaub-api\n[luftdaten.info map]: http://deutschland.maps.luftdaten.info/\n[luftdaten.info archive]: http://archive.luftdaten.info\n[Source: The Guardian, 2017]: https://www.theguardian.com/cities/2017/mar/02/stuttgart-residents-sue-mayor-bodily-harm-air-pollution\n[Grafana]: https://grafana.com\n[DIY fine dust sensors]: https://luftdaten.info/en/construction-manual/\n",
+        "content": "## About Luftdatenpumpe\n\n#### Features\n- **Data sources**: [luftdaten.info] (LDI), [IRCELINE]\n- **Production**: [Luftdatenpumpe]\n- **Development**: [Erneuerung der Luftdatenpumpe], [LDI data plane v2]. All contributions welcome. \n- **Composition**: [The Hiveeyes Project]. Developing a flexible beehive monitoring infrastructure.\n\n#### Production process\n1. [Luftdatenpumpe] acquires the current window of measurement readings from the upstream data source.\n2. While iterating the readings, it collects information about all stations and sensors they are originating from.\n3. Then, each stations location information gets enhanced by \n   - attaching its geospatial position as a [Geohash].\n   - attaching a synthetic real-world address resolved using the reverse geocoding service [Nominatim] by [OpenStreetMap].\n4. Finally, station information is stored into a PostGIS database using the fine  \n   [dataset] package while observation/measurement data is stored into InfluxDB.\n5. Luftdatenpumpe also includes templates for the Grafana panels you are seeing here.\n\nEnjoy exploring and stay curious.\n\n[luftdaten.info]: http://luftdaten.info/\n[IRCELINE]: https://github.com/irceline/open_data\n[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe\n[Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199\n[LDI data plane v2]: https://community.hiveeyes.org/t/ldi-data-plane-v2/1412\n[The Hiveeyes Project]: https://hiveeyes.org/\n\n[OpenStreetMap]: https://en.wikipedia.org/wiki/OpenStreetMap\n[Nominatim]: https://wiki.openstreetmap.org/wiki/Nominatim\n[Geohash]: https://en.wikipedia.org/wiki/Geohash\n[dataset]: https://dataset.readthedocs.io/\n[SQLAlchemy]: https://www.sqlalchemy.org/\n[RDBMS]: https://en.wikipedia.org/wiki/Relational_database_management_system\n",
         "gridPos": {
           "h": 19,
           "w": 12,
@@ -1426,7 +1420,7 @@
         "id": 7,
         "links": [],
         "mode": "markdown",
-        "title": "About luftdaten.info",
+        "title": "About Luftdatenpumpe",
         "type": "text"
       }
     ],
@@ -1446,9 +1440,9 @@
           "includeAll": true,
           "label": "Country",
           "multi": true,
-          "name": "ldi_station_countrycode",
+          "name": "{{ sensorNetwork }}_station_countrycode",
           "options": [],
-          "query": "SELECT osm_country_code AS __value, country_and_countrycode AS __text FROM ldi_network ORDER BY osm_country_code",
+          "query": "SELECT osm_country_code AS __value, country_and_countrycode AS __text FROM {{ sensorNetwork }}_network ORDER BY osm_country_code",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1471,9 +1465,9 @@
           "includeAll": true,
           "label": "State",
           "multi": true,
-          "name": "ldi_station_state",
+          "name": "{{ sensorNetwork }}_station_state",
           "options": [],
-          "query": "SELECT osm_state AS __value, state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) ORDER BY osm_country_code, osm_state",
+          "query": "SELECT osm_state AS __value, state_and_country AS __text FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) ORDER BY osm_country_code, osm_state",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1498,9 +1492,9 @@
           "includeAll": true,
           "label": "City",
           "multi": true,
-          "name": "ldi_station_city",
+          "name": "{{ sensorNetwork }}_station_city",
           "options": [],
-          "query": "SELECT osm_city AS __value, city_and_state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city != '' ORDER BY osm_country_code, osm_state, osm_city",
+          "query": "SELECT osm_city AS __value, city_and_state_and_country AS __text FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) AND osm_state IN (${{ sensorNetwork }}_station_state) AND osm_city != '' ORDER BY osm_country_code, osm_state, osm_city",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1525,9 +1519,9 @@
           "includeAll": true,
           "label": "Sensor type",
           "multi": true,
-          "name": "ldi_station_sensortype",
+          "name": "{{ sensorNetwork }}_station_sensortype",
           "options": [],
-          "query": "SELECT sensor_type AS __value, concat( sensor_type, '\u00A0\u00A0\u00A0\u00A0|', CAST(COUNT(sensor_type) AS text), '|' ) AS __text FROM ldi_sensors GROUP BY sensor_type ORDER BY sensor_type",
+          "query": "SELECT sensor_type AS __value, concat( sensor_type, '\u00A0\u00A0\u00A0\u00A0|', CAST(COUNT(sensor_type) AS text), '|' ) AS __text FROM {{ sensorNetwork }}_sensors GROUP BY sensor_type ORDER BY sensor_type",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -1550,9 +1544,9 @@
           "includeAll": false,
           "label": "Choose multiple stations",
           "multi": true,
-          "name": "ldi_station_id",
+          "name": "{{ sensorNetwork }}_station_id",
           "options": [],
-          "query": "SELECT station_id AS __value, name_and_id AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city IN ($ldi_station_city) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
+          "query": "SELECT station_id AS __value, name_and_id AS __text FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) AND osm_state IN (${{ sensorNetwork }}_station_state) AND osm_city IN (${{ sensorNetwork }}_station_city) AND sensor_type IN (${{ sensorNetwork }}_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,

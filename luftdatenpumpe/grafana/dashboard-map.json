@@ -5,18 +5,18 @@
     "uid": null,
     "version": 0,
     "schemaVersion": 16,
-    "title": "{{ dashboardTitle or "luftdaten.info map" }}",
-    "tags": ["luftdaten.info", "map"],
+    "title": "{{ dashboardTitle or 'Luftdaten-Viewer » ' + sensorNetwork.upper() + ' » Map' }}",
+    "tags": ["luftdaten-viewer", "map"],
     "timezone": "browser",
-    "editable": false,
+    "editable": true,
     "gnetId": null,
     "graphTooltip": 0,
     "style": "light",
     "time": {
-      "from": "now-30m",
+      "from": "now-{{ timeFromOffset or '30m' }}",
       "to": "now"
     },
-    "refresh": "10m",
+    "refresh": "{{ timeRefresh or '10m' }}",
     "annotations": {
       "list": [
         {
@@ -31,30 +31,6 @@
       ]
     },
     "links": [
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ GitHub",
-        "type": "link",
-        "url": "https://github.com/hiveeyes/luftdatenpumpe"
-      },
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ Hiveeyes",
-        "type": "link",
-        "url": "https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199"
-      },
-      {
-        "icon": "external link",
-        "tags": [],
-        "targetBlank": true,
-        "title": "Luftdatenpumpe @ Kotori",
-        "type": "link",
-        "url": "https://getkotori.org/docs/applications/luftdaten.info/"
-      },
       {
         "icon": "external link",
         "tags": [],
@@ -78,12 +54,28 @@
         "title": "luftdaten.info archive",
         "type": "link",
         "url": "http://archive.luftdaten.info/"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ GitHub",
+        "type": "link",
+        "url": "https://github.com/hiveeyes/luftdatenpumpe"
+      },
+      {
+        "icon": "external link",
+        "tags": [],
+        "targetBlank": true,
+        "title": "Luftdatenpumpe @ Hiveeyes",
+        "type": "link",
+        "url": "https://community.hiveeyes.org/t/ldi-dataplane-v2/1412"
       }
     ],
     "panels": [
       {
-        "autoPanLabels": {{ autoPanLabels or "true" }},
-        "autoWidthLabels": {{ autoWidthLabels or "true" }},
+        "autoPanLabels": {{ autoPanLabels or 'true' }},
+        "autoWidthLabels": {{ autoWidthLabels or 'true' }},
         "circleMaxSize": "1",
         "circleMinSize": "1",
         "colors": [
@@ -94,12 +86,12 @@
           "#bf1b00",
           "#890f02"
         ],
-        "datasource": "luftdaten_info",
+        "datasource": "{{ tsdbDatasource }}",
         "decimals": 0,
         "description": "",
         "esGeoPoint": "geohash",
         "esLocationName": "",
-        "esMetric": "P1",
+        "esMetric": "{{ fields['pm10'] }}",
         "gridPos": {
           "h": 13,
           "w": 9,
@@ -111,21 +103,21 @@
         "hideTimeOverride": true,
         "hideZero": false,
         "id": 12,
-        "initialZoom": "{{ initialZoom or "5" }}",
+        "initialZoom": "{{ initialZoom or '5' }}",
         "interval": "",
         "jsonUrl": "{{ jsonUrl }}",
         "jsonpCallback": "",
         "jsonpUrl": "",
         "links": [],
         "locationData": "table+json",
-        "mapCenter": "{{ mapCenter or "custom" }}",
-        "mapCenterLatitude": "{{ mapCenterLatitude or "51.25" }}",
-        "mapCenterLongitude": "{{ mapCenterLongitude or "10.25" }}",
+        "mapCenter": "{{ mapCenter or 'custom' }}",
+        "mapCenterLatitude": "{{ mapCenterLatitude or '51.25' }}",
+        "mapCenterLongitude": "{{ mapCenterLongitude or '10.25' }}",
         "maxDataPoints": 1,
         "mouseWheelZoom": false,
-        "showAttribution": {{ showAttribution or "true" }},
-        "showLegend": {{ showLegend or "false" }},
-        "showZoomControl": {{ showZoomControl or "true" }},
+        "showAttribution": {{ showAttribution or 'true' }},
+        "showLegend": {{ showLegend or 'false' }},
+        "showZoomControl": {{ showZoomControl or 'true' }},
         "stickyLabels": false,
         "tableLabel": "location_id",
         "tableQueryOptions": {
@@ -152,7 +144,7 @@
                 "type": "tag"
               }
             ],
-            "measurement": "ldi_readings",
+            "measurement": "{{ sensorNetwork }}_readings",
             "orderByTime": "ASC",
             "policy": "default",
             "query": null,
@@ -163,7 +155,7 @@
               [
                 {
                   "params": [
-                    "P1"
+                    "{{ fields['pm10'] }}"
                   ],
                   "type": "field"
                 },
@@ -183,7 +175,7 @@
               {
                 "key": "station_id",
                 "operator": "=~",
-                "value": "/^$ldi_station_id$/"
+                "value": "/^${{ sensorNetwork }}_station_id$/"
               }
             ]
           }
@@ -194,9 +186,9 @@
         "title": "PM10 particulates",
         "transparent": false,
         "type": "grafana-worldmap-panel",
-        "unitPlural": "μg/m³ (P10)",
+        "unitPlural": "μg/m³ (PM10)",
         "unitSingle": "",
-        "unitSingular": "μg/m³ (P10)",
+        "unitSingular": "μg/m³ (PM10)",
         "valueName": "current"
       },
       {
@@ -225,7 +217,7 @@
             "group": [],
             "metricColumn": "none",
             "rawQuery": true,
-            "rawSql": "SELECT osm_country_code, state_and_city, name_and_id, sensor_type FROM ldi_network WHERE station_id IN ($ldi_station_id) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, state_and_city, name_and_id, sensor_type;",
+            "rawSql": "SELECT osm_country_code, state_and_city, name_and_id, sensor_type FROM {{ sensorNetwork }}_network WHERE station_id IN (${{ sensorNetwork }}_station_id) AND sensor_type IN (${{ sensorNetwork }}_station_sensortype) ORDER BY osm_country_code, state_and_city, name_and_id, sensor_type;",
             "refId": "A",
             "select": [
               [
@@ -253,35 +245,34 @@
         "type": "table"
       },
       {
-        "content": "- **Data source**: [luftdaten.info] (LDI)\n- **Production**: [Luftdatenpumpe], daily\n\n\n- **Development**: [Erneuerung der Luftdatenpumpe]. All contributions welcome. \n- **Composition**: [The Hiveeyes Project]. Developing a flexible beehive monitoring infrastructure.\n\n[luftdaten.info]: http://luftdaten.info/\n[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe\n[Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199\n[The Hiveeyes Project]: https://hiveeyes.org/\n",
+        "content": "# Particulates\n\nAtmospheric particulate matter – also known as particulate matter (PM) or particulates – are microscopic solid or liquid matter suspended in the Earth's atmosphere. The term aerosol commonly refers to the particulate/air mixture, as opposed to the particulate matter alone. Sources of particulate matter can be man-made or natural. They have impacts on climate and precipitation that adversely affect human health.\n\nSubtypes of atmospheric particulate matter include suspended particulate matter (SPM), thoracic and respirable particles, inhalable coarse particles, which are particles with a diameter between 2.5 and 10 micrometres (μm), fine particles with a diameter of 2.5 μm or less PM2.5 , PM10 ultrafine particles, and soot\n\nThe IARC and WHO designate airborne particulates a Group 1 carcinogen. Particulates are the deadliest form of air pollution[citation needed] due to their ability to penetrate deep into the lungs and blood streams unfiltered, causing permanent DNA mutations, heart attacks, and premature death. In 2013, a study involving 312,944 people in nine European countries revealed that there was no safe level of particulates and that for every increase of 10 μg/m3 in PM10, the lung cancer rate rose 22%. The smaller PM2.5 were particularly deadly, with a 36% increase in lung cancer per 10 μg/m3 as it can penetrate deeper into the lungs.\n\nThe European Union has established these limits for particulates in air\n\n|                                        | **PM10 since 1 January 2005** | **PM2.5 since 1 January 2015** |\n|----------------------------------------|--------------------------|----------------------------|\n| **Yearly average**                         | 40 µg/m3                 | 25 µg/m3                   |\n| **Daily average (24-hour)**                | 50 µg/m3                 | None                       |\n| **Allowed number of exceedences per year** | 35                       | None                       |\n\n(*[Source: Wikipedia](https://en.wikipedia.org/wiki/Particulates)*)",
         "gridPos": {
-          "h": 5,
-          "w": 10,
-          "x": 1,
-          "y": 13
+          "h": 19,
+          "w": 12,
+          "x": 0,
+          "y": 82
         },
         "id": 6,
         "links": [],
         "mode": "markdown",
-        "title": "About",
-        "transparent": true,
+        "title": "About Atmospheric particulate matter",
         "type": "text"
       },
       {
-        "content": "1. [Luftdatenpumpe] acquires the current window of measurement readings from the livedata API of [luftdaten.info].\n2. While iterating the readings, it collects information about all stations and sensors they are originating from.\n3. Then, each stations location information gets enhanced by \n   - attaching its geospatial position as a [Geohash].\n   - attaching a synthetic real-world address resolved using the reverse geocoding service [Nominatim] by [OpenStreetMap].\n4. The resulting data is stored into a PostgreSQL database on `weather.hiveeyes.org` using the fine [dataset] package.\n\n[luftdaten.info]: http://luftdaten.info/\n[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe\n[Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199\n[The Hiveeyes Project]: https://hiveeyes.org/\n\n[OpenStreetMap]: https://en.wikipedia.org/wiki/OpenStreetMap\n[Nominatim]: https://wiki.openstreetmap.org/wiki/Nominatim\n[Geohash]: https://en.wikipedia.org/wiki/Geohash\n[dataset]: https://dataset.readthedocs.io/\n[SQLAlchemy]: https://www.sqlalchemy.org/\n[RDBMS]: https://en.wikipedia.org/wiki/Relational_database_management_system\n",
+        "content": "## About Luftdatenpumpe\n\n#### Features\n- **Data sources**: [luftdaten.info] (LDI), [IRCELINE]\n- **Production**: [Luftdatenpumpe]\n- **Development**: [Erneuerung der Luftdatenpumpe], [LDI data plane v2]. All contributions welcome. \n- **Composition**: [The Hiveeyes Project]. Developing a flexible beehive monitoring infrastructure.\n\n#### Production process\n1. [Luftdatenpumpe] acquires the current window of measurement readings from the upstream data source.\n2. While iterating the readings, it collects information about all stations and sensors they are originating from.\n3. Then, each stations location information gets enhanced by \n   - attaching its geospatial position as a [Geohash].\n   - attaching a synthetic real-world address resolved using the reverse geocoding service [Nominatim] by [OpenStreetMap].\n4. Finally, station information is stored into a PostGIS database using the fine  \n   [dataset] package while observation/measurement data is stored into InfluxDB.\n5. Luftdatenpumpe also includes templates for the Grafana panels you are seeing here.\n\nEnjoy exploring and stay curious.\n\n[luftdaten.info]: http://luftdaten.info/\n[IRCELINE]: https://github.com/irceline/open_data\n[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe\n[Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199\n[LDI data plane v2]: https://community.hiveeyes.org/t/ldi-data-plane-v2/1412\n[The Hiveeyes Project]: https://hiveeyes.org/\n\n[OpenStreetMap]: https://en.wikipedia.org/wiki/OpenStreetMap\n[Nominatim]: https://wiki.openstreetmap.org/wiki/Nominatim\n[Geohash]: https://en.wikipedia.org/wiki/Geohash\n[dataset]: https://dataset.readthedocs.io/\n[SQLAlchemy]: https://www.sqlalchemy.org/\n[RDBMS]: https://en.wikipedia.org/wiki/Relational_database_management_system\n",
         "gridPos": {
-          "h": 5,
+          "h": 19,
           "w": 12,
-          "x": 11,
-          "y": 13
+          "x": 12,
+          "y": 82
         },
         "id": 8,
         "links": [],
         "mode": "markdown",
-        "title": "How does this content get produced?",
-        "transparent": true,
+        "title": "About Luftdatenpumpe",
         "type": "text"
       }
+
     ],
     "templating": {
       "list": [
@@ -299,9 +290,9 @@
           "includeAll": true,
           "label": "Country",
           "multi": true,
-          "name": "ldi_station_countrycode",
+          "name": "{{ sensorNetwork }}_station_countrycode",
           "options": [],
-          "query": "SELECT osm_country_code AS __value, country_and_countrycode AS __text FROM ldi_network ORDER BY osm_country_code",
+          "query": "SELECT osm_country_code AS __value, country_and_countrycode AS __text FROM {{ sensorNetwork }}_network ORDER BY osm_country_code",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -324,9 +315,9 @@
           "includeAll": true,
           "label": "State",
           "multi": true,
-          "name": "ldi_station_state",
+          "name": "{{ sensorNetwork }}_station_state",
           "options": [],
-          "query": "SELECT osm_state AS __value, state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) ORDER BY osm_country_code, osm_state",
+          "query": "SELECT osm_state AS __value, state_and_country AS __text FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) ORDER BY osm_country_code, osm_state",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -351,9 +342,9 @@
           "includeAll": true,
           "label": "City",
           "multi": true,
-          "name": "ldi_station_city",
+          "name": "{{ sensorNetwork }}_station_city",
           "options": [],
-          "query": "SELECT osm_city AS __value, city_and_state_and_country AS __text FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city != '' ORDER BY osm_country_code, osm_state, osm_city",
+          "query": "SELECT osm_city AS __value, city_and_state_and_country AS __text FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) AND osm_state IN (${{ sensorNetwork }}_station_state) AND osm_city != '' ORDER BY osm_country_code, osm_state, osm_city",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -378,9 +369,9 @@
           "includeAll": true,
           "label": "Sensor type",
           "multi": true,
-          "name": "ldi_station_sensortype",
+          "name": "{{ sensorNetwork }}_station_sensortype",
           "options": [],
-          "query": "SELECT sensor_type AS __value, concat( sensor_type, '\u00A0\u00A0\u00A0\u00A0|', CAST(COUNT(sensor_type) AS text), '|' ) AS __text FROM ldi_sensors GROUP BY sensor_type ORDER BY sensor_type",
+          "query": "SELECT sensor_type AS __value, concat( sensor_type, '\u00A0\u00A0\u00A0\u00A0|', CAST(COUNT(sensor_type) AS text), '|' ) AS __text FROM {{ sensorNetwork }}_sensors GROUP BY sensor_type ORDER BY sensor_type",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,
@@ -403,9 +394,9 @@
           "includeAll": true,
           "label": null,
           "multi": true,
-          "name": "ldi_station_id",
+          "name": "{{ sensorNetwork }}_station_id",
           "options": [],
-          "query": "SELECT station_id FROM ldi_network WHERE osm_country_code IN ($ldi_station_countrycode) AND osm_state IN ($ldi_station_state) AND osm_city IN ($ldi_station_city) AND sensor_type IN ($ldi_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
+          "query": "SELECT station_id FROM {{ sensorNetwork }}_network WHERE osm_country_code IN (${{ sensorNetwork }}_station_countrycode) AND osm_state IN (${{ sensorNetwork }}_station_state) AND osm_city IN (${{ sensorNetwork }}_station_city) AND sensor_type IN (${{ sensorNetwork }}_station_sensortype) ORDER BY osm_country_code, osm_state, osm_city, osm_road",
           "refresh": 1,
           "regex": "",
           "skipUrlSync": false,

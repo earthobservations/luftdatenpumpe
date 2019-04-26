@@ -10,9 +10,14 @@ the data feed of luftdaten.info using Grafana.
 Installation
 ************
 
-Setup Grafana Worldmap Panel 0.3.0-dev
-======================================
-::
+Install Grafana Plugins
+=======================
+
+Flux datasource::
+
+    grafana-cli plugins install grafana-influxdb-flux-datasource
+
+Worldmap Panel 0.3.0-dev::
 
     grafana-cli --pluginUrl https://github.com/hiveeyes/grafana-worldmap-panel/archive/0.3.0-dev2.zip plugins install grafana-worldmap-panel
     systemctl restart grafana-server
@@ -109,21 +114,21 @@ Datasources
 ===========
 ::
 
-    # Create data source object for "luftdaten_info @ InfluxDB".
-    luftdatenpumpe grafana --kind=datasource --name=luftdaten_info \
-        | http --session=grafana POST $GRAFANA_URL/api/datasources
-
     # Create data source object for "weatherbase @ PostgreSQL".
     luftdatenpumpe grafana --kind=datasource --name=weatherbase \
         | http --session=grafana POST $GRAFANA_URL/api/datasources
 
+    # Create data source object for "luftdaten_info @ InfluxDB".
+    luftdatenpumpe grafana --kind=datasource --name=influxdb \
+        --variables=tsdbDatasource=luftdaten_info \
+        | http --session=grafana POST $GRAFANA_URL/api/datasources
 
 .. note::
 
     Before being able to create the data source objects again, you will have to delete them first::
 
-        http --session=grafana DELETE $GRAFANA_URL/api/datasources/name/luftdaten_info
         http --session=grafana DELETE $GRAFANA_URL/api/datasources/name/weatherbase
+        http --session=grafana DELETE $GRAFANA_URL/api/datasources/name/luftdaten_info
 
 
 Dashboards
@@ -131,12 +136,15 @@ Dashboards
 Create dashboard with graph panel::
 
     luftdatenpumpe grafana --kind=dashboard --name=trend \
+        --variables=tsdbDatasource=luftdaten_info,sensorNetwork=ldi \
+        --fields=pm2-5=P2,pm10=P1 \
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
 
 Create dashboard with worldmap and table panels::
 
     luftdatenpumpe grafana --kind=dashboard --name=map \
-        --variables=jsonUrl=/public/data/json/ldi-stations.json,autoPanLabels=false,autoWidthLabels=false \
+        --variables=tsdbDatasource=luftdaten_info,sensorNetwork=ldi,jsonUrl=/public/data/json/ldi-stations.json,autoPanLabels=false \
+        --fields=pm2-5=P2,pm10=P1 \
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
 
 .. note:: This references the station list JSON file created in one of the previous steps.

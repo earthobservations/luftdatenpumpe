@@ -1,9 +1,9 @@
 {
-  "name": "luftdaten_info",
+  "name": "{{ tsdbDatasource }}",
   "type": "influxdb",
   "url": "http://localhost:8086/",
   "access": "proxy",
-  "database": "luftdaten_info",
+  "database": "{{ tsdbDatasource }}",
   "user": "root",
   "password": "root"
 }
