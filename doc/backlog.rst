@@ -12,6 +12,9 @@ Prio 1
     - Streamline processing of multiple readings
 
 - "ldi_"readings or not!?
+- [o] IRCELINE: Progressively/chunked fetching of timeseries information - not all at once!
+- [o] Fix IRCELINE name "wind-speed-scalar-"
+- [o] Refactor Markdown documentation
 
 
 ********
@@ -49,12 +52,14 @@ IRCELINE Advanced
     }
 
 - [o] Improve caching for SOS REST API taking the measurement interval into account
-- [o] Progressively/chunked fetching of timeseries information.
+- [o] Don't use "options.network" as "dbprefix", define a different, shorter one
+      as "be_irceline_sos" seems too long. Would "irceline" be better here?
 
 
 *************
 Documentation
 *************
+- [o] By default, gets the last reading. Querying IRCELINE w/o timestamp yields a whole week. IRCELINE has hourly, while LDI has 5-minute duty cycles.
 - [o] Add "read this section carefully" to documentation pages
 - [o] Add Sphinx documentation renderer, publish to hiveeyes.org/doc/luftdatenpumpe
 - [o] Add more "About us" to luftdaten-info-trend dashboard

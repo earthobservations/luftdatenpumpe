@@ -5,8 +5,12 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-04-26 0.11.0
+=================
 - Push architecture towards ingesting of data from multiple sensor networks
-- Add stations from the IRCELINE network
+- Integrate data from the IRCELINE networks' SOS API
 
 
 2019-04-22 0.10.0
