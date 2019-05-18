@@ -374,7 +374,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         url = urljoin(self.uri, 'timeseries/getData')
 
         if timespan is None:
-            timespan = f'{self.this_hour()}/PT0h'
+            timespan = f'PT12h/{self.this_hour()}'
 
         log.info(f'Requesting IRCELINE live API at {url} with timespan "{timespan}" and #{len(timeseries_ids)} timeseries')
 

@@ -5,12 +5,13 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Always fetch last 12 hours worth of data to reduce gaps when API is offline.
 
 
 2019-04-26 0.11.0
 =================
 - Push architecture towards ingesting of data from multiple sensor networks
-- Integrate data from the IRCELINE networks' SOS API
+- Integrate data from the SOS REST API of the IRCELINE network
 
 
 2019-04-22 0.10.0
