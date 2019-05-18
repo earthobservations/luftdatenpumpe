@@ -8,7 +8,7 @@ from luftdatenpumpe.target.rdbms import RDBMSStorage
 from luftdatenpumpe.util import sanitize_dbsymbol
 
 
-def stations_from_rdbms(dsuri, dsprefix):
+def stations_from_rdbms(dsuri, prefix):
     """
     Re-make station information from PostgreSQL database.
 
@@ -72,15 +72,15 @@ def stations_from_rdbms(dsuri, dsprefix):
     entries = []
 
     # Sanitize table name.
-    dsprefix = sanitize_dbsymbol(dsprefix)
+    prefix = sanitize_dbsymbol(prefix)
 
     sql = f"""
         SELECT *
-        FROM {dsprefix}_stations, {dsprefix}_osmdata
+        FROM {prefix}_stations, {prefix}_osmdata
         WHERE
-          {dsprefix}_stations.station_id = {dsprefix}_osmdata.station_id
+          {prefix}_stations.station_id = {prefix}_osmdata.station_id
         ORDER BY
-          {dsprefix}_stations.station_id
+          {prefix}_stations.station_id
     """
 
     storage = RDBMSStorage(dsuri)

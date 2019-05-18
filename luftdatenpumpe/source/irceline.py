@@ -296,7 +296,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         # Map timeseries to readings.
         timeseries_readings_map = {}
         for tsid, item in timeseries.items():
-            print(tsid, item)
+            #print(tsid, item)
             timeseries_id = int(tsid)
             fieldname = timeseries_sensor_map[timeseries_id]['sensor_fieldname']
             data = self.reading_data_from_timeseries(fieldname, item['values'])

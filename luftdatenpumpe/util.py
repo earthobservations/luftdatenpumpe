@@ -36,7 +36,7 @@ class Application:
 
     def initialize(self):
 
-        # Honor "LDA_" environment variables.
+        # Honor "LDP_" environment variables.
         argv = self.get_argv_with_environment()
 
         #print(argv)

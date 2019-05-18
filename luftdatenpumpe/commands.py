@@ -4,15 +4,14 @@
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import sys
-import json
 import logging
-from docopt import docopt, DocoptExit
+from docopt import DocoptExit
 from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.grafana import get_artefact
 from luftdatenpumpe.source import resolve_source_handler
 from luftdatenpumpe.source.rdbms import stations_from_rdbms
 from luftdatenpumpe.engine import LuftdatenEngine
-from luftdatenpumpe.util import normalize_options, setup_logging, read_pairs, Application
+from luftdatenpumpe.util import read_pairs, Application
 
 log = logging.getLogger(__name__)
 
