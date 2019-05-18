@@ -102,8 +102,8 @@ Screenshots
 Luftdaten-Viewer displays stations and measurements from luftdaten.info (LDI) in Grafana.
 
 
-Filtering
-=========
+Map display and filtering
+=========================
 - Filter by different synthesized address components and sensor type.
 - Display measurements from filtered stations on Grafana Worldmap Panel.
 - Display filtered list of stations with corresponding information in tabular form.
@@ -113,20 +113,14 @@ Filtering
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
 
 
-Popup label
-===========
+Map popup labels
+================
 - Humanized label computed from synthesized OpenStreetMap address.
 - Numeric station identifier.
 - Measurement value, unit and field name.
 
 .. image:: https://community.hiveeyes.org/uploads/default/original/2X/4/48eeda1a1d418eaf698b241a65080666abcf2497.png
     :target: https://weather.hiveeyes.org/grafana/d/9d9rnePmk/amo-ldi-stations-5-map-by-sensor-type
-
-
-************
-Testimonials
-************
-Enjoy readings about Luftdatenpumpe installations at `Testimonials for Luftdatenpumpe`_.
 
 
 ************
@@ -150,13 +144,20 @@ the detailed installation instructions at `install Luftdatenpumpe`_.
 ****************
 Luftdaten-Viewer
 ****************
-These installation instructions outline how to build a powerful and
-user-friendly interactive GIS system on top of PostGIS, InfluxDB and
-Grafana.
 
-Learn how to setup the whole system to build similar interactive
-data visualization compositions of map-, graph- and other
-panel-widgets like outlined in the "Examples" section.
+About
+=====
+Using Luftdatenpumpe, you can build user-friendly interactive GIS systems
+on top of PostGIS, InfluxDB and Grafana. We are calling this "Luftdaten-Viewer".
+
+Without further ado, you might enjoy reading about existing "Luftdaten-Viewer"
+installations at `Testimonials for Luftdatenpumpe`_.
+
+Instructions
+============
+These installation instructions outline how to setup the whole system to build
+similar interactive data visualization compositions of map-, graph- and other
+panel-widgets like outlined in the "Testimonials" section.
 
 - `Luftdaten-Viewer Applications`_
 - `Luftdaten-Viewer Databases`_

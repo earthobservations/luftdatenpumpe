@@ -45,6 +45,10 @@ Create directory for stations file::
     chown -R grafana:grafana /var/lib/grafana/data
     ln -sf /var/lib/grafana/data /usr/share/grafana/public/
 
+Let all processing happen on network "LDI"::
+
+    export LDP_NETWORK=ldi
+
 Define stations file::
 
     stationsfile=/var/lib/grafana/data/json/ldi-stations.json

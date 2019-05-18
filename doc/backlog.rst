@@ -1,20 +1,23 @@
 ######################
-Luftdatenpumpe backlog
+Luftdatenpumpe Backlog
 ######################
 
 
 ******
 Prio 1
 ******
-- Data plane refactoring
-    - Put "sensor_id" into "data/reading" item
-    - Fused output (sensors && data/readings)
-    - Streamline processing of multiple readings
-
-- "ldi_"readings or not!?
-- [o] IRCELINE: Progressively/chunked fetching of timeseries information - not all at once!
-- [o] Fix IRCELINE name "wind-speed-scalar-"
-- [o] Refactor Markdown documentation
+- [o] Data plane refactoring
+    - Fused/combined data model of sensors vs. data/readings
+- [x] IRCELINE: Progressively/chunked fetching of timeseries information - not all at once!
+- [o] Refactor Markdown documentation in Grafana Dashboards
+- [o] Improve IRCELINE data processing efficiency
+- [o] Error with invalid timestamps when requesting IRCELINE: "statusCode" error
+- [o] Grafana: Drill-down to detail view via circle
+      https://vmm.hiveeyes.org/grafana/d/gG-dP2kWk/luftdaten-viewer-ldi-trend?var-ldi_station_id=8667
+- [o] Grafana: Enhanced popover with structured (meta)data transfer
+- [o] Grafana: Drill-down to detail view via popover
+- [o] As the Grafana Worldmap Panel decodes the geohash to lat/lon using ``decodeGeoHash()`` anyway,
+  let's go back to storing the position as lat/lon again.
 
 
 ********
@@ -22,44 +25,43 @@ IRCELINE
 ********
 Supporting the Flanders Environment Agency (VMM). Thanks likewise for supporting us.
 
-IRCELINE Basics
-===============
-- [o] Add IRCELINE SOS data plane
-- [o] Add IRCELINE SOS to Grafana and documentation
-- [o] Add filtering for SOS API, esp. by station id
-- [o] Add time control, date => start, stop parameters or begin/end
-
-IRCELINE Advanced
-=================
-- [o] Add IRCELINE RIOIFDM
-- [o] Call SOS API with locale=de,fr,en
+- [o] Add IRCELINE RIOIFDM as data source
+- [o] Optionally call SOS API with locale=de,fr,en
 - [o] Add EPSG:31370
 - [o] Paging does not work on ``/timeseries``, neither using ``limit`` nor ``size``.
 
     - http://geo.irceline.be/sos/static/doc/api-doc/#general-paging
     - https://wiki.52north.org/SensorWeb/SensorWebClientRESTInterfaceV0#Paging
 
-- [o] Q: The measurement interval is hourly?
-
-- [o] Q: No "altitude" information available?::
-
-    "position": {
-        "country": "BE",
-        "latitude": 51.21325060421094,
-        "longitude": 4.239930592809773,
-        "altitude": null,
-        "geohash": "u15527p6v9c7"
-    }
-
 - [o] Improve caching for SOS REST API taking the measurement interval into account
-- [o] Don't use "options.network" as "dbprefix", define a different, shorter one
-      as "be_irceline_sos" seems too long. Would "irceline" be better here?
+- [o] ``time luftdatenpumpe readings --progress --target=influxdb://luftdatenpumpe@localhost/vmm --timespan='2018-09-01/2019-01-01'``::
+
+    100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105/105 [00:06<00:00, 18.80it/s]
+    Traceback (most recent call last):
+      File "/opt/luftdatenpumpe/lib/python3.6/site-packages/urllib3/connectionpool.py", line 600, in urlopen
+        chunked=chunked)
+      File "/opt/luftdatenpumpe/lib/python3.6/site-packages/urllib3/connectionpool.py", line 354, in _make_request
+        conn.request(method, url, **httplib_request_kw)
+      File "/usr/lib64/python3.6/http/client.py", line 1239, in request
+        self._send_request(method, url, body, headers, encode_chunked)
+      File "/usr/lib64/python3.6/http/client.py", line 1285, in _send_request
+        self.endheaders(body, encode_chunked=encode_chunked)
+      File "/usr/lib64/python3.6/http/client.py", line 1234, in endheaders
+        self._send_output(message_body, encode_chunked=encode_chunked)
+      File "/usr/lib64/python3.6/http/client.py", line 1065, in _send_output
+        self.send(chunk)
+      File "/usr/lib64/python3.6/http/client.py", line 986, in send
+        self.sock.sendall(data)
+    BrokenPipeError: [Errno 32] Broken pipe
 
 
 *************
 Documentation
 *************
-- [o] By default, gets the last reading. Querying IRCELINE w/o timestamp yields a whole week. IRCELINE has hourly, while LDI has 5-minute duty cycles.
+- [o] Adjust inline Markdown: Rename "About Luftdatenpumpe" to "Luftdaten-Viewer » About" and rephrase content appropriately.
+- [o] By default, gets the last reading. Querying IRCELINE w/o timestamp yields a whole week.
+      IRCELINE has hourly, while LDI has 5-minute measurement intervals.
+- [o] Improve inline documentation on ``irceline.py``
 - [o] Add "read this section carefully" to documentation pages
 - [o] Add Sphinx documentation renderer, publish to hiveeyes.org/doc/luftdatenpumpe
 - [o] Add more "About us" to luftdaten-info-trend dashboard
@@ -216,6 +218,9 @@ Prio 4
 ****
 Done
 ****
+
+All the machinery
+=================
 - [x] Download cache for data feed (5 minutes)
 - [x] Write metadata directly to Postgres
 - [x] Redesign commandline interface
@@ -275,23 +280,33 @@ Done
 
 - [x] Add GRANT SQL statements and bundle with "--create-view" to "--setup-database"
 - [x] Progressbar for emitting data to target subsystems
+- [x] Spotted this::
 
-Spotted this::
+        2019-01-23 16:08:45,230 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T02:51:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+        Traceback (most recent call last):
+          File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+            if not self.csvdata_to_reading(record, reading, fieldnames):
+          File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+            reading.data[fieldname] = float(value)
+        ValueError: could not convert string to float: '985.56 1541213415071633'
 
-    2019-01-23 16:08:45,230 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T02:51:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
-    Traceback (most recent call last):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
-        if not self.csvdata_to_reading(record, reading, fieldnames):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
-        reading.data[fieldname] = float(value)
-    ValueError: could not convert string to float: '985.56 1541213415071633'
+        2019-01-23 16:08:45,282 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T08:52:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
+        Traceback (most recent call last):
+          File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
+            if not self.csvdata_to_reading(record, reading, fieldnames):
+          File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
+            reading.data[fieldname] = float(value)
+        ValueError: could not convert string to float: '985.97 1541235075187801'
 
-    2019-01-23 16:08:45,282 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'location': {'latitude': 48.701, 'longitude': 9.316}, 'timestamp': '2018-11-03T08:52:15', 'sensor': {'sensor_type': {'name': 'BME280'}, 'id': 17950}}.
-    Traceback (most recent call last):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 510, in csv_reader
-        if not self.csvdata_to_reading(record, reading, fieldnames):
-      File "/home/elmyra/develop/luftdatenpumpe/lib/python3.5/site-packages/luftdatenpumpe/core.py", line 538, in csvdata_to_reading
-        reading.data[fieldname] = float(value)
-    ValueError: could not convert string to float: '985.97 1541235075187801'
+    Update: Seems to work already, see ``luftdatenpumpe readings --network=ldi --sensor=17950 --reverse-geocode``.
+- [x] Data plane refactoring
+    - Put "sensor_id" into "data/reading" item
+    - Streamline processing of multiple readings
 
-Update: Seems to work already, see ``luftdatenpumpe readings --network=ldi --sensor=17950 --reverse-geocode``.
+IRCELINE
+========
+- [x] Add IRCELINE SOS data plane
+- [x] Add IRCELINE SOS to Grafana and documentation
+- [x] Add filtering for SOS API, esp. by station id
+- [x] Add time control, date => start, stop parameters or begin/end
+- [x] Fix slugification of IRCELINE name "wind-speed-scalar-"

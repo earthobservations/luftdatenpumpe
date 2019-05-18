@@ -41,8 +41,8 @@ Implemented by `irceline.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.1
 
 Dashboards
 ==========
-- `luftdaten.info trend vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
-- `luftdaten.info map vmm <https://vmm.hiveeyes.org/grafana/d/zUHjeMzWz/luftdaten-info-map-vmm>`_
+- `Luftdaten-Viewer » IRCELINE » Map <https://vmm.hiveeyes.org/grafana/d/0UZNL2zZz/luftdaten-viewer-irceline-map>`_
+- `Luftdaten-Viewer » IRCELINE » Trend <https://vmm.hiveeyes.org/grafana/d/z8p4L2zZk/luftdaten-viewer-irceline-trend>`_
 
 References
 ==========

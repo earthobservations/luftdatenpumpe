@@ -40,7 +40,8 @@ Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
 Create database view and grant permissions to "grafana" user::
 
-    luftdatenpumpe database --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-view --grant-user=grafana
+    luftdatenpumpe database --network=ldi --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-view --grant-user=grafana
+    luftdatenpumpe database --network=irceline --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-view --grant-user=grafana
 
 .. note::
 

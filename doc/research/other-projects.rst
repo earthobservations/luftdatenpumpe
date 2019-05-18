@@ -41,6 +41,18 @@ Python
 - https://pypi.org/project/airqdata/
 - https://github.com/dr-1/airqdata
 
+BLUME SOS
+=========
+- https://community.hiveeyes.org/t/blume-messnetz-api/1234
+- https://www.codefor.de/projekte/2015-08-08-be-feinstaub-sos.html
+- https://github.com/52North/js-sensorweb-client
+- https://www.codefor.de/projekte/2014-07-01-be-blume.html
+- https://github.com/dirkschumacher/blume_messnet_api
+- https://github.com/dirkschumacher/blume_crawler
+- https://github.com/johnjohndoe/blume_sos_adapter
+- https://github.com/52North/sos-importer
+- https://github.com/johnjohndoe/SOS-Importer-Blume
+
 
 Misc
 ====
@@ -61,3 +73,24 @@ Misc
 - https://data.smartemission.nl/grafana-dc/d/HVSBmbHmz/airsenseur-netherlands-deploy
 - https://github.com/luftdata
 - https://luftdata.se/
+- https://plugins.qgis.org/plugins/SOSClient/
+- https://github.com/ruben-mv/SOSClient/blob/master/sos/sos.py
+- https://pypi.org/project/OWSLib/
+- http://geopython.github.io/OWSLib/
+- https://github.com/geopython/OWSLib/blob/master/owslib/sos.py
+- http://geopython.github.io/OWSLib/#sos-2-0
+- https://github.com/peterataylor/OWSLib-SOS-example
+- https://nbviewer.jupyter.org/github/peterataylor/OWSLib-SOS-example/blob/master/owslib-sos-notebook.ipynb
+
+
+RIVM The Netherlands
+====================
+Sensor Observation Service (SOS) and data management for Air Quality data from RIVM The Netherlands
+
+- https://sospilot.readthedocs.io/en/latest/data.html
+- https://sospilot.readthedocs.io/en/latest/weather.html
+- https://github.com/Geonovum/sospilot/issues/17
+- https://data.smartemission.nl/
+- https://data.smartemission.nl/grafana/
+- https://data.smartemission.nl/grafana-dc/
+- https://inspire.rivm.nl/sos/eaq/service?service=SOS&request=GetCapabilities
