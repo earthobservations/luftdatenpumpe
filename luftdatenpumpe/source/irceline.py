@@ -51,7 +51,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
     def send_request(self, endpoint=None, params=None):
         url = urljoin(self.uri, endpoint)
-        log.info(f'Requesting IRCELINE live API at {url}')
+        log.debug(f'Requesting IRCELINE live API at {url}')
         params = params or {}
         return self.session.get(url, params=params, timeout=self.timeout).json()
 
@@ -199,7 +199,9 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             for property_name in property_names:
                 sensor[f'sensor_{property_name}_id'] = int(timeseries[property_name]['id'])
                 sensor[f'sensor_{property_name}_label'] = timeseries[property_name]['label']
-            sensor['sensor_type'] = 'unknown'
+
+            sensor['sensor_type_name'] = sensor['sensor_category_label']
+            sensor['sensor_type_id'] = sensor['sensor_category_id']
 
             sensor['sensor_label'] = sensor['sensor_phenomenon_label']
             sensor['sensor_fieldname'] = self.slugify_fieldname(sensor['sensor_label'])
@@ -371,28 +373,22 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
         """
 
-        url = urljoin(self.uri, 'timeseries/getData')
-
         if timespan is None:
             timespan = f'PT12h/{self.this_hour()}'
 
-        log.info(f'Requesting IRCELINE live API at {url} with timespan "{timespan}" and #{len(timeseries_ids)} timeseries')
-
-        groupsize = 10
-        identifiers_grouped = chunks(timeseries_ids, groupsize)
-        identifiers_grouped = self.wrap_progress(identifiers_grouped, stepsize=groupsize)
+        log.info(f'Requesting IRCELINE live API with timespan "{timespan}" and {len(timeseries_ids)} timeseries')
 
         results = {}
-        for identifiers in identifiers_grouped:
-            log.debug(f'Requesting SOS timeseries {identifiers}')
-            parameters = {'timespan': timespan, 'timeseries': identifiers}
-            response = self.session.post(url, json=parameters, timeout=self.timeout)
-            if response.headers['Content-Type'].startswith('application/json'):
-                data = response.json()
-                #print(data)
+        for identifier in self.wrap_progress(sorted(timeseries_ids)):
+            url = urljoin(self.uri, f'timeseries/{identifier}/getData')
+            log.debug(f'Requesting SOS timeseries {identifier} from {url}')
+            try:
+                data = self.send_request(url, params={'timespan': timespan, 'expanded': 'true'})
                 results.update(data)
-            else:
-                log.error(f'Decoding response from IRCELINE failed\n{response.text}')
+            except KeyboardInterrupt:
+                raise
+            except:
+                log.exception(f'Decoding response from IRCELINE failed')
 
         return results
 

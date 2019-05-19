@@ -267,7 +267,7 @@ class RDBMSStorage:
               {prefix}_stations.name, {prefix}_stations.country, 
               {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude, 
               {prefix}_stations.geohash, {prefix}_stations.geopoint,
-              {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type,
+              {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type_id, {prefix}_sensors.sensor_type_name,
               concat({prefix}_osmdata.osm_state, ' » ', {prefix}_osmdata.osm_city) AS state_and_city,
               concat({prefix}_stations.name, ' (#', CAST({prefix}_stations.station_id AS text), ')') AS name_and_id,
               concat({prefix}_osmdata.osm_country, ' (', {prefix}_osmdata.osm_country_code, ')') AS country_and_countrycode,
@@ -280,7 +280,7 @@ class RDBMSStorage:
               {prefix}_stations.station_id = {prefix}_osmdata.station_id AND
               {prefix}_stations.station_id = {prefix}_sensors.station_id
             ORDER BY
-              osm_country_code, state_and_city, name_and_id, sensor_type
+              osm_country_code, state_and_city, name_and_id, sensor_type_name
         """
 
         self.db.query(view)

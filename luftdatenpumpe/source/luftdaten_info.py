@@ -66,7 +66,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 # Build and record sensor information.
                 sensor_info = Munch({
                     'sensor_id': observation.meta.sensor_id,
-                    'sensor_type': observation.meta.sensor_type,
+                    'sensor_type_name': observation.meta.sensor_type_name,
+                    'sensor_type_id': observation.meta.sensor_type_id,
                 })
                 station['sensors'].append(sensor_info)
 
@@ -139,7 +140,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Decode JSON item.
         station_id = item['location']['id']
         sensor_id = item['sensor']['id']
-        sensor_type = item['sensor']['sensor_type']['name']
+        sensor_type_name = item['sensor']['sensor_type']['name']
+        sensor_type_id = item['sensor']['sensor_type']['id']
 
         # Build observation.
         observation = Munch(
@@ -158,7 +160,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Set observation metadata.
         observation.meta.timestamp = self.convert_timestamp(item['timestamp'])
         observation.meta.sensor_id = sensor_id
-        observation.meta.sensor_type = sensor_type
+        observation.meta.sensor_type_name = sensor_type_name
+        observation.meta.sensor_type_id = sensor_type_id
 
         # Collect position information.
         del item['location']['id']

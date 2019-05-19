@@ -7,6 +7,7 @@ in progress
 ===========
 - Always fetch last 12 hours worth of data to reduce gaps when API is offline.
 - Update documentation
+- Distinguish between "sensor_type_name" and "sensor_type_id"
 
 
 2019-04-26 0.11.0
