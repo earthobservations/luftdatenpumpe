@@ -110,6 +110,7 @@
         "jsonpUrl": "",
         "links": [],
         "locationData": "table+json",
+        "mapFitData": true,
         "mapCenter": "{{ mapCenter or 'custom' }}",
         "mapCenterLatitude": "{{ mapCenterLatitude or '51.25' }}",
         "mapCenterLongitude": "{{ mapCenterLongitude or '10.25' }}",
@@ -121,12 +122,10 @@
         "stickyLabels": false,
         "tableLabel": "location_id",
         "tableQueryOptions": {
+          "queryType": "geohash",
           "geohashField": "geohash",
-          "labelField": "station_id",
-          "latitudeField": "latitude",
-          "longitudeField": "longitude",
           "metricField": "metric",
-          "queryType": "geohash"
+          "labelLocationKeyField": "station_id"
         },
         "targets": [
           {
