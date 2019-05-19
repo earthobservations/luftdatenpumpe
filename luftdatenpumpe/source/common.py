@@ -143,7 +143,7 @@ class AbstractLuftdatenPumpe:
             total = len(data)
             if stepsize is not False:
                 total *= stepsize
-            log.info(f'Processing #{total} items')
+            log.info(f'Processing {total} items')
             data = tqdm(data, unit_scale=stepsize)
         return data
 
