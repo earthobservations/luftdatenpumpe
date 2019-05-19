@@ -5,6 +5,9 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+2019-05-19 0.12.0
+=================
 - Always fetch last 12 hours worth of data to reduce gaps when API is offline.
 - Update documentation
 - Distinguish between "sensor_type_name" and "sensor_type_id"
