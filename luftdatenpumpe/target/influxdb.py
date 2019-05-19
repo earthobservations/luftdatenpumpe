@@ -130,6 +130,7 @@ class InfluxDBStorage:
 
     def flush(self, final=False):
         # Store into database.
+        log.debug(f'Flushing target {self}')
         #print('Writing points:', len(self.buffer))
         self.db.write_points(self.buffer)
         self.buffer = []

@@ -6,6 +6,12 @@ Luftdatenpumpe changelog
 in progress
 ===========
 
+
+2019-05-19 0.12.1
+=================
+- Improve IRCELINE ingest with ``--timespan`` option vs. ``batch_size``
+
+
 2019-05-19 0.12.0
 =================
 - Always fetch last 12 hours worth of data to reduce gaps when API is offline.

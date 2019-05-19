@@ -19,11 +19,11 @@ log = logging.getLogger(__name__)
 
 class LuftdatenEngine:
 
-    def __init__(self, network, domain, targets, batch_size=2500, progressbar=False, dry_run=False):
+    def __init__(self, network, domain, targets, batch_size=None, progressbar=False, dry_run=False):
         self.network = network
         self.domain = domain
         self.targets = targets
-        self.batch_size = batch_size
+        self.batch_size = batch_size or 1
         self.progressbar = progressbar
         self.dry_run = dry_run
 

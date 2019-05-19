@@ -230,12 +230,17 @@ def check_options(options):
 
 def get_engine(options):
 
+    batch_size = None
+    if not options.timespan:
+        batch_size = 250
+
     # Create and run output processing engine.
     log.info(f'Will publish data to {options.target}')
     engine = LuftdatenEngine(
         network=options.network,
         domain=options.domain,
         targets=options.target,
+        batch_size=batch_size,
         progressbar=options.progress,
         dry_run=options['dry-run'],
     )
