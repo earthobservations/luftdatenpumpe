@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Improve IRCELINE request handling robustness
 
 
 2019-05-19 0.12.1

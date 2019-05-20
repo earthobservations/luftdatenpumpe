@@ -8,6 +8,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from operator import itemgetter
 
+from requests import HTTPError
 from rfc3339 import rfc3339
 from munch import munchify, Munch
 from urllib.parse import urljoin
@@ -53,7 +54,18 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         url = urljoin(self.uri, endpoint)
         log.debug(f'Requesting IRCELINE live API at {url}')
         params = params or {}
-        return self.session.get(url, params=params, timeout=self.timeout).json()
+
+        response = self.session.get(url, params=params, timeout=self.timeout)
+        if response.status_code != 200:
+            try:
+                reason = response.json()
+            except:
+                reason = 'unknown'
+            message = f'Request failed: {reason}'
+            log.error(message)
+            response.raise_for_status()
+
+        return response.json()
 
     def get_stations(self):
         """
