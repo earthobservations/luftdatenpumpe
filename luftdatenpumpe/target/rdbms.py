@@ -114,6 +114,11 @@ class RDBMSStorage:
         stations_table.create_column('longitude', self.db.types.float)
         stations_table.create_column('altitude', self.db.types.float)
 
+        # Enforce "xox_sensors.(sensor_first_date,sensor_last_date)"  to be of "datetime" type.
+        stations_table = self.db.get_table(f'{self.realm}_sensors')
+        stations_table.create_column('sensor_first_date', self.db.types.datetime)
+        stations_table.create_column('sensor_last_date', self.db.types.datetime)
+
         # Enforce "xox_osmdata.osm_id" and "xox_osmdata.osm_place_id" to be of "bigint" type.
         # Otherwise: ``psycopg2.DataError: integer out of range`` with 'osm_id': 2678458514
         osmdata_table = self.db.get_table(f'{self.realm}_osmdata')
@@ -263,16 +268,23 @@ class RDBMSStorage:
         DROP VIEW IF EXISTS {prefix}_network;
         CREATE VIEW {prefix}_network AS
             SELECT
+
+              -- Baseline fields.
               {prefix}_stations.station_id,
               {prefix}_stations.name, {prefix}_stations.country, 
               {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude, 
               {prefix}_stations.geohash, {prefix}_stations.geopoint,
               {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type_id, {prefix}_sensors.sensor_type_name,
+
+              -- Synthesized fields.
               concat({prefix}_osmdata.osm_state, ' » ', {prefix}_osmdata.osm_city) AS state_and_city,
               concat({prefix}_stations.name, ' (#', CAST({prefix}_stations.station_id AS text), ')') AS name_and_id,
               concat({prefix}_osmdata.osm_country, ' (', {prefix}_osmdata.osm_country_code, ')') AS country_and_countrycode,
               concat(concat_ws(', ', {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS state_and_country,
               concat(concat_ws(', ', {prefix}_osmdata.osm_city, {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS city_and_state_and_country,
+              ABS(DATE_PART('day', sensor_last_date - now())) >= 7 AS is_active,
+
+              -- Add OSM fields.
               {osmdata_columns_expression}
             FROM
               {prefix}_stations, {prefix}_osmdata, {prefix}_sensors

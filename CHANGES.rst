@@ -5,7 +5,13 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-05-20 0.13.0
+=================
 - Improve IRCELINE request handling robustness
+- Add "sensor_first_date" and "sensor_last_date" fields for IRCELINE
+  to indicate <= 7 days of data freshness by synthesized field "is_active".
 
 
 2019-05-19 0.12.1

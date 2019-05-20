@@ -75,12 +75,16 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         data = self.send_request('stations', params={'expanded': 'true'})
         #import sys, json; print(json.dumps(data, indent=2)); sys.exit(0)
 
+        timeseries_index = self.get_timeseries_index()
+        #import sys, json; print(json.dumps(timeseries_index, indent=2)); sys.exit(0)
+
         # Apply data filter.
         data = self.apply_filter(data)
 
         stations = []
         for upstream_station in self.wrap_progress(data):
             upstream_station = munchify(upstream_station)
+            #print('upstream_station:', upstream_station)
             station_info = munchify({
                 'station_id': upstream_station.properties.id,
                 'station_label': upstream_station.properties.label,
@@ -94,8 +98,15 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             self.enrich_station(station_info)
 
             station_info.sensors = self.timeseries_to_sensors(upstream_station.properties.timeseries)
-            #print(station_info)
 
+            # Enrich sensor information by timestamps of first / most recent reading.
+            for sensor in station_info.sensors:
+                timeseries_id = sensor['sensor_id']
+                if timeseries_id in timeseries_index:
+                    sensor['sensor_first_date'] = self.convert_timestamp(timeseries_index[timeseries_id].firstValue.timestamp)
+                    sensor['sensor_last_date'] = self.convert_timestamp(timeseries_index[timeseries_id].lastValue.timestamp)
+
+            #print(station_info)
             stations.append(station_info)
 
         # List of stations sorted by station identifier.
@@ -305,7 +316,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         #timeseries = self.get_timeseries(timeseries_ids=[1180, 6895], timespan=self.filter.get('timespan'))
 
         # For real
-        timeseries = self.get_timeseries(timeseries_ids=timeseries_id_list, timespan=self.filter.get('timespan'))
+        timeseries = self.get_timeseries_details(timeseries_ids=timeseries_id_list, timespan=self.filter.get('timespan'))
 
         # Map timeseries to readings.
         timeseries_readings_map = {}
@@ -362,7 +373,22 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
         return items
 
-    def get_timeseries(self, timeseries_ids=None, timespan=None):
+    def get_timeseries_index(self, timespan=None):
+        if timespan is None:
+            timespan = f'PT12h/{self.this_hour()}'
+
+        url = urljoin(self.uri, f'timeseries/')
+        data = self.send_request(url, params={'timespan': timespan, 'expanded': 'true'})
+        #print(data)
+
+        items = {}
+        for entry in data:
+            key = int(entry['id'])
+            items[key] = munchify(entry)
+
+        return items
+
+    def get_timeseries_details(self, timeseries_ids=None, timespan=None):
         """
         - http://geo.irceline.be/sos/static/doc/api-doc/#timeseries-example-post-data
         - https://wiki.52north.org/SensorWeb/SensorWebClientRESTInterfaceV0#Timeseries_Data
@@ -375,6 +401,11 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         - P0Y0M3D/2013-01-31TZ
 
         Examples
+
+        Data from specified station and timespan::
+
+            http http://geo.irceline.be/sos/api/v1/timeseries/6151/getData?timespan=PT6H/2019-05-18T09:00:00Z
+
         - Three hours worth of data from designated starting point for a specific timeseries::
 
             http POST 'http://geo.irceline.be/sos/api/v1/timeseries/getData' timeseries:='[6643]' timespan='2019-04-21T22:00:00+02:00/PT3h'
@@ -399,8 +430,10 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
                 results.update(data)
             except KeyboardInterrupt:
                 raise
+            except HTTPError as ex:
+                log.error(f'Requesting data for timeseries {identifier} failed: {ex}')
             except:
-                log.exception(f'Decoding response from IRCELINE failed')
+                log.exception(f'Decoding response for timeseries {identifier} failed')
 
         return results
 
@@ -463,6 +496,9 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
     @staticmethod
     def convert_timestamp(timestamp):
+        """
+        SOS timestamp are milliseconds epoch.
+        """
         datetime_object = datetime.fromtimestamp(timestamp / 1000)
         return rfc3339(datetime_object)
 
