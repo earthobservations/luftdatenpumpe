@@ -26,6 +26,6 @@
 "state","state","etat","staat","Bundesstaat"
 "language","language","langue","taal","Sprache"
 "comparsion","comparsion","comparsion","vergelijking","Vergleich"
-"howto_text","Click on a station in one of the maps on the left and get its (humidity-corrected) values as well as those of the nearest station in the IRCELINE or LDI network.","Cliquez sur une station dans l'une des cartes de gauche et obtenez ses valeurs (corrigées en fonction de l'humidité) ainsi que celles de la station la plus proche du réseau IRCELINE ou LDI.","Selecteer een luftdaten.info-sensor op de kaart en vergelijk deze met het volgende VMM / IRCELINE-station.""Wähle einen luftdaten.info-Sensor auf der Karte aus und vergleichen Sie ihn mit der nächsten VMM / IRCELINE-Station."
+"howto_text","Click on a station in one of the maps on the left and get its (humidity-corrected) values as well as those of the nearest station in the IRCELINE or LDI network.","Cliquez sur une station dans l'une des cartes de gauche et obtenez ses valeurs (corrigées en fonction de l'humidité) ainsi que celles de la station la plus proche du réseau IRCELINE ou LDI.","Selecteer een luftdaten.info-sensor op de kaart en vergelijk deze met het volgende VMM / IRCELINE-station.","Wähle einen luftdaten.info-Sensor auf der Karte aus und vergleichen Sie ihn mit der nächsten VMM / IRCELINE-Station."
 "welcome","Welcome!","Bienvenue!","Welkom!","Willkommen!"
 "hum-correction","Humidity correction","Correction de l'humidité","vochtigheidscorrectie","Feuchte-Korrektur"
