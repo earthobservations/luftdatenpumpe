@@ -267,6 +267,7 @@ class RDBMSStorage:
         view = f"""
         DROP VIEW IF EXISTS {prefix}_network;
         CREATE VIEW {prefix}_network AS
+
             SELECT
 
               -- Baseline fields.
@@ -282,15 +283,18 @@ class RDBMSStorage:
               concat({prefix}_osmdata.osm_country, ' (', {prefix}_osmdata.osm_country_code, ')') AS country_and_countrycode,
               concat(concat_ws(', ', {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS state_and_country,
               concat(concat_ws(', ', {prefix}_osmdata.osm_city, {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS city_and_state_and_country,
-              ABS(DATE_PART('day', sensor_last_date - now())) >= 7 AS is_active,
+              ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active,
 
-              -- Add OSM fields.
+              -- OSM fields.
               {osmdata_columns_expression}
+
             FROM
               {prefix}_stations, {prefix}_osmdata, {prefix}_sensors
+
             WHERE
               {prefix}_stations.station_id = {prefix}_osmdata.station_id AND
               {prefix}_stations.station_id = {prefix}_sensors.station_id
+
             ORDER BY
               osm_country_code, state_and_city, name_and_id, sensor_type_name
         """

@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Fix silly mixup with "is_active" indicator
 
 
 2019-05-20 0.13.0
