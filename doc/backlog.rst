@@ -310,3 +310,4 @@ IRCELINE
 - [x] Add filtering for SOS API, esp. by station id
 - [x] Add time control, date => start, stop parameters or begin/end
 - [x] Fix slugification of IRCELINE name "wind-speed-scalar-"
+- [x] Ignore ``--country=BE`` when operating on IRCELINE

@@ -116,7 +116,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
     def filter_rule(self, data):
 
-        if self.filter and 'country' in self.filter:
+        if self.filter and 'country' in self.filter and self.filter.country != ['BE']:
             raise NotImplementedError("Filtering by country not supported for IRCELINE/SOS, it's Belgium at all.")
 
         for item in data:

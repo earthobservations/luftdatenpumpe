@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Fix silly mixup with "is_active" indicator
+- Ignore ``--country=BE`` when operating on IRCELINE
 
 
 2019-05-20 0.13.0
