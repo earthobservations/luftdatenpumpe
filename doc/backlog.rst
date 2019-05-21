@@ -18,6 +18,7 @@ Prio 1
 - [o] Grafana: Drill-down to detail view via popover
 - [o] As the Grafana Worldmap Panel decodes the geohash to lat/lon using ``decodeGeoHash()`` anyway,
   let's go back to storing the position as lat/lon again.
+- [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
 
 
 ********
