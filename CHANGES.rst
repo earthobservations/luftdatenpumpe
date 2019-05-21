@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-05-21 0.14.1
+=================
+- Fix erroneous dependency package version bump
+
+
 2019-05-21 0.14.0
 =================
 - Fix silly mixup with "is_active" indicator

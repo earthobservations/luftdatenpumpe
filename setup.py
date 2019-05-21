@@ -16,7 +16,7 @@ requires = [
 
     # Acquisition
     'requests==2.21.0',
-    'tablib==0.14.0',
+    'tablib==0.13.0',
 
     # Caching
     'requests-cache==0.5.0',
