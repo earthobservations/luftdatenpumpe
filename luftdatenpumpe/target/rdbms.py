@@ -247,11 +247,19 @@ class RDBMSStorage:
         #log.info('SQLAlchemy dialects: %s', results)
         return results
 
+    def render_fields(self, data, carry_on=True):
+        if not data:
+            return ''
+        payload = ', '.join(data)
+        if carry_on:
+            payload += ','
+        return payload
+
     def create_views(self):
 
         prefix = self.realm
 
-        # Inquire fields from osmdata table.
+        # Collect fields from osmdata table.
         osmdata = self.db.query(f"""
             SELECT concat(TABLE_NAME, '.', COLUMN_NAME) AS name
             FROM INFORMATION_SCHEMA.COLUMNS
@@ -262,12 +270,19 @@ class RDBMSStorage:
         for record in osmdata:
             osmdata_columns.append(record['name'])
 
+        # Collect conditional aliases.
+        conditional_fields_stage1 = []
+        conditional_fields_stage2 = []
+        if self.realm == 'irceline':
+            conditional_fields_stage1.append(f'{prefix}_sensors.sensor_feature_label')
+            conditional_fields_stage2.append(f"concat(sensor_feature_label, ' ', station_id_suffix) AS sos_feature_and_id")
+
         # Create unified view.
-        osmdata_columns_expression = ', '.join(osmdata_columns)
         view = f"""
         DROP VIEW IF EXISTS {prefix}_network;
         CREATE VIEW {prefix}_network AS
 
+            WITH stage1 AS (
             SELECT
 
               -- Baseline fields.
@@ -276,17 +291,15 @@ class RDBMSStorage:
               {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude, 
               {prefix}_stations.geohash, {prefix}_stations.geopoint,
               {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type_id, {prefix}_sensors.sensor_type_name,
+              {prefix}_sensors.sensor_first_date, {prefix}_sensors.sensor_last_date,
+              {self.render_fields(conditional_fields_stage1)}
 
               -- Synthesized fields.
-              concat({prefix}_osmdata.osm_state, ' » ', {prefix}_osmdata.osm_city) AS state_and_city,
-              concat({prefix}_stations.name, ' (#', CAST({prefix}_stations.station_id AS text), ')') AS name_and_id,
-              concat({prefix}_osmdata.osm_country, ' (', {prefix}_osmdata.osm_country_code, ')') AS country_and_countrycode,
-              concat(concat_ws(', ', {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS state_and_country,
-              concat(concat_ws(', ', {prefix}_osmdata.osm_city, {prefix}_osmdata.osm_state, {prefix}_osmdata.osm_country), ' (', {prefix}_osmdata.osm_country_code, ')') AS city_and_state_and_country,
-              ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active,
+              concat('(#', CAST({prefix}_stations.station_id AS text), ')') AS station_id_suffix,
+              concat('(', {prefix}_osmdata.osm_country_code, ')') AS country_code_suffix,
 
               -- OSM fields.
-              {osmdata_columns_expression}
+              {self.render_fields(osmdata_columns, carry_on=False)}
 
             FROM
               {prefix}_stations, {prefix}_osmdata, {prefix}_sensors
@@ -295,8 +308,25 @@ class RDBMSStorage:
               {prefix}_stations.station_id = {prefix}_osmdata.station_id AND
               {prefix}_stations.station_id = {prefix}_sensors.station_id
 
+            )
+
+            SELECT
+              *,
+              concat(name, ' ', station_id_suffix) AS name_and_id,
+              concat(osm_state, ' » ', osm_city) AS state_and_city,
+              concat(osm_road, ', ', osm_city, ' ', station_id_suffix) AS road_and_name_and_id,
+              concat(osm_country, ' (', osm_country_code, ')') AS country_and_countrycode,
+              concat(concat_ws(', ', osm_state, osm_country), ' ', country_code_suffix) AS state_and_country,
+              concat(concat_ws(', ', osm_city, osm_state, osm_country), ' ', country_code_suffix) AS city_and_state_and_country,
+              {self.render_fields(conditional_fields_stage2)}
+              ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active
+
+            FROM
+              stage1
+
             ORDER BY
               osm_country_code, state_and_city, name_and_id, sensor_type_name
+
         """
 
         self.db.query(view)

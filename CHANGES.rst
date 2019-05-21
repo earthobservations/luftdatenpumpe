@@ -7,6 +7,8 @@ in progress
 ===========
 - Fix silly mixup with "is_active" indicator
 - Ignore ``--country=BE`` when operating on IRCELINE
+- Add new synthetic database-view fields
+  "road_and_name_and_id" and "sos_feature_and_id"
 
 
 2019-05-20 0.13.0
