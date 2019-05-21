@@ -151,6 +151,8 @@ def run():
         sys.exit(0)
     sanitize_options(options)
 
+    if log.getEffectiveLevel() == logging.DEBUG:
+        application.log_options()
 
     # 2. Dispatch to maintenance targets.
     run_maintenance(options)
@@ -163,36 +165,36 @@ def run_maintenance(options):
 
     # A. Maintenance targets
     # Create database view "ldi_network" spanning all "ldi_*" tables.
-    if options['database']:
+    if options.database:
 
-        if not options['target']:
+        if not options.target:
             message = 'No target for database operation given'
             log.error(message)
             raise NotImplementedError(message)
 
         engine = get_engine(options)
-        for target in options['target']:
+        for target in options.target:
             if target.startswith('postgresql:'):
                 handler = engine.resolve_target_handler(target)
 
                 try:
 
-                    if options['drop-data']:
+                    if options.drop_data:
                         handler.drop_data()
 
-                    if options['drop-tables']:
+                    if options.drop_tables:
                         handler.drop_tables()
 
-                    if options['drop-database']:
+                    if options.drop_database:
                         handler.drop_database()
 
-                    if options['create-views']:
+                    if options.create_views:
                         log.info('Creating database views')
                         handler.create_views()
 
-                    if options['grant-user']:
-                        log.info('Granting read privileges to "%s"', options['grant-user'])
-                        handler.grant_read_privileges(options['grant-user'])
+                    if options.grant_user:
+                        log.info('Granting read privileges to "%s"', options.grant_user)
+                        handler.grant_read_privileges(options.grant_user)
 
                 except Exception as ex:
                     log.exception('Database operation failed. Reason: %s', ex, exc_info=False)
@@ -203,7 +205,7 @@ def run_maintenance(options):
         sys.exit()
 
     # Generate JSON for Grafana datasource or dashboard and exit.
-    elif options['grafana']:
+    elif options.grafana:
         options.variables = read_pairs(options.variables)
         options.fields = read_pairs(options.fields)
         thing = get_artefact(options.kind, options.name, variables=options.variables, fields=options.fields)
