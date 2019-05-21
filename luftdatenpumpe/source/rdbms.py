@@ -69,23 +69,7 @@ def stations_from_rdbms(dsuri, prefix):
         }
     """
 
-    entries = []
-
-    # Sanitize table name.
-    prefix = sanitize_dbsymbol(prefix)
-
-    sql = f"""
-        SELECT *
-        FROM {prefix}_stations, {prefix}_osmdata
-        WHERE
-          {prefix}_stations.station_id = {prefix}_osmdata.station_id
-        ORDER BY
-          {prefix}_stations.station_id
-    """
-
-    storage = RDBMSStorage(dsuri)
-    for station in storage.db.query(sql):
-        station = munchify(station)
+    for station in fetch_from_rdbms(dsuri, prefix):
         entry = {
             "station_id": station.station_id,
             "name": station.name,
@@ -97,6 +81,24 @@ def stations_from_rdbms(dsuri, prefix):
                 "geohash": station.geohash
             }
         }
-        entries.append(munchify(entry))
+        yield munchify(entry)
 
-    return entries
+
+def stations_from_rdbms_flex(dsuri, prefix):
+    return fetch_from_rdbms(dsuri, prefix)
+
+
+def fetch_from_rdbms(dsuri, prefix):
+    # Sanitize table name.
+    prefix = sanitize_dbsymbol(prefix)
+
+    sql = f"""
+        SELECT *
+        FROM {prefix}_network
+        ORDER BY
+          {prefix}_network.station_id
+    """
+
+    storage = RDBMSStorage(dsuri)
+    for station in storage.db.query(sql):
+        yield munchify(station)

@@ -4,7 +4,7 @@
 import json
 import types
 import logging
-
+from collections import OrderedDict
 
 log = logging.getLogger(__name__)
 
@@ -15,16 +15,30 @@ def json_formatter(data):
     return json.dumps(data, indent=2)
 
 
-def json_grafana_formatter_base(stations):
-    entries = []
+def curated_station_list(stations):
+    seen = {}
     for station in stations:
-        if 'name' in station:
-            station_name = station.name
-        else:
-            station_name = u'Station #{}, {}'.format(station.station_id, station.position.country)
-        entry = {'value': station.station_id, 'text': station_name}
-        entries.append(entry)
-    return entries
+        if station.station_id in seen:
+            continue
+        if 'name' not in station:
+            station.name = u'Station #{}, {}'.format(station.station_id, station.position.country)
+        seen[station.station_id] = True
+        yield station
+
+
+class JsonFlexFormatter:
+
+    def __init__(self, fieldmap):
+        self.fieldmap = fieldmap
+
+    def formatter(self, stations):
+        entries = []
+        for station in curated_station_list(stations):
+            entry = OrderedDict()
+            for key_left, key_right in self.fieldmap.items():
+                entry[str(key_left)] = station[str(key_right)]
+            entries.append(entry)
+        return json_formatter(entries)
 
 
 def json_grafana_formatter_vt(stations):
@@ -44,7 +58,10 @@ def json_grafana_formatter_vt(stations):
         }
 
     """
-    entries = json_grafana_formatter_base(stations)
+    entries = []
+    for station in curated_station_list(stations):
+        entry = {'value': str(station.station_id), 'text': station.name}
+        entries.append(entry)
     return json_formatter(entries)
 
 
@@ -66,7 +83,7 @@ def json_grafana_formatter_kn(stations):
 
     """
     entries = []
-    for station in json_grafana_formatter_base(stations):
-        entry = {'key': str(station['value']), 'name': station['text']}
+    for station in curated_station_list(stations):
+        entry = {'key': str(station.station_id), 'name': station.name}
         entries.append(entry)
     return json_formatter(entries)

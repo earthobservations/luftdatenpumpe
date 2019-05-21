@@ -9,7 +9,7 @@ from docopt import DocoptExit
 from luftdatenpumpe import __appname__, __version__
 from luftdatenpumpe.grafana import get_artefact
 from luftdatenpumpe.source import resolve_source_handler
-from luftdatenpumpe.source.rdbms import stations_from_rdbms
+from luftdatenpumpe.source.rdbms import stations_from_rdbms, stations_from_rdbms_flex
 from luftdatenpumpe.engine import LuftdatenEngine
 from luftdatenpumpe.util import read_pairs, Application
 
@@ -40,6 +40,7 @@ def run():
       --timespan=<timespan>         Filter readings by time range, only for SOS API (e.g. IRCELINE).
       --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
       --target=<target>             Data output target
+      --target-fieldmap=<fieldmap>  Fieldname mapping for "json+flex" target
       --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
@@ -148,7 +149,8 @@ def run():
     if options.networks:
         log.info('List of available networks: %s', network_list)
         sys.exit(0)
-    check_options(options)
+    sanitize_options(options)
+
 
     # 2. Dispatch to maintenance targets.
     run_maintenance(options)
@@ -209,23 +211,28 @@ def run_maintenance(options):
         sys.exit()
 
 
-def check_options(options):
+def sanitize_options(options):
 
-    # A. Sanity checks
+    # 1. Sanity checks
     if not options.network:
         message = '--network parameter missing'
         log.error(message)
         raise DocoptExit(message)
 
-    # A.2 Resolve data source handler class from network identifier.
+    # 2. Resolve data source handler class from network identifier.
     options.network = options.network.lower()
 
-    # A.3 Resolve data domain (stations vs. readings).
+    # 3. Resolve data domain (stations vs. readings).
     options.domain = None
     for flavor in ['stations', 'readings']:
         if options[flavor]:
             options.domain = flavor
             break
+
+    # 4. Check json.flex output target vs. --target-fieldmap option.
+    options.json_flex_enabled = any(map(lambda target: 'json.flex' in target, options.target))
+    if options.json_flex_enabled:
+        options.target_fieldmap = read_pairs(options.target_fieldmap)
 
 
 def get_engine(options):
@@ -240,6 +247,7 @@ def get_engine(options):
         network=options.network,
         domain=options.domain,
         targets=options.target,
+        fieldmap=options.target_fieldmap,
         batch_size=batch_size,
         progressbar=options.progress,
         dry_run=options['dry-run'],
@@ -257,10 +265,17 @@ def get_data(options):
         log.info(f'Acquiring list of stations from network "{options.network}" with source "{options.source}"')
 
         if options.source.startswith('postgresql://'):
-            data = stations_from_rdbms(options.source, options.network)
+
+            if options.json_flex_enabled:
+                data = stations_from_rdbms_flex(options.source, options.network)
+            else:
+                data = stations_from_rdbms(options.source, options.network)
 
         else:
             data = pump.get_stations()
+
+        # Materialize generator.
+        data = list(data)
 
         log.info(f'Acquired #{len(data)} stations')
 

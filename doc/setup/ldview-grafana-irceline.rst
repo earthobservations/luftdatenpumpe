@@ -52,7 +52,7 @@ Create station list file for Grafana Worldmap Panel from RDBMS database (Postgre
     stationsfile=/var/lib/grafana/data/json/vmm-stations.json
     # macOS: stationsfile=/usr/local/var/lib/grafana/data/json/vmm-stations.json
 
-    luftdatenpumpe stations --network=irceline --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.grafana.kn+stream://sys.stdout > $stationsfile
+    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id,name=sos_feature_and_id' > $stationsfile
 
 Worldmap Panel IRCELINE::
 

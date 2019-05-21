@@ -97,10 +97,16 @@ def setup_logging(level=logging.INFO):
 def normalize_options(options):
     normalized = {}
     for key, value in options.items():
+
+        # Add primary variant.
         key = key.strip('--<>')
-        #key = key.replace('--<>', '')
         normalized[key] = value
-    return munchify(normalized)
+
+        # Add secondary variant.
+        key = key.replace('-', '_')
+        normalized[key] = value
+
+    return munchify(normalized, factory=OptionMunch)
 
 
 def read_list(data, separator=u','):
@@ -260,3 +266,10 @@ def remove_all(data, element):
 def chunks(iterable, chunksize):
     for group in grouper(iterable, chunksize):
         yield remove_all(list(group), None)
+
+
+class OptionMunch(Munch):
+
+    def __setattr__(self, k, v):
+        super().__setattr__(k.replace('-', '_'), v)
+        super().__setattr__(k.replace('_', '-'), v)

@@ -9,7 +9,7 @@ from tqdm import tqdm
 from munch import Munch
 
 from luftdatenpumpe.target.influxdb import InfluxDBStorage
-from luftdatenpumpe.target.json import json_formatter, json_grafana_formatter_vt, json_grafana_formatter_kn
+from luftdatenpumpe.target.json import json_formatter, json_grafana_formatter_vt, json_grafana_formatter_kn, JsonFlexFormatter
 from luftdatenpumpe.target.mqtt import MQTTAdapter
 from luftdatenpumpe.target.rdbms import RDBMSStorage
 from luftdatenpumpe.target.stream import StreamTarget
@@ -19,10 +19,11 @@ log = logging.getLogger(__name__)
 
 class LuftdatenEngine:
 
-    def __init__(self, network, domain, targets, batch_size=None, progressbar=False, dry_run=False):
+    def __init__(self, network, domain, targets, fieldmap=None, batch_size=None, progressbar=False, dry_run=False):
         self.network = network
         self.domain = domain
         self.targets = targets
+        self.fieldmap = fieldmap
         self.batch_size = batch_size or 1
         self.progressbar = progressbar
         self.dry_run = dry_run
@@ -89,13 +90,18 @@ class LuftdatenEngine:
         if '+' in url.scheme:
             format, scheme = url.scheme.split('+')
             url.scheme = scheme
+
             if format.startswith('json.grafana.vt'):
                 formatter = json_grafana_formatter_vt
             elif format.startswith('json.grafana.kn'):
                 formatter = json_grafana_formatter_kn
+            elif format.startswith('json.flex'):
+                formatter = JsonFlexFormatter(self.fieldmap).formatter
             elif format.startswith('json'):
                 formatter = json_formatter
-            formatter.format = format
+
+            # Do we need this anymore?
+            #formatter.format = format
 
         #effective_url = urlunparse(url.values())
 
