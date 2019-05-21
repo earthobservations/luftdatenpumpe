@@ -16,7 +16,7 @@ requires = [
 
     # Acquisition
     'requests==2.21.0',
-    'tablib==0.13.0',
+    'tablib==0.14.0',
 
     # Caching
     'requests-cache==0.5.0',
@@ -50,7 +50,7 @@ extras = {
 }
 
 setup(name='luftdatenpumpe',
-      version='0.13.0',
+      version='0.14.0',
       description='Process live and historical data from luftdaten.info. Filter by station-id, '
                   'sensor-id and sensor-type, apply reverse geocoding, store into TSDB and '
                   'RDBMS databases, publish to MQTT or just output as JSON.',
