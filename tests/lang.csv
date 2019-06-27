@@ -26,7 +26,7 @@
 "state","state","etat","staat","Bundesstaat"
 "language","language","langue","taal","Sprache"
 "comparsion","comparsion","comparsion","vergelijking","Vergleich"
-"howto_text","Select a PM10-sensor on a map on the left and compare with the nearest IRCELINE- or luftdaten.info-station respectively.","Sélectionnez un capteur PM10 sur une carte sur la gauche et comparez-le avec la station IRCELINE ou luftdaten.info la plus proche respectivement.","Selecteer een PM10-sensor op een kaart aan de linkerkant en vergelijk respectievelijk met het dichtstbijzijnde IRCELINE- of luftdaten.info-station.","Wählen Sie links auf einer Karte einen PM10-Sensor aus und vergleichen Sie ihn mit der nächstgelegenen IRCELINE- bzw. luftdaten.info-Station."
+"howto_text","Select a PM10-sensor on a map and compare with the nearest IRCELINE- or luftdaten.info-station respectively.","Sélectionnez un capteur PM10 sur une carte et comparez-le avec la station IRCELINE ou luftdaten.info la plus proche respectivement.","Selecteer een PM10-sensor op een kaart en vergelijk respectievelijk met het dichtstbijzijnde IRCELINE- of luftdaten.info-station.","Wählen Sie auf einer Karte einen PM10-Sensor aus und vergleichen Sie ihn mit der nächstgelegenen IRCELINE- bzw. luftdaten.info-Station."
 "welcome","Welcome!","Bienvenue!","Welkom!","Willkommen!"
 "comparison","Comparison","Comparaison","Comparaison","Vergleich"
 "correction","correction","correction","correctie","Korrektur"
