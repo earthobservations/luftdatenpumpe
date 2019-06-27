@@ -19,14 +19,15 @@ Prio 1
 - [o] As the Grafana Worldmap Panel decodes the geohash to lat/lon using ``decodeGeoHash()`` anyway,
   let's go back to storing the position as lat/lon again.
 - [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
-
+- [o] When acquiring data from specific sensors, use API endpoints like http://api.luftdaten.info/v1/sensor/25735/
 
 ********
 IRCELINE
 ********
 Supporting the Flanders Environment Agency (VMM). Thanks likewise for supporting us.
 
-- [o] Add IRCELINE RIOIFDM as data source
+http://shiny.irceline.be/examples/
+
 - [o] Optionally call SOS API with locale=de,fr,en
 - [o] Add EPSG:31370
 - [o] Paging does not work on ``/timeseries``, neither using ``limit`` nor ``size``.
@@ -35,26 +36,7 @@ Supporting the Flanders Environment Agency (VMM). Thanks likewise for supporting
     - https://wiki.52north.org/SensorWeb/SensorWebClientRESTInterfaceV0#Paging
 
 - [o] Improve caching for SOS REST API taking the measurement interval into account
-- [o] ``time luftdatenpumpe readings --progress --target=influxdb://luftdatenpumpe@localhost/vmm --timespan='2018-09-01/2019-01-01'``::
-
-    100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 105/105 [00:06<00:00, 18.80it/s]
-    Traceback (most recent call last):
-      File "/opt/luftdatenpumpe/lib/python3.6/site-packages/urllib3/connectionpool.py", line 600, in urlopen
-        chunked=chunked)
-      File "/opt/luftdatenpumpe/lib/python3.6/site-packages/urllib3/connectionpool.py", line 354, in _make_request
-        conn.request(method, url, **httplib_request_kw)
-      File "/usr/lib64/python3.6/http/client.py", line 1239, in request
-        self._send_request(method, url, body, headers, encode_chunked)
-      File "/usr/lib64/python3.6/http/client.py", line 1285, in _send_request
-        self.endheaders(body, encode_chunked=encode_chunked)
-      File "/usr/lib64/python3.6/http/client.py", line 1234, in endheaders
-        self._send_output(message_body, encode_chunked=encode_chunked)
-      File "/usr/lib64/python3.6/http/client.py", line 1065, in _send_output
-        self.send(chunk)
-      File "/usr/lib64/python3.6/http/client.py", line 986, in send
-        self.sock.sendall(data)
-    BrokenPipeError: [Errno 32] Broken pipe
-
+- [o] Add IRCELINE RIOIFDM layers
 
 *************
 Documentation
