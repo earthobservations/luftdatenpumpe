@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-06-27 0.14.2
+=================
+- Handle incomplete records gracefully when writing to InfluxDB
+
+
 2019-05-21 0.14.1
 =================
 - Fix erroneous dependency package version bump

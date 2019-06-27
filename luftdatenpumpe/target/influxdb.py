@@ -6,6 +6,7 @@ import logging
 
 from munch import munchify
 from influxdb import InfluxDBClient
+from influxdb.exceptions import InfluxDBClientError
 
 from luftdatenpumpe.util import sanitize_dbsymbol
 
@@ -132,5 +133,9 @@ class InfluxDBStorage:
         # Store into database.
         log.debug(f'Flushing target {self}')
         #print('Writing points:', len(self.buffer))
-        self.db.write_points(self.buffer)
+        try:
+            self.db.write_points(self.buffer)
+        except InfluxDBClientError as ex:
+            if ex.code == 400 and 'unable to parse' in ex.content:
+                log.exception('Writing record to InfluxDB failed')
         self.buffer = []
