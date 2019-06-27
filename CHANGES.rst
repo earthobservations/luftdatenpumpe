@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-06-27 0.16.0
+=================
+- Nothing changed
+
+
 2019-06-27 0.15.0
 =================
 - Handle incomplete records gracefully when writing to InfluxDB
