@@ -36,7 +36,18 @@ class JsonFlexFormatter:
         for station in curated_station_list(stations):
             entry = OrderedDict()
             for key_left, key_right in self.fieldmap.items():
-                entry[str(key_left)] = station[str(key_right)]
+
+                # Compute value, optionally applying conversion.
+                conversion = None
+                if '|' in key_right:
+                    key_right, conversion = key_right.split('|')
+                value = station[str(key_right)]
+                if conversion is not None:
+                    converter = eval(conversion)
+                    value = converter(value)
+
+                entry[str(key_left)] = value
+
             entries.append(entry)
         return json_formatter(entries)
 
