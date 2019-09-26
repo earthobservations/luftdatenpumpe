@@ -29,7 +29,7 @@ IRCELINE network
 ::
 
     # Define Grafana instance and login.
-    export GRAFANA_URL=https://daq.example.org/grafana
+    export GRAFANA_URL=http://localhost:3000
     http --session=grafana $GRAFANA_URL --auth=admin:admin
 
 

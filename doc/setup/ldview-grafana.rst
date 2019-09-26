@@ -86,7 +86,7 @@ Create station list file for Grafana Worldmap Panel from RDBMS database (Postgre
 
 Check::
 
-    export GRAFANA_URL=https://daq.example.org/grafana
+    export GRAFANA_URL=http://localhost:3000
     http $GRAFANA_URL/public/data/json/ldi-stations.json | jq length
     760
 
@@ -101,7 +101,7 @@ Prerequisites
 
     # Define the URL to your Grafana instance.
     # This saves you from having to supply it all over again to the subsequent commands.
-    export GRAFANA_URL=https://daq.example.org/grafana
+    export GRAFANA_URL=http://localhost:3000
 
     # Sign in to your Grafana instance once.
     # This saves you from having to supply "--auth=admin:admin" on every subsequent invocation.

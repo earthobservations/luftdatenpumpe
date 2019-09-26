@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Update ``GRAFANA_URL`` in documentation
 
 
 2019-06-27 0.16.0
