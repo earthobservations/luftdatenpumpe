@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Update ``GRAFANA_URL`` in documentation
+- Improve data wrangling robustness for luftdaten.info
 
 
 2019-06-27 0.16.0

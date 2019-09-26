@@ -135,7 +135,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     def make_reading(self, item):
 
-        #log.info('item: %s', item)
+        log.debug('Item: %s', item)
 
         # Decode JSON item.
         station_id = item['location']['id']
@@ -175,6 +175,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             entry.station.position[key] = value
 
         # Collect sensor values.
+        has_data = False
         if 'sensordatavalues' in item:
             for sensor in item['sensordatavalues']:
                 name = sensor['value_type']
@@ -190,6 +191,13 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
                 value = float(value)
                 observation.data[name] = value
+
+                has_data = True
+
+        # Skip this observation if it contains no data at all.
+        if not has_data:
+            log.warning('Observation without sensor values for station %s', entry.station)
+            return
 
         # Add more detailed location information.
         self.enrich_station(entry.station)
