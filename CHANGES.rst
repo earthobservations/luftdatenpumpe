@@ -5,8 +5,13 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-09-27 0.17.0
+=================
 - Update ``GRAFANA_URL`` in documentation
 - Improve data wrangling robustness for luftdaten.info
+- Acquire and process station list from EEA
 
 
 2019-06-27 0.16.0

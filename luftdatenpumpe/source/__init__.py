@@ -8,6 +8,7 @@ from munch import Munch
 from luftdatenpumpe.geo import disable_nominatim_cache
 from luftdatenpumpe.source.luftdaten_info import LuftdatenPumpe
 from luftdatenpumpe.source.irceline import IrcelinePumpe
+from luftdatenpumpe.source.eea import EEAAirQualityPumpe
 from luftdatenpumpe.util import read_list
 
 log = logging.getLogger(__name__)
@@ -22,6 +23,9 @@ def resolve_source_handler(options, dry_run=False):
 
     elif options.network == 'irceline':
         datapump_class = IrcelinePumpe
+
+    elif options.network == 'eea':
+        datapump_class = EEAAirQualityPumpe
 
     else:
         message = f'Network "{options.network}" not implemented'
