@@ -7,6 +7,7 @@ in progress
 ===========
 - Update documentation for installing Grafana Worldmap Plugin
 - Add Redis setup documentation re. #7. Thanks, David!
+- Add PostgreSQL setup documentation re. #8. Thanks, David!
 
 
 2019-09-27 0.17.0
