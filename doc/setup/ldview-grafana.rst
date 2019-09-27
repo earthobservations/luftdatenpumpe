@@ -10,7 +10,6 @@ the data feed of luftdaten.info using Grafana.
 Installation
 ************
 
-
 Install Grafana Plugins
 =======================
 Flux datasource::
@@ -29,7 +28,7 @@ Restart Grafana instance::
 
 You are welcome to read about the details behind `Grafana Worldmap Panel NG`_.
 
-.. Grafana Worldmap Panel NG: https://community.hiveeyes.org/t/grafana-worldmap-panel-ng/1824
+.. _Grafana Worldmap Panel NG: https://community.hiveeyes.org/t/grafana-worldmap-panel-ng/1824
 
 
 ************
