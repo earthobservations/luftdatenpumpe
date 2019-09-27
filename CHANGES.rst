@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Update documentation for installing Grafana Worldmap Plugin
 
 
 2019-09-27 0.17.0

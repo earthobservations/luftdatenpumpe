@@ -10,19 +10,26 @@ the data feed of luftdaten.info using Grafana.
 Installation
 ************
 
+
 Install Grafana Plugins
 =======================
-
 Flux datasource::
 
     grafana-cli plugins install grafana-influxdb-flux-datasource
 
-Worldmap Panel 0.3.0-dev::
+Install Worldmap Panel NG::
 
-    grafana-cli --pluginUrl https://github.com/hiveeyes/grafana-worldmap-panel/archive/0.3.0-dev2.zip plugins install grafana-worldmap-panel
+    grafana-cli \
+        --pluginUrl https://github.com/hiveeyes/grafana-worldmap-panel/releases/download/0.4.0/grafana-worldmap-panel-ng-0.4.0.zip \
+        plugins install grafana-worldmap-panel-ng
+
+Restart Grafana instance::
+
     systemctl restart grafana-server
 
-See also https://community.hiveeyes.org/t/grafana-worldmap-panel-0-3-0-dev-series/1824.
+You are welcome to read about the details behind `Grafana Worldmap Panel NG`_.
+
+.. Grafana Worldmap Panel NG: https://community.hiveeyes.org/t/grafana-worldmap-panel-ng/1824
 
 
 ************
