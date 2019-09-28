@@ -5,6 +5,8 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Mask observation values with magic number ``-99.99`` representing ``NaN``
+  values from SOS/IRCELINE, #3.
 
 
 2019-09-29 0.18.0

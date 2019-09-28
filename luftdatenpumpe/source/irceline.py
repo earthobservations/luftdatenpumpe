@@ -485,7 +485,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
             # Skip empty or non-numeric values.
             # TODO: Emit warning here?
-            if value is None or str(value).lower() == 'nan':
+            if value is None or str(value).lower() == 'nan' or value == -99.99:
                 continue
 
             entry = {
