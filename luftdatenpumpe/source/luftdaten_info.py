@@ -98,10 +98,46 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 if reading is None:
                     continue
 
+                if not self.make_observations_from_api(item, reading):
+                    continue
+
+                log.debug(f'API reading:\n{json.dumps(reading, indent=2)}')
+
                 yield reading
 
             except Exception as ex:
                 log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
+
+    def make_observations_from_api(self, item, reading):
+
+        # Collect sensor values.
+        has_data = False
+        if 'sensordatavalues' in item:
+            for sensor in item['sensordatavalues']:
+                fieldname = sensor['value_type']
+                value = sensor['value']
+
+                # Skip NaN values.
+                # Prevent "influxdb.exceptions.InfluxDBClientError: 400".
+                # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number
+                # unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.6 1556133773000000000': invalid number dropped=0"}
+                # TODO: Emit warning here?
+                if is_nan(value):
+                    continue
+
+                value = float(value)
+
+                # Actually use this reading. LDI has single observations only.
+                reading.observations[0]['data'][fieldname] = value
+
+                # Signal positive dataness.
+                has_data = True
+
+        # Skip this observation if it contains no data at all.
+        if not has_data:
+            log.warning('Observation without sensor values for station %s', reading.station)
+
+        return has_data
 
     def filter_rule(self, data):
 
@@ -135,13 +171,13 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     def make_reading(self, item):
 
-        log.debug('Item: %s', item)
+        log.debug('Making reading from item: %s', item)
 
         # Decode JSON item.
         station_id = item['location']['id']
         sensor_id = item['sensor']['id']
         sensor_type_name = item['sensor']['sensor_type']['name']
-        sensor_type_id = item['sensor']['sensor_type']['id']
+        sensor_type_id = item['sensor']['sensor_type'].get('id')
 
         # Build observation.
         observation = Munch(
@@ -174,35 +210,10 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                     value = None
             entry.station.position[key] = value
 
-        # Collect sensor values.
-        has_data = False
-        if 'sensordatavalues' in item:
-            for sensor in item['sensordatavalues']:
-                name = sensor['value_type']
-                value = sensor['value']
-
-                # Skip NaN values.
-                # Prevent "influxdb.exceptions.InfluxDBClientError: 400".
-                # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number
-                # unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.6 1556133773000000000': invalid number dropped=0"}
-                # TODO: Emit warning here?
-                if is_nan(value):
-                    continue
-
-                value = float(value)
-                observation.data[name] = value
-
-                has_data = True
-
-        # Skip this observation if it contains no data at all.
-        if not has_data:
-            log.warning('Observation without sensor values for station %s', entry.station)
-            return
-
         # Add more detailed location information.
         self.enrich_station(entry.station)
 
-        log.debug('Observation: %s', json.dumps(observation))
+        #log.debug('Observation: %s', json.dumps(observation))
 
         # Debugging.
         #break
@@ -367,11 +378,12 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Iterate all CSV records.
         for record in records:
 
-            #print('record:', record)
-            csv_record = self.read_csv_record(record)
-            #print('csv_record:', csv_record)
             try:
-                reading = self.make_reading(csv_record)
+                # Make item from CSV record.
+                item = self.read_csv_record(record)
+
+                # Make reading from item.
+                reading = self.make_reading(item)
                 if reading is None:
                     continue
 
@@ -382,8 +394,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
                 yield reading
 
-            except Exception as ex:
-                log.exception(f'Could not make observation from {csv_record}')
+            except Exception:
+                log.exception(f'Could not make observation from CSV record {record}')
 
     def make_observations(self, record, reading, fieldnames):
 
@@ -422,7 +434,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     def read_csv_record(self, csvitem):
 
-        log.debug(csvitem)
+        #log.debug('CSV item: %s', csvitem)
 
         item = {
             'timestamp': csvitem['timestamp'],

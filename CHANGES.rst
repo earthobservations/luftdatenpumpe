@@ -5,9 +5,14 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-09-29 0.18.0
+=================
 - Update documentation for installing Grafana Worldmap Plugin
 - Add Redis setup documentation re. #7. Thanks, David!
 - Add PostgreSQL setup documentation re. #8. Thanks, David!
+- Fix LDI historical data import, #10. Thanks, Wetter!
 
 
 2019-09-27 0.17.0
