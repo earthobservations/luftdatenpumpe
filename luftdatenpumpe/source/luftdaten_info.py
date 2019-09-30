@@ -422,7 +422,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             try:
                 value = float(value)
             except:
-                pass
+                continue
 
             # Actually use this reading. LDI has single observations only.
             reading.observations[0]['data'][fieldname] = value

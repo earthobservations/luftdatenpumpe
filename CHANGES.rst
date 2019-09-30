@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Improve memory consumption
+- Don't process non-float values
 
 
 2019-09-29 0.18.1
