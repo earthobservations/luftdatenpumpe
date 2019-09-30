@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Improve memory consumption
 
 
 2019-09-29 0.18.1

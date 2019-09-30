@@ -60,7 +60,7 @@ class LuftdatenEngine:
         log.info('Emitting to target data sinks, this might take some time')
 
         if self.progressbar:
-            data = tqdm(list(data))
+            data = tqdm(data)
 
         item_count = 0
         for item in data:
