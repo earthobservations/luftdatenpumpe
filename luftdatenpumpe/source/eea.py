@@ -4,19 +4,13 @@
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
-from copy import deepcopy
-from datetime import datetime, timedelta
 from operator import itemgetter
 
-from requests import HTTPError
-from rfc3339 import rfc3339
-from munch import munchify, Munch
+from munch import munchify
 from tablib import Dataset
 from urllib.parse import urljoin
-from collections import OrderedDict
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import slugify, grouper, chunks
 
 log = logging.getLogger(__name__)
 
@@ -63,6 +57,35 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
     def get_stations(self):
         """
         https://ereporting.blob.core.windows.net/downloadservice/metadata.csv
+
+        Example ingress record::
+
+            {
+              "Countrycode": "CZ",
+              "Namespace": "CZ.CHMI-Prague-Komorany.AQ",
+              "AirQualityNetwork": "NET-CZ001A",
+              "AirQualityStation": "STA.CZ_TOPO",
+              "AirQualityStationNatCode": "TOPO",
+              "AirQualityStationEoICode": "CZ0TOPO",
+              "AirQualityStationArea": "suburban",
+              "SamplingPoint": "SPO.CZ_TOPOP_BaP_40079",
+              "SamplingProcess": "SPP.CZ_TOPOP_40079",
+              "Sample": "SAM.CZ_TOPOP_BaP_40079",
+              "BuildingDistance": "-999",
+              "EquivalenceDemonstrated": "no",
+              "InletHeight": "2",
+              "KerbDistance": "-999",
+              "MeasurementEquipment": "",
+              "MeasurementType": "active",
+              "MeasurementMethod": "",
+              "AirPollutantCode": "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/5015",
+              "AirPollutant": "Ni in PM10",
+              "AirQualityStationType": "background",
+              "Projection": "EPSG:4979",
+              "Longitude": "18.15927505493164",
+              "Latitude": "49.825294494628906",
+              "Altitude": "242"
+            }
         """
 
         payload = self.send_request('metadata.csv')
@@ -77,29 +100,35 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
         # Apply data filter.
         data = self.apply_filter(data)
 
-        df_grouped = data.df.groupby(['Countrycode', 'AirQualityNetwork', 'AirQualityStation'], as_index=False)
+        df_grouped = data.df.groupby(['Countrycode', 'AirQualityNetwork', 'AirQualityStationEoICode'], as_index=False)
 
         stations = []
         for name, group in self.wrap_progress(df_grouped):
             first_sensor = group.head(1)
             data = first_sensor.to_dict(orient='records')[0]
+            log.debug('Ingress data: %s', data)
+
+            station_eoi_code = data.pop('AirQualityStationEoICode')
             station_info = munchify({
-                'station_id': data.pop('AirQualityStation'),
-                'station_label': data.pop('Namespace'),
-                'network': data.pop('AirQualityNetwork'),
-                'nat_code': data.pop('AirQualityStationNatCode'),
-                'eoi_code': data.pop('AirQualityStationEoICode'),
+                'station_id': station_eoi_code,
+                'station_namespace': data.pop('Namespace'),
+                'station_network_code': data.pop('AirQualityNetwork'),
+                'station_code': data.pop('AirQualityStation'),
+                'station_nat_code': data.pop('AirQualityStationNatCode'),
+                'station_eoi_code': station_eoi_code,
+                'station_type': data.pop('AirQualityStationType'),
+                'station_area': data.pop('AirQualityStationArea'),
                 'position': {
                     'country': data.pop('Countrycode'),
-                    'latitude': data.pop('Latitude'),
-                    'longitude': data.pop('Longitude'),
-                    'altitude': data.pop('Altitude'),
-                    'area': data.pop('AirQualityStationArea'),
+                    'latitude': float(data.pop('Latitude')),
+                    'longitude': float(data.pop('Longitude')),
+                    'altitude': float(data.pop('Altitude')),
                     'projection': data.pop('Projection'),
-                    'building_distance': data.pop('BuildingDistance'),
-                    'kerb_distance': data.pop('KerbDistance'),
+                    'building_distance': float(data.pop('BuildingDistance')),
+                    'kerb_distance': float(data.pop('KerbDistance')),
                 }
             })
+            #print(data)
 
             # Transfer all other stuff.
             #for key, value in data.items():
@@ -111,9 +140,27 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
             self.enrich_station(station_info)
 
             # FIXME: Add sensors.
-            #station_info.sensors = self.timeseries_to_sensors(upstream_station.properties.timeseries)
+            sensors = []
+            for measurement in group.to_dict(orient='records'):
+                #print('measurement:', measurement)
+                #data = measurement.to_dict(orient='records')[0]
+                #log.info('Sensor data: %s', json.dumps(measurement, indent=2))
+                sensor_info = munchify({
+                    'sensor_type': measurement.pop('AirPollutant'),
+                    'sensor_type_uri': measurement.pop('AirPollutantCode'),
+                    'sensor_measurement_type': measurement.pop('MeasurementType'),
+                    'sensor_measurement_method': measurement.pop('MeasurementMethod'),
+                    'sensor_measurement_equipment': measurement.pop('MeasurementEquipment'),
+                    'sensor_inlet_height': float(measurement.pop('InletHeight')),
+                    'sensor_equivalence_demonstrated': measurement.pop('EquivalenceDemonstrated'),
+                    'sensor_sampling_process': measurement.pop('SamplingProcess'),
+                    'sensor_sampling_id': measurement.pop('Sample'),
+                    'sensor_sampling_point': measurement.pop('SamplingPoint'),
+                })
+                sensors.append(sensor_info)
 
-            #print(station_info)
+            station_info.sensors = sensors
+
             stations.append(station_info)
 
         # List of stations sorted by station identifier.
@@ -122,7 +169,6 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
         return stations
 
     def filter_rule(self, data):
-        print('FILTER:', self.filter)
         df_filtered = data.df
         if self.filter and 'country' in self.filter:
             df_filtered = df_filtered[df_filtered['Countrycode'].isin(self.filter.country)]

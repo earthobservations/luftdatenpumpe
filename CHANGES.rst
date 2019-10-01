@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Improve EEA station processing
 
 
 2019-09-30 0.18.2
