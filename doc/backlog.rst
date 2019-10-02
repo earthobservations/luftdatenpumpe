@@ -13,6 +13,7 @@ Prio 0
 - Add compact license and copyright information for EEA to JSON output.
     - https://www.eea.europa.eu/legal/
     - https://creativecommons.org/licenses/by/2.5/dk/deed.en_GB
+- [o] Add alpha EEA readings
 
 
 ******
