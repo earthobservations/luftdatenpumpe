@@ -33,6 +33,8 @@ Prio 1
   let's go back to storing the position as lat/lon again.
 - [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
 - [o] When acquiring data from specific sensors, use API endpoints like http://api.luftdaten.info/v1/sensor/25735/
+- [o] Look at world air quality data
+
 
 ********
 IRCELINE
