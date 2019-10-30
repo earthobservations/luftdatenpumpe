@@ -7,6 +7,7 @@ in progress
 ===========
 - Improve EEA station processing
 - Update "pflock" command to report if invocation failed
+- Use HTTP POST when creating the InfluxDB datasource. Thanks, David!
 
 
 2019-09-30 0.18.2

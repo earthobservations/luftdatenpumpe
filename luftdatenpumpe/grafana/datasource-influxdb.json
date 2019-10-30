@@ -5,5 +5,8 @@
   "access": "proxy",
   "database": "{{ tsdbDatasource }}",
   "user": "root",
-  "password": "root"
+  "password": "root",
+  "jsonData": {
+    "httpMode": "POST"
+  }
 }
