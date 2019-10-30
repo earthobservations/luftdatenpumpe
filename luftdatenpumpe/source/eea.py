@@ -24,6 +24,7 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
     - http://ftp.eea.europa.eu/www/aqereporting-3/AQeReporting_products_2018_v1.pdf
     - http://dd.eionet.europa.eu/vocabulary/aq/pollutant
 
+    - http://discomap.eea.europa.eu/map/fme/AirQualityUTDExport.htm (discontinued)
     """
 
     # Sensor network identifier.

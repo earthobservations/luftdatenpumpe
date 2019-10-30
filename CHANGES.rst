@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2019-10-30 0.19.0
+=================
 - Improve EEA station processing
 - Update "pflock" command to report if invocation failed
 - Use HTTP POST when creating the InfluxDB datasource. Thanks, David!
