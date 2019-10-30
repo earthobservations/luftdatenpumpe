@@ -6,6 +6,7 @@ Luftdatenpumpe changelog
 in progress
 ===========
 - Improve EEA station processing
+- Update "pflock" command to report if invocation failed
 
 
 2019-09-30 0.18.2

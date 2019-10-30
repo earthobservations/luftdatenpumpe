@@ -9,4 +9,4 @@ name=$( basename $program )
 shift
 command="${program} $@"
 echoerr "pflock is running command: ${command}"
-flock -xn "/var/lock/program-${name}.pflock" -c "${command}"
+flock -xn "/var/lock/program-${name}.pflock" -c "${command}" || echo "Command not invoked or invocation failed"
