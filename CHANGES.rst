@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2019-12-09 0.19.1
+=================
+- Fix invalid JSON file export for stations list (#17). Thanks, David!
+
+
 2019-10-30 0.19.0
 =================
 - Improve EEA station processing

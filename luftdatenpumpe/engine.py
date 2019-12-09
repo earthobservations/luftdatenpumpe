@@ -72,9 +72,12 @@ class LuftdatenEngine:
             # Preliminary flush each $batch_size items.
             if item_count % self.batch_size == 0:
                 for target in targets:
+                    # Don't flush STDOUT targets preliminary, otherwise JSON output breaks.
+                    if isinstance(target, StreamTarget):
+                        continue
                     target.flush()
 
-        # Signal readiness to each target subsystem.
+        # Signal final readiness to each target subsystem.
         for target in targets:
             target.flush(final=True)
 
