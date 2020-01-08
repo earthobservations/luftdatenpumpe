@@ -1,3 +1,3 @@
 """luftdatenpumpe: Process data from live API of luftdaten.info"""
 __appname__ = 'luftdatenpumpe'
-__version__ = '0.19.1'
+__version__ = '0.20.0'
