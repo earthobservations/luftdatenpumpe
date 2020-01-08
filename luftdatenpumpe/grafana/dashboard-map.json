@@ -184,7 +184,7 @@
         "timeShift": null,
         "title": "PM10 particulates",
         "transparent": false,
-        "type": "grafana-worldmap-panel",
+        "type": "grafana-map-panel",
         "unitPlural": "μg/m³ (PM10)",
         "unitSingle": "",
         "unitSingular": "μg/m³ (PM10)",
