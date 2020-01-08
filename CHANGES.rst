@@ -12,6 +12,7 @@ in progress
 - Add adapter for OpenAQ
 - Slightly improve reverse geocoding
 - Use improved "grafana-map-panel" instead of the original Worldmap
+- Update documentation
 
 
 2019-12-09 0.19.1

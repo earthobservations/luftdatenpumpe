@@ -75,7 +75,7 @@ def run():
     Further examples:
 
       # Display metadata for given sensors in JSON format, with reverse geocoding
-      luftdatenpumpe stations --sensor=28,1071 --reverse-geocode
+      luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
 
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
       luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout

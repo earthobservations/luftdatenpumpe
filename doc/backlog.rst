@@ -7,10 +7,11 @@ Luftdatenpumpe Backlog
 ******
 Prio 0
 ******
-- Olav re. IRCELINE: I removed the "is active"-check for station-data, cause current data seems stalled/too old)
+- [o] Add ``--timespan`` option for OpenAQ
+- [o] Olav re. IRCELINE: I removed the "is active"-check for station-data, cause current data seems stalled/too old)
 - [x] Add ``CONTRIBUTORS.rst`` file.
-- Make docs from https://github.com/panodata/luftdatenpumpe/issues/9
-- Add compact license and copyright information for EEA to JSON output.
+- [o] Make docs from https://github.com/panodata/luftdatenpumpe/issues/9
+- [o] Add compact attribution information to JSON output.
     - https://www.eea.europa.eu/legal/
     - https://creativecommons.org/licenses/by/2.5/dk/deed.en_GB
 - [o] Add alpha EEA readings
