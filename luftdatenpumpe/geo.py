@@ -198,6 +198,8 @@ def improve_location(location):
 
     address = location.address
 
+    #log.info('Address: %s', address)
+
     # Uppercase `country_code` attribute.
     if 'country_code' in address:
         address.country_code = address.country_code.upper()
@@ -255,7 +257,7 @@ def improve_location(location):
         address.city = 'Regensburg'
 
     if 'city' not in address:
-        address.city = 'unknown'
+        address.city = 'Unknown city'
 
 
     # Improve Stadtteil.
@@ -274,7 +276,7 @@ def improve_location(location):
                 break
 
     if 'road' not in address:
-        address.road = 'unknown'
+        address.road = 'Unknown road'
 
 
 def format_address(location):
@@ -326,7 +328,7 @@ def format_address(location):
             if fieldname in address:
                 component = address[fieldname]
 
-                if not component or component == 'unknown':
+                if not component or component.startswith('Unknown'):
                     continue
 
                 if address_parts and component == address_parts[-1]:

@@ -10,6 +10,7 @@ in progress
 2020-01-08 0.20.0
 =================
 - Add adapter for OpenAQ
+- Slightly improve reverse geocoding
 
 
 2019-12-09 0.19.1
