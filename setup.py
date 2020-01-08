@@ -93,7 +93,7 @@ setup(name='luftdatenpumpe',
         "Operating System :: MacOS"
         ],
       author='Andreas Motl',
-      author_email='andreas@hiveeyes.org',
+      author_email='andreas.motl@panodata.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
       keywords='luftdaten.info irceline openaq '
                'air quality particulate matter pollution '

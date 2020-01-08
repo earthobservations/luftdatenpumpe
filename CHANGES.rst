@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2020-01-08 0.20.1
+=================
+- Add missing ``openaq.py`` file
+
+
 2020-01-08 0.20.0
 =================
 - Add adapter for OpenAQ
