@@ -26,9 +26,10 @@ Luftdatenpumpe
 *****
 About
 *****
-Process live and historical data from `luftdaten.info`_. Filter by station-id, sensor-id
-and sensor-type, apply reverse geocoding, store into TSDB_ and RDBMS_ databases
-(InfluxDB_ and PostGIS_), publish to MQTT_ or just output as JSON.
+Process live and historical data from `luftdaten.info`_, irceline_ and OpenAQ_.
+Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
+store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
+publish to MQTT_ or just output as JSON.
 
 .. figure:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
     :target: https://github.com/hiveeyes/luftdatenpumpe
@@ -201,6 +202,9 @@ Icons and pictograms
 
 
 .. _luftdaten.info: https://luftdaten.info/
+.. _irceline: http://www.irceline.be/en/documentation/open-data
+.. _OpenAQ: https://openaq.org/
+
 .. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
 
 .. _Testimonials for Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/testimonials.rst

@@ -15,7 +15,7 @@ from luftdatenpumpe.util import read_pairs, Application
 
 log = logging.getLogger(__name__)
 
-network_list = ['ldi', 'irceline']
+network_list = ['ldi', 'irceline', 'openaq']
 
 
 def run():

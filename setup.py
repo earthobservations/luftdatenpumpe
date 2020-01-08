@@ -17,6 +17,7 @@ requires = [
     # Acquisition
     'requests==2.21.0',
     'tablib[pandas]==0.13.0',
+    'py-openaq==1.1.0',
 
     # Caching
     'requests-cache==0.5.0',
@@ -70,6 +71,7 @@ setup(name='luftdatenpumpe',
         "Intended Audience :: Science/Research",
         "Intended Audience :: System Administrators",
         "Intended Audience :: Telecommunications Industry",
+        "Programming Language :: Python",
         "Topic :: Communications",
         "Topic :: Database",
         "Topic :: Internet",
@@ -93,7 +95,7 @@ setup(name='luftdatenpumpe',
       author='Andreas Motl',
       author_email='andreas@hiveeyes.org',
       url='https://github.com/hiveeyes/luftdatenpumpe',
-      keywords='luftdaten.info irceline '
+      keywords='luftdaten.info irceline openaq '
                'air quality particulate matter pollution '
                'feinstaub luftdaten '
                'ogc sos '

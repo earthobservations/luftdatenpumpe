@@ -1,7 +1,7 @@
 ## About Luftdatenpumpe
 
 #### Features
-- **Data sources**: [luftdaten.info] (LDI), [IRCELINE]
+- **Data sources**: [luftdaten.info] (LDI), [IRCELINE], [OpenAQ]
 - **Production**: [Luftdatenpumpe]
 - **Development**: [Erneuerung der Luftdatenpumpe], [LDI data plane v2]. All contributions welcome. 
 - **Composition**: [The Hiveeyes Project]. Developing a flexible beehive monitoring infrastructure.
@@ -19,7 +19,9 @@
 Enjoy exploring and stay curious.
 
 [luftdaten.info]: http://luftdaten.info/
-[IRCELINE]: https://github.com/irceline/open_data
+[IRCELINE]: http://www.irceline.be/en/documentation/open-data
+[OpenAQ]: https://openaq.org/
+
 [Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe
 [Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 [LDI data plane v2]: https://community.hiveeyes.org/t/ldi-data-plane-v2/1412

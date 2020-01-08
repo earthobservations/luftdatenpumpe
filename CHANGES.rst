@@ -7,6 +7,11 @@ in progress
 ===========
 
 
+2020-01-08 0.20.0
+=================
+- Add adapter for OpenAQ
+
+
 2019-12-09 0.19.1
 =================
 - Fix invalid JSON file export for stations list (#17). Thanks, David!
