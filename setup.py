@@ -71,7 +71,6 @@ setup(name='luftdatenpumpe',
         "Intended Audience :: Science/Research",
         "Intended Audience :: System Administrators",
         "Intended Audience :: Telecommunications Industry",
-        "Programming Language :: Python",
         "Topic :: Communications",
         "Topic :: Database",
         "Topic :: Internet",
@@ -94,7 +93,7 @@ setup(name='luftdatenpumpe',
         ],
       author='Andreas Motl',
       author_email='andreas.motl@panodata.org',
-      url='https://github.com/hiveeyes/luftdatenpumpe',
+      url='https://github.com/panodata/luftdatenpumpe',
       keywords='luftdaten.info irceline openaq '
                'air quality particulate matter pollution '
                'feinstaub luftdaten '
