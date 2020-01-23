@@ -19,8 +19,8 @@ Flux datasource::
 Install Worldmap Panel NG::
 
     grafana-cli \
-        --pluginUrl https://github.com/hiveeyes/grafana-worldmap-panel/releases/download/0.4.0/grafana-worldmap-panel-ng-0.4.0.zip \
-        plugins install grafana-worldmap-panel-ng
+        --pluginUrl https://github.com/panodata/grafana-map-panel/releases/download/0.8.1/grafana-map-panel-0.8.1.zip \
+        plugins install grafana-map-panel
 
 Restart Grafana instance::
 
@@ -88,7 +88,7 @@ Create RDBMS database view ``ldi_network``::
 
 Create station list file for Grafana Worldmap Panel from RDBMS database (PostgreSQL)::
 
-    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id,name=road_and_name_and_id' > $stationsfile
+    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id\|str,name=road_and_name_and_id' > $stationsfile
 
 Check::
 
