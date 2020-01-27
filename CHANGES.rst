@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Don't use caching for live data. Thanks, Matthias!
 
 
 2020-01-08 0.20.1

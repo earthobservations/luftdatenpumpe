@@ -4,6 +4,7 @@
 # License: GNU Affero General Public License, Version 3
 import sys
 import logging
+import requests
 from urllib.parse import urlparse
 
 import redis
@@ -43,12 +44,12 @@ class AbstractLuftdatenPumpe:
         cache_name = urlparse(self.uri).netloc
 
         # Configure cached requests session.
-        self.session = CachedSession(
-            cache_name=cache_name, backend='redis', expire_after=300,
-            user_agent=user_agent)
+        #self.session = CachedSession(
+        #    cache_name=cache_name, backend='redis', expire_after=300,
+        #    user_agent=user_agent)
 
         # Disable request cache by overriding it with a vanilla requests session.
-        #import requests; self.session = requests.Session()
+        self.session = requests.Session()
 
         # Gracefully probe Redis for availability if cache is enabled.
         if hasattr(self.session, 'cache'):
