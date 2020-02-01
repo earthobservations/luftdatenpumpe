@@ -31,9 +31,9 @@ rdbms_uri="postgresql://luftdatenpumpe@localhost/weatherbase"
 tsdb_uri="influxdb://luftdatenpumpe@localhost/luftdaten_info"
 ldi_stations_file="/var/lib/grafana/data/json/ldi-stations.json"
 
-# Produce station list once a day at 00:30
-30	0	* * *		workbench   pflock luftdatenpumpe stations --network=ldi --reverse-geocode --target=${rdbms_uri}
-45	0	* * *		grafana     pflock luftdatenpumpe stations --network=ldi --source=${rdbms_uri} --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id,name=road_and_name_and_id' | safewrite ${ldi_stations_file}
+# Produce station list once a day between midnight and 1 o'clock.
+34	0	* * *		workbench   pflock luftdatenpumpe stations --network=ldi --reverse-geocode --target=${rdbms_uri}
+49	0	* * *		grafana     pflock luftdatenpumpe stations --network=ldi --source=${rdbms_uri} --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id\|str,name=road_and_name_and_id' | safewrite ${ldi_stations_file}
 
-# Run data import each 10 minutes
-*/10	*	* * *	workbench   pflock luftdatenpumpe readings --network=ldi --target=${tsdb_uri} >/dev/null 2>&1
+# Run data import each 5 minutes
+*/5	*	* * *		workbench   pflock luftdatenpumpe readings --network=ldi --target=${tsdb_uri} >/dev/null 2>&1
