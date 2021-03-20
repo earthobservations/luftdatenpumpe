@@ -40,7 +40,7 @@ requires = [
     'geopy==1.19.0',
 
     # Grafana
-    'Jinja2==2.10.1',
+    'Jinja2==2.11.3',
 ]
 
 extras = {
