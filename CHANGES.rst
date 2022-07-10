@@ -7,6 +7,7 @@ in progress
 ===========
 - Fix Python sandbox and test infrastructure
 - Improve Nominatim reverse geocoding heuristics and corresponding tests
+- Fix dependencies. Thanks, @MauritsDescamps!
 
 
 2020-01-28 0.20.2

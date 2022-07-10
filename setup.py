@@ -8,39 +8,41 @@ README = open(os.path.join(here, 'README.rst')).read()
 requires = [
 
     # Core
-    'six==1.12.0',
-    'appdirs==1.4.3',
-    'docopt==0.6.2',
-    'munch==2.3.2',
-    'tqdm==4.31.1',
+    'six',
+    'appdirs<2',
+    'docopt<1',
+    'munch<3',
+    'tqdm<5',
 
     # Acquisition
-    'requests==2.21.0',
-    'tablib[pandas]==0.13.0',
-    'py-openaq==1.1.0',
+    'requests<3',
+    'tablib[pandas]<4',
+    'py-openaq<2',
 
     # Caching
-    'requests-cache==0.5.0',
-    'dogpile.cache==0.7.1',
-    'redis==3.2.1',
+    'requests-cache<1',
+    'dogpile.cache<2',
+    'redis<5',
 
     # Adapters
-    'paho-mqtt==1.4.0',
-    'dataset==1.1.2',
-    'psycopg2-binary==2.8.2',
-    'GeoAlchemy2==0.6.1',
-    'influxdb==5.2.2',
-    'SQLAlchemy-Utils==0.33.11',
+    'paho-mqtt<2',
+    'dataset<2',
+    'psycopg2-binary<3',
+    'GeoAlchemy2<1',
+    'influxdb<6',
+    'SQLAlchemy<1.4',
+    'SQLAlchemy-Utils<1',
 
     # Date/Time
-    'rfc3339==6.0',
+    'rfc3339<7',
 
     # Geospatial
-    'geohash2==1.1',
-    'geopy==1.19.0',
+    'geohash2<2',
+    'geopy<2',
 
     # Grafana
-    'Jinja2==2.10.1',
+    'Jinja2<3',
+    'MarkupSafe<2.1',
 ]
 
 extras = {
