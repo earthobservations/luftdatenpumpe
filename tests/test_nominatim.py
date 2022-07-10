@@ -9,28 +9,42 @@ from luftdatenpumpe.geo import resolve_location, improve_location, format_addres
 log = logging.getLogger(__name__)
 
 
-def test_resolve_location():
+def test_resolve_location_latlon():
     """
-    Test reverse geocoding.
+    Test reverse geocoding with latitude/longitude.
     """
     location = resolve_location(latitude=48.778, longitude=9.236)
-    assert location.address.city == 'Stuttgart'
+    assert location.address.county == 'Stuttgart'
     assert location.address_more.building == 'Kulturhaus ARENA'
 
-    # Test reverse geocoding by geohash.
+
+def test_resolve_location_geohash():
+    """
+    Test reverse geocoding with geohash.
+    """
     location = resolve_location(geohash="u0wt6pv2qqhz")
     assert location.address.state == 'Baden-Württemberg'
 
 
+def test_improve_location():
+    """
+    Test reverse geocoding with heuristic improvements.
+    """
+    location = resolve_location(latitude=48.778, longitude=9.236)
+    improve_location(location)
+    assert location.address.city == 'Stuttgart'
+    assert location.address_more.building == 'Kulturhaus ARENA'
+
+
 def test_format_address():
     """
-    Test address formatting.
+    Test address formatting with heuristic improvements.
     """
     location = resolve_location(latitude=48.778, longitude=9.236)
     improve_location(location)
     name = format_address(location)
 
-    assert name == 'Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
+    assert name == 'Zwischenangriff Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
 
 
 def test_city_missing():
@@ -40,7 +54,7 @@ def test_city_missing():
 
     location = resolve_location(latitude=48.578, longitude=9.18)
     improve_location(location)
-    assert location.address.city == 'Pliezhausen'
+    assert location.address.city == 'Gniebel'
 
     location = resolve_location(latitude=48.8, longitude=9.002)
     improve_location(location)
@@ -48,7 +62,7 @@ def test_city_missing():
 
     location = resolve_location(latitude=24.074, longitude=120.34)
     improve_location(location)
-    assert location.address.city == 'unknown'
+    assert location.address.city == 'Unknown City'
 
 
 def test_stadtstaat():
@@ -96,7 +110,7 @@ def test_stadtteil():
     assert location.address.state == 'Baden-Württemberg'
 
     name = format_address(location)
-    assert name == 'Paul-Pfizer-Straße, Ringelbach, Reutlingen, Baden-Württemberg, DE'
+    assert name == 'Sebastian-Kneipp-Straße, Ringelbach, Reutlingen, Baden-Württemberg, DE'
 
 
 def test_residential_village():
@@ -109,7 +123,7 @@ def test_residential_village():
     #log.info(location)
 
     name = format_address(location)
-    assert name == 'Trostberger Straße, Lengloh, Tacherting, Traunstein, Bayern, DE'
+    assert name == 'Trostberger Straße, Lengloh, Traunstein, Bayern, DE'
 
 
 def test_something():
@@ -138,42 +152,48 @@ def test_road_missing():
     improve_location(location)
     assert location.address.road == 'Lerchenauer Straße'
     name = format_address(location)
-    assert name == 'Lerchenauer Straße, Hasenbergl-Lerchenau Ost, München, Bayern, DE'
+    assert name == 'Lerchenauer Straße, Hasenbergl-Lerchenau Ost, Feldmoching-Hasenbergl, München, Bayern, DE'
 
     # From `path` attribute
     location = resolve_location(latitude=49.2, longitude=9.242)
     improve_location(location)
     assert location.address.road == 'Reutlinger Straße'
     name = format_address(location)
-    assert name == 'Reutlinger Straße, Neckarsulm, Baden-Württemberg, DE'
+    assert name == 'Reutlinger Straße, Amorbach, Heilbronn, Baden-Württemberg, DE'
 
     # From `footway` attribute
     location = resolve_location(latitude=48.702, longitude=9.126)
     improve_location(location)
     assert location.address.road == 'Hans-Holbein-Straße'
     name = format_address(location)
-    assert name == 'Hans-Holbein-Straße, Leinfelden, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
-
-    # From `neighbourhood` attribute
-    location = resolve_location(latitude=27.222, longitude=78.01)
-    improve_location(location)
-    assert location.address.road == 'Balkeshwar Ghat'
-    name = format_address(location)
-    assert name == 'Balkeshwar Ghat, Balkeshwar, Agra, Uttar Pradesh, IN'
+    assert name == 'Hans-Holbein-Straße, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
 
     # From `house_number` attribute
     location = resolve_location(latitude=42.734, longitude=23.308)
     improve_location(location)
     assert location.address.road == "\u0431\u043b.402"
     name = format_address(location)
-    assert name == "\u0431\u043b.402, \u0436.\u043a. \u041d\u0430\u0434\u0435\u0436\u0434\u0430 4, \u041d\u0430\u0434\u0435\u0436\u0434\u0430, \u0421\u0442\u043e\u043b\u0438\u0447\u043d\u0430, BG"
+    assert name == "бл.402, ж.к. Надежда 4, София, София-град, BG"
 
-    # Unknown road
+
+def test_road_unknown():
+    """
+    Road unknown.
+    """
+
+    # From `neighbourhood` attribute (ex).
+    location = resolve_location(latitude=27.222, longitude=78.01)
+    improve_location(location)
+    assert location.address.road == 'Unknown Road'
+    name = format_address(location)
+    assert name == 'Civil Lines, Agra, Uttar Pradesh, IN'
+
+    # Unknown road.
     location = resolve_location(latitude=49.342, longitude=8.146)
     improve_location(location)
-    assert location.address.road == 'unknown'
+    assert location.address.road == 'Unknown Road'
     name = format_address(location)
-    assert name == 'Neustadt-Stadtmitte, Neustadt, Neustadt an der Weinstra\u00dfe, Rheinland-Pfalz, DE'
+    assert name == 'Neustadt an der Weinstraße, Rheinland-Pfalz, DE'
 
 
 def test_city_district_vs_suburb():
@@ -185,7 +205,7 @@ def test_city_district_vs_suburb():
     location = resolve_location(latitude=52.518, longitude=13.442)
     improve_location(location)
     name = format_address(location)
-    assert name == 'Weidenweg, Friedrichshain-Kreuzberg, Berlin, DE'
+    assert name == 'Weidenweg, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, DE'
 
 
 def test_city_patches():
@@ -210,13 +230,13 @@ def test_country_patches():
     improve_location(location)
     assert location.address.country == 'Poland'
     name = format_address(location)
-    assert name == 'Rentowna, Górna, Łódź-Górna, Łódź, łódzkie, PL'
+    assert name == 'Rentowna, Górna, Łódź-Górna, Łódź, województwo łódzkie, PL'
 
     location = resolve_location(latitude=19.806, longitude=-70.704)
     improve_location(location)
     assert location.address.country == 'Dominican Republic'
     name = format_address(location)
-    assert name == 'Guayacanes, Costámbar, Puerto Plata, DO'
+    assert name == 'Calle Guayacanes, Costámbar, Puerto Plata, DO'
 
 
 def test_taiwan_poor():

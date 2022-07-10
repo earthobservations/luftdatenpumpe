@@ -196,8 +196,10 @@ def improve_location(location):
     if location is None:
         return
 
-    address = location.address
+    # Debugging.
+    # print("location:", json.dumps(location, indent=2))
 
+    address = location.address
     #log.info('Address: %s', address)
 
     # Uppercase `country_code` attribute.
@@ -257,7 +259,7 @@ def improve_location(location):
         address.city = 'Regensburg'
 
     if 'city' not in address:
-        address.city = 'Unknown city'
+        address.city = 'Unknown City'
 
 
     # Improve Stadtteil.
@@ -266,6 +268,12 @@ def improve_location(location):
         address.suburb = address.residential
     if 'suburb' not in address and 'neighbourhood' in address:
         address.suburb = address.neighbourhood
+    if 'suburb' not in address and 'address_more' in location and 'city_block' in location.address_more:
+        address.suburb = location.address_more.city_block
+
+    # 2022-07-09: When `city_district` is missing, backfill with `borough` from `address_more` slot.
+    if 'city_district' not in address and 'address_more' in location and 'borough' in location.address_more:
+        address.city_district = location.address_more.borough
 
     # Be agnostic against road vs. path
     if 'road' not in address:
@@ -276,7 +284,7 @@ def improve_location(location):
                 break
 
     if 'road' not in address:
-        address.road = 'Unknown road'
+        address.road = 'Unknown Road'
 
 
 def format_address(location):
@@ -371,3 +379,13 @@ def disable_nominatim_cache():
     log.info('Disabling Nominatim cache')
     # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
     invalidate_dogpile_cache(nominatim_cache)
+
+
+if __name__ == "__main__":
+    # location = resolve_location(latitude=48.778, longitude=9.236)
+    # location = resolve_location(latitude=52.544, longitude=13.374)
+    # location = resolve_location(latitude=48.058, longitude=12.57)
+    # location = resolve_location(latitude=27.222, longitude=78.01)
+    location = resolve_location(latitude=49.342, longitude=8.146)
+    improve_location(location)
+    print(location)
