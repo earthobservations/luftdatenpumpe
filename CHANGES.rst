@@ -10,6 +10,7 @@ in progress
 - Fix dependencies. Thanks, @MauritsDescamps!
 - LDI: Fix data acquisition
 - LDI: Fix forwarding to MQTT
+- OpenAQ: Fix acquisition for certain records without geo information
 
 
 2020-01-28 0.20.2

@@ -188,7 +188,7 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
             entry.station.position = Munch()
             entry.station.position['country'] = item['country']
             entry.station.position['city'] = item['city']
-            if 'coordinates' in item:
+            if 'coordinates' in item and isinstance(item['coordinates'], dict):
                 entry.station.position['latitude'] = item['coordinates']['latitude']
                 entry.station.position['longitude'] = item['coordinates']['longitude']
 
