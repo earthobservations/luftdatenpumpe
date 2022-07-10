@@ -5,6 +5,8 @@
 import os
 import json
 import logging
+from copy import deepcopy
+
 from munch import Munch
 from pprint import pformat
 import paho.mqtt.client as mqtt
@@ -40,7 +42,7 @@ class MQTTAdapter(object):
 
     def emit(self, reading):
         """
-        Will publish these kind of messages to the MQTT bus:
+        Will publish these kinds of messages to the MQTT bus:
         {
             "time": "2018-12-03T01:49:00Z",
             "location_id": 9564,
@@ -53,33 +55,42 @@ class MQTTAdapter(object):
         }
         """
 
+        # Debugging.
+        # print("reading:", jd(reading))
+
         # Build MQTT message.
-        message = Munch()
+        message_blueprint = Munch()
 
         # Station info
         for key, value in reading.station.items():
             if isinstance(value, dict):
-                message.update(value)
+                message_blueprint.update(value)
             else:
-                message[key] = value
+                message_blueprint[key] = value
 
-        message['location_id'] = message['station_id']
-        del message['station_id']
+        message_blueprint['location_id'] = message_blueprint['station_id']
+        del message_blueprint['station_id']
 
-        # Measurement fields
-        message.update(reading.data)
+        for observation in reading.observations:
+            message = deepcopy(message_blueprint)
+            # Converge metadata.
+            message.time = observation.meta.timestamp
+            message.sensor_id = observation.meta.sensor_id
+            message.sensor_type = observation.meta.sensor_type_name
+            # Converge measurement data.
+            message.update(observation.data)
 
-        # Publish to MQTT bus.
-        if self.dry_run:
-            log.info('Dry-run. Would publish record:\n{}'.format(pformat(message)))
-        else:
-            # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
-            # putting them first. This is:
-            # - "P1" and "P2" for "sensor_type": "SDS011"
-            # - "temperature" and "humidity" for "sensor_type": "DHT22"
-            # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
-            mqtt_message = json.dumps(message)
-            self.publish(mqtt_message)
+            # Publish to MQTT bus.
+            if self.dry_run:
+                log.info('Dry-run. Would publish record:\n{}'.format(pformat(message_blueprint)))
+            else:
+                # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
+                # putting them first. This is:
+                # - "P1" and "P2" for "sensor_type": "SDS011"
+                # - "temperature" and "humidity" for "sensor_type": "DHT22"
+                # - "temperature", "humidity", "pressure" and "pressure_at_sealevel" for "sensor_type": "BME280"
+                mqtt_message = json.dumps(message)
+                self.publish(mqtt_message)
 
     def flush(self, final=False):
         pass
