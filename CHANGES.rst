@@ -9,6 +9,7 @@ in progress
 - Improve Nominatim reverse geocoding heuristics and corresponding tests
 - Fix dependencies. Thanks, @MauritsDescamps!
 - LDI: Fix data acquisition
+- LDI: Fix forwarding to MQTT
 
 
 2020-01-28 0.20.2
