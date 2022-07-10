@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Fix Python sandbox and test infrastructure
 
 
 2020-01-28 0.20.2
