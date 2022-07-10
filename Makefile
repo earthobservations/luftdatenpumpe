@@ -84,7 +84,7 @@ install-releasetools: setup-virtualenv
 	@$(pip) install --quiet --requirement requirements-release.txt --upgrade
 
 install-tests: setup-virtualenv
-	@$(pip) install --editable .[test] --upgrade
+	@$(pip) install --upgrade --editable .[test]
 	@touch $(venvpath)/bin/activate
 	@mkdir -p .pytest_results
 
@@ -98,13 +98,18 @@ mkvar:
 	mkdir -p var/lib
 
 redis-start: mkvar
-	echo 'dir ./var/lib\nappendonly yes' | redis-server -
+	docker run --rm -it --publish 6379:6379 redis:7
 
 postgis-start:
-	pg_ctl -D /usr/local/var/postgres start
+	docker run --rm -it --publish=5432:5432 --env "POSTGRES_HOST_AUTH_METHOD=trust" postgis/postgis:14-3.2
 
 influxdb-start:
-	influxd run -config etc/influxdb.conf
+	docker run --rm -it --publish=8086:8086 influxdb:1.8
+
+mosquitto-start:
+	docker run --rm -it --publish=1883:1883 eclipse-mosquitto:2.0.14 mosquitto -c /mosquitto-no-auth.conf
 
 grafana-start:
-	grafana-server --config=/usr/local/etc/grafana/grafana.ini --homepath /usr/local/share/grafana cfg:default.paths.logs=/usr/local/var/log/grafana cfg:default.paths.data=/usr/local/var/lib/grafana cfg:default.paths.plugins=/usr/local/var/lib/grafana/plugins
+	docker run --rm -it --publish=3000:3000 --env='GF_SECURITY_ADMIN_PASSWORD=admin' grafana/grafana:8.5.6
+
+start-foundation-services: redis-start postgis-start influxdb-start grafana-start mosquitto-start
