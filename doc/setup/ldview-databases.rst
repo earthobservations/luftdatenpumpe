@@ -10,6 +10,15 @@ PostGIS
 
 Create and provision PostGIS database
 =====================================
+
+.. note::
+
+    Sometimes, for example when working with Docker, adding options where the
+    PostGIS can be found, is sensible. Example::
+
+         export PGHOST=localhost
+         export PGUSER=postgres
+
 Create database::
 
     su - postgres
@@ -36,7 +45,7 @@ Pre-flight checks::
 
 Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
-    luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
 Create database view and grant permissions to "grafana" user::
 
@@ -91,7 +100,7 @@ Create and provision InfluxDB database
 ======================================
 ::
 
-    luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+    luftdatenpumpe readings --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
 Sanity checks

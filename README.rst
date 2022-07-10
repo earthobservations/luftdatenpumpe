@@ -79,16 +79,16 @@ Synopsis
     luftdatenpumpe networks
 
     # List LDI stations
-    luftdatenpumpe stations --network=ldi --station=28,297 --reverse-geocode
+    luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode
 
     # Store list of LDI stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
-    luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
+    luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
     # Store LDI readings into InfluxDB
-    luftdatenpumpe readings --network=ldi --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+    luftdatenpumpe readings --network=ldi --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
     # Forward LDI readings to MQTT
-    luftdatenpumpe readings --network=ldi --station=28,1071 --target=mqtt://mqtt.example.org/luftdaten.info
+    luftdatenpumpe readings --network=ldi --station=49,1033 --target=mqtt://mqtt.example.org/luftdaten.info
 
 
 For a full overview about all program options including meaningful examples,
@@ -180,7 +180,7 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program; if not, see:
-<http://www.gnu.org/licenses/agpl-3.0.txt>,
+<https://www.gnu.org/licenses/agpl-3.0.txt>,
 or write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
 
