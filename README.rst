@@ -4,8 +4,8 @@
 .. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
     :target: https://pypi.org/project/luftdatenpumpe/
 
-.. image:: https://img.shields.io/github/tag/hiveeyes/luftdatenpumpe.svg
-    :target: https://github.com/hiveeyes/luftdatenpumpe
+.. image:: https://img.shields.io/github/tag/earthobservations/luftdatenpumpe.svg
+    :target: https://github.com/earthobservations/luftdatenpumpe
 
 .. image:: https://assets.okfn.org/images/ok_buttons/od_80x15_red_green.png
     :target: https://okfn.org/opendata/
@@ -31,8 +31,8 @@ Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
 store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
 publish to MQTT_ or just output as JSON.
 
-.. figure:: https://cdn.jsdelivr.net/gh/hiveeyes/luftdatenpumpe@master/doc/logo.svg
-    :target: https://github.com/hiveeyes/luftdatenpumpe
+.. figure:: https://cdn.jsdelivr.net/gh/earthobservations/luftdatenpumpe@main/doc/logo.svg
+    :target: https://github.com/earthobservations/luftdatenpumpe
     :height: 200px
     :width: 200px
 
@@ -197,23 +197,23 @@ Icons and pictograms
 
 
 
-.. _doc-virtualenv: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/virtualenv.rst
-.. _doc-postgis: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/postgis.rst
+.. _doc-virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/virtualenv.rst
+.. _doc-postgis: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/postgis.rst
 
 
 .. _luftdaten.info: https://luftdaten.info/
 .. _irceline: http://www.irceline.be/en/documentation/open-data
 .. _OpenAQ: https://openaq.org/
 
-.. _Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe
+.. _Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe
 
-.. _Testimonials for Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/testimonials.rst
-.. _luftdatenpumpe --help: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/usage.rst
-.. _install Luftdatenpumpe: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/luftdatenpumpe.rst
-.. _Luftdaten-Viewer Applications: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-applications.rst
-.. _Luftdaten-Viewer Databases: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-databases.rst
-.. _Luftdaten-Viewer Grafana: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-grafana.rst
-.. _Luftdaten-Viewer Cron Job: https://github.com/hiveeyes/luftdatenpumpe/blob/master/doc/setup/ldview-cronjob.rst
+.. _Testimonials for Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/testimonials.rst
+.. _luftdatenpumpe --help: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/usage.rst
+.. _install Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/luftdatenpumpe.rst
+.. _Luftdaten-Viewer Applications: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-applications.rst
+.. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
+.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana.rst
+.. _Luftdaten-Viewer Cron Job: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-cronjob.rst
 
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 

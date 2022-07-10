@@ -19,8 +19,8 @@ Flux datasource::
 Install Worldmap Panel NG::
 
     grafana-cli \
-        --pluginUrl https://github.com/panodata/grafana-map-panel/releases/download/0.8.1/grafana-map-panel-0.8.1.zip \
-        plugins install grafana-map-panel
+        --pluginUrl https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip \
+        plugins install panodata-map-panel
 
 Restart Grafana instance::
 

@@ -22,7 +22,7 @@ Enjoy exploring and stay curious.
 [IRCELINE]: http://www.irceline.be/en/documentation/open-data
 [OpenAQ]: https://openaq.org/
 
-[Luftdatenpumpe]: https://github.com/hiveeyes/luftdatenpumpe
+[Luftdatenpumpe]: https://github.com/earthobservations/luftdatenpumpe
 [Erneuerung der Luftdatenpumpe]: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 [LDI data plane v2]: https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
 [The Hiveeyes Project]: https://hiveeyes.org/

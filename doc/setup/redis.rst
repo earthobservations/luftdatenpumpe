@@ -50,4 +50,4 @@ Please run ``systemctl daemon-reload`` after adding this file or making changes 
 
 We have been tracking this issue at [1].
 
-[1] https://github.com/panodata/luftdatenpumpe/issues/7
+[1] https://github.com/earthobservations/luftdatenpumpe/issues/7

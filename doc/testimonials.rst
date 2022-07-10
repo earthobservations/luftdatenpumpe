@@ -8,7 +8,7 @@ Some example installations, usually running live data feeds through them.
 **************
 luftdaten.info
 **************
-Implemented by `luftdaten_info.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/luftdaten_info.py>`_
+Implemented by `luftdaten_info.py <https://github.com/earthobservations/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/luftdaten_info.py>`_
 
 Dashboards
 ==========
@@ -37,7 +37,7 @@ Labs
 ********
 IRCELINE
 ********
-Implemented by `irceline.py <https://github.com/hiveeyes/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/irceline.py>`_
+Implemented by `irceline.py <https://github.com/earthobservations/luftdatenpumpe/blob/0.11.0/luftdatenpumpe/source/irceline.py>`_
 
 Dashboards
 ==========

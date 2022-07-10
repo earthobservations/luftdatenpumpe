@@ -3,7 +3,7 @@
 # Feed data from environmental information services into the system.
 #
 # See also:
-# - https://github.com/hiveeyes/luftdatenpumpe
+# - https://github.com/earthobservations/luftdatenpumpe
 # - https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
 
 # ATTENTION: DISABLED due to maintenance work.

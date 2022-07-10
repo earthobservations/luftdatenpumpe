@@ -96,7 +96,7 @@ setup(name='luftdatenpumpe',
         ],
       author='Andreas Motl',
       author_email='andreas.motl@panodata.org',
-      url='https://github.com/panodata/luftdatenpumpe',
+      url='https://github.com/earthobservations/luftdatenpumpe',
       keywords='luftdaten.info irceline openaq '
                'air quality particulate matter pollution '
                'feinstaub luftdaten '

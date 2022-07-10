@@ -27,7 +27,7 @@ in progress
 =================
 - Add adapter for OpenAQ
 - Slightly improve reverse geocoding
-- Use improved "grafana-map-panel" instead of the original Worldmap
+- Use improved "panodata-map-panel" instead of the original Worldmap
 - Update documentation
 
 
