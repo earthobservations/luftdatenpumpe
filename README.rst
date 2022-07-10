@@ -1,11 +1,26 @@
-.. image:: https://img.shields.io/badge/Python-3.6,%203.7-green.svg
+.. image:: https://github.com/earthobservations/luftdatenpumpe/workflows/Tests/badge.svg
+    :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
+
+.. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+
+.. image:: https://img.shields.io/pypi/status/luftdatenpumpe.svg
     :target: https://pypi.org/project/luftdatenpumpe/
 
 .. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
     :target: https://pypi.org/project/luftdatenpumpe/
 
-.. image:: https://img.shields.io/github/tag/earthobservations/luftdatenpumpe.svg
-    :target: https://github.com/earthobservations/luftdatenpumpe
+.. image:: https://pepy.tech/badge/luftdatenpumpe/month
+    :target: https://pypi.org/project/luftdatenpumpe/
+
+.. image:: https://img.shields.io/pypi/l/luftdatenpumpe.svg
+    :target: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE
+
+|
+
+##############
+Luftdatenpumpe
+##############
 
 .. image:: https://assets.okfn.org/images/ok_buttons/od_80x15_red_green.png
     :target: https://okfn.org/opendata/
@@ -16,16 +31,11 @@
 .. image:: https://assets.okfn.org/images/ok_buttons/os_80x15_orange_grey.png
     :target: https://okfn.org/opendata/
 
-|
-
-##############
-Luftdatenpumpe
-##############
-
 
 *****
 About
 *****
+
 Process live and historical data from `luftdaten.info`_, irceline_ and OpenAQ_.
 Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
 store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
@@ -100,6 +110,7 @@ or visit `luftdatenpumpe --help`_.
 ***********
 Screenshots
 ***********
+
 Luftdaten-Viewer displays stations and measurements from luftdaten.info (LDI) in Grafana.
 
 
@@ -127,8 +138,8 @@ Map popup labels
 ************
 Installation
 ************
-If you are running Python 3 already,
-installing the program should be as easy as::
+
+If you are running Python 3 already, installing the program should be as easy as::
 
     pip install luftdatenpumpe
 
@@ -168,26 +179,14 @@ panel-widgets like outlined in the "Testimonials" section.
 *******
 License
 *******
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program; if not, see:
-<https://www.gnu.org/licenses/agpl-3.0.txt>,
-or write to the Free Software Foundation,
-Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+This project is licensed under the terms of the AGPL license.
 
 
 ********************
 Content attributions
 ********************
+
 The copyright of particular images and pictograms are held by their respective owners, unless otherwise noted.
 
 Icons and pictograms
