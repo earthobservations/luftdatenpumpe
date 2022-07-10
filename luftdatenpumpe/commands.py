@@ -75,6 +75,11 @@ def run():
       luftdatenpumpe stations --network=irceline
       luftdatenpumpe readings --network=irceline --station=1030,1751 --reverse-geocode
 
+    Acquire stations and readings (OpenAQ):
+
+      luftdatenpumpe stations --network=openaq
+      luftdatenpumpe readings --network=openaq --country=IN,PK
+
     Heads up!
 
       From now on, let's pretend we always want to operate on data coming from the
