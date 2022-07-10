@@ -56,6 +56,11 @@ luftdatenpumpe --help
       # Display measurement readings for specific sensor identifiers.
       luftdatenpumpe readings --network=ldi --sensor=417
 
+    Acquire stations and readings (IRCELINE):
+
+      luftdatenpumpe stations --network=irceline
+      luftdatenpumpe readings --network=irceline --station=1030,1751 --reverse-geocode
+
     Heads up!
 
       From now on, let's pretend we always want to operate on data coming from the
