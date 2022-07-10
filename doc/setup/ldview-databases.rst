@@ -46,6 +46,7 @@ Pre-flight checks::
 Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
     luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    luftdatenpumpe stations --network=irceline --station=1030,1751 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
 Create database view and grant permissions to "grafana" user::
 
