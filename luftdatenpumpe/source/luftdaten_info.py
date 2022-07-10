@@ -117,6 +117,12 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 fieldname = sensor['value_type']
                 value = sensor['value']
 
+                # 2022-07-10: Skip specific non-measurement `sensordatavalues`.
+                # TODO: Those values apparently are originating from the node.
+                #       It might make sense to handle them as well.
+                if fieldname in ['lat', 'lon', 'height', 'timestamp']:
+                    continue
+
                 # Skip NaN values.
                 # Prevent "influxdb.exceptions.InfluxDBClientError: 400".
                 # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number

@@ -231,7 +231,12 @@ def slugify(value):
 
 
 def is_nan(value):
-    return value is None or str(value).lower() == 'nan'
+    if value is None:
+        return True
+    strval = str(value).lower()
+    if strval in ['nan', 'unknown']:
+        return True
+    return False
 
 
 def run_once(f):
@@ -273,3 +278,7 @@ class OptionMunch(Munch):
     def __setattr__(self, k, v):
         super().__setattr__(k.replace('-', '_'), v)
         super().__setattr__(k.replace('_', '-'), v)
+
+
+def jd(data):
+    return json.dumps(data, indent=2)
