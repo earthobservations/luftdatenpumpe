@@ -21,7 +21,7 @@ network_list = ['ldi', 'irceline', 'openaq']
 def run():
     """
     Usage:
-      luftdatenpumpe networks
+      luftdatenpumpe networks [--network=<network>]
       luftdatenpumpe stations --network=<network> [options] [--target=<target>]...
       luftdatenpumpe readings --network=<network> [options] [--target=<target>]... [--timespan=<timespan>]
       luftdatenpumpe database --network=<network> [--target=<target>]... [--create-views] [--grant-user=<username>] [--drop-data] [--drop-tables] [--drop-database]
@@ -49,42 +49,55 @@ def run():
       -h --help                     Show this screen
 
 
-    Network list example:
+    Network list:
 
       # Display list of supported sensor networks
       luftdatenpumpe networks
 
-    Basic station list examples:
+    Acquire stations (LDI):
 
       # Display metadata for given countries in JSON format
-      luftdatenpumpe stations --network=ldi --database=ldi --country=BE,NL,LU
+      luftdatenpumpe stations --network=ldi --country=BE,NL,LU
 
       # Display metadata for given stations in JSON format, with reverse geocoding
-      luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode
+      luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode
 
+    Acquire readings (LDI):
+
+      # Display measurement readings for specific station identifiers.
+      luftdatenpumpe readings --network=ldi --station=49,1033 --reverse-geocode
+
+      # Display measurement readings for specific sensor identifiers.
+      luftdatenpumpe readings --network=ldi --sensor=417
 
     Heads up!
 
       From now on, let's pretend we always want to operate on data coming from the
-      sensor network "luftdaten.info". which is identified by "--network=ldi". To
+      sensor network "luftdaten.info", which is identified by "--network=ldi". To
       make this more convenient, we use an environment variable to signal this
       to subsequent invocations of "luftdatenpumpe" by running::
 
         export LDP_NETWORK=ldi
 
-    Further examples:
+    Getting started:
 
-      # Display metadata for given sensors in JSON format, with reverse geocoding
-      luftdatenpumpe stations --sensor=657,2130 --reverse-geocode
+      # Display metadata for given stations in JSON format, with reverse geocoding
+      luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=json+stream://sys.stderr
+
+
+    Convert stations into format suitable for Grafana:
 
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
+      luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
 
       # Display list of stations in JSON format made of key/name items, suitable for use as a mapping in Grafana Worldmap Panel
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
+      luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
 
-      # Store list of stations and metadata into RDBMS database (PostgreSQL), also display on STDERR
-      luftdatenpumpe stations --station=28,1071 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --target=json+stream://sys.stderr
+
+    Write stations into / read stations from RDBMS database:
+
+      # Store list of stations and metadata into RDBMS database (PostgreSQL)
+      luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
       # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
       luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.grafana.kn+stream://sys.stdout
@@ -93,13 +106,13 @@ def run():
     Live data examples (InfluxDB):
 
       # Store into InfluxDB running on "localhost"
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+      luftdatenpumpe readings --station=49,1033 --target=influxdb://localhost/luftdaten_info
 
       # Store into InfluxDB, with UDP
-      luftdatenpumpe readings --station=28,1071 --target=udp+influxdb://localhost:4445/luftdaten_info
+      luftdatenpumpe readings --station=49,1033 --target=udp+influxdb://localhost:4445/luftdaten_info
 
       # Store into InfluxDB, with authentication
-      luftdatenpumpe readings --station=28,1071 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+      luftdatenpumpe readings --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
     LDI CSV archive data examples (InfluxDB):
@@ -111,7 +124,7 @@ def run():
       luftdatenpumpe stations --network=ldi --source=file:///var/spool/archive.luftdaten.info --target=postgresql://luftdatenpumpe@localhost/weatherbase --reverse-geocode --progress
 
       # Ingest readings from CSV archive files, store into InfluxDB
-      luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info --station=483 --sensor=988 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info --progress
+      luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info --target=influxdb://luftdatenpumpe@localhost/luftdaten_info --progress
 
       # Ingest most early readings
       luftdatenpumpe readings --network=ldi --source=file:///var/spool/archive.luftdaten.info/2015-10-*
@@ -123,19 +136,19 @@ def run():
     Live data examples (MQTT):
 
       # Publish data to topic "luftdaten.info" at MQTT broker running on "localhost"
-      luftdatenpumpe readings --station=28,1071 --target=mqtt://localhost/luftdaten.info
+      luftdatenpumpe readings --station=49,1033 --target=mqtt://localhost/luftdaten.info
 
       # MQTT publishing, with authentication
-      luftdatenpumpe readings --station=28,1071 --target=mqtt://username:password@localhost/luftdaten.info
+      luftdatenpumpe readings --station=49,1033 --target=mqtt://username:password@localhost/luftdaten.info
 
 
     Combined examples:
 
       # Write stations to STDERR and PostgreSQL
-      luftdatenpumpe stations --station=28,1071 --target=json+stream://sys.stderr --target=postgresql://luftdatenpumpe@localhost/weatherbase
+      luftdatenpumpe stations --station=49,1033 --target=json+stream://sys.stderr --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
-      # Write readings to STDERR, MQTT and InfluxDB
-      luftdatenpumpe readings --station=28,1071 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+      # Write readings to STDERR, MQTT, and InfluxDB
+      luftdatenpumpe readings --station=49,1033 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
     """

@@ -8,7 +8,7 @@ Upstream
 ********
 ::
 
-    http https://api.luftdaten.info/static/v1/data.json | jq '[ .[] | select(.location.id==28 or .location.id==1071) ]' > upstream.json
+    http https://api.luftdaten.info/static/v1/data.json | jq '[ .[] | select(.location.id==49 or .location.id==1033) ]' > upstream.json
 
 
 **********
@@ -22,10 +22,10 @@ Stations
 ::
 
     # No reverse geocoding.
-    luftdatenpumpe stations --network=ldi --station=28,1071 > stations-compact.json
+    luftdatenpumpe stations --network=ldi --station=49,1033 > stations-compact.json
 
     # With reverse geocoding.
-    luftdatenpumpe stations --network=ldi --station=28,1071 --reverse-geocode > stations-geocoded.json
+    luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode > stations-geocoded.json
 
 
 Readings
@@ -33,9 +33,10 @@ Readings
 ::
 
     # No reverse geocoding.
-    luftdatenpumpe readings --network=ldi --station=28,1071 > readings-compact.json
+    luftdatenpumpe readings --network=ldi --station=49,1033 > readings-compact.json
 
 ::
 
     # With reverse geocoding.
-    luftdatenpumpe readings --network=ldi --station=28,1071 --reverse-geocode > readings-geocoded.json
+    luftdatenpumpe readings --network=ldi --station=49,1033 --reverse-geocode > readings-geocoded.json
+
