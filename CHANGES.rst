@@ -8,6 +8,7 @@ in progress
 - Fix Python sandbox and test infrastructure
 - Improve Nominatim reverse geocoding heuristics and corresponding tests
 - Fix dependencies. Thanks, @MauritsDescamps!
+- LDI: Fix data acquisition
 
 
 2020-01-28 0.20.2
