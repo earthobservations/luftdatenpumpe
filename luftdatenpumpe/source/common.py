@@ -4,11 +4,9 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 import sys
-from urllib.parse import urlparse
 
 import redis
 import requests
-from requests_cache import CachedSession
 from tqdm import tqdm
 
 from luftdatenpumpe import __appname__ as APP_NAME
@@ -42,15 +40,18 @@ class AbstractLuftdatenPumpe:
         user_agent = APP_NAME + "/" + APP_VERSION
 
         # Use hostname of url as cache prefix.
-        cache_name = urlparse(self.uri).netloc
+        # from urllib.parse import urlparse
+        # cache_name = urlparse(self.uri).netloc
 
         # Configure cached requests session.
+        # from requests_cache import CachedSession
         # self.session = CachedSession(
         #    cache_name=cache_name, backend='redis', expire_after=300,
         #    user_agent=user_agent)
 
         # Disable request cache by overriding it with a vanilla requests session.
         self.session = requests.Session()
+        self.session.headers.update({"User-Agent": user_agent})
 
         # Gracefully probe Redis for availability if cache is enabled.
         if hasattr(self.session, "cache"):
@@ -120,7 +121,7 @@ class AbstractLuftdatenPumpe:
                 try:
                     if station.name.lower() == station.position.country.lower():
                         del station["name"]
-                except:
+                except:  # noqa:E722
                     pass
 
             except Exception:
@@ -130,7 +131,7 @@ class AbstractLuftdatenPumpe:
                 station.name = f"Station #{station.station_id}"
                 try:
                     station.name += ", " + station.position.country
-                except:
+                except:  # noqa:E722
                     pass
 
     def apply_filter(self, data):

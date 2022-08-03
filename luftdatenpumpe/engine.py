@@ -115,7 +115,7 @@ class LuftdatenEngine:
         if url.scheme == "stream":
 
             # FIXME: There might be dragons?
-            import sys
+            import sys  # noqa:F401
 
             stream = eval(url.netloc)
 

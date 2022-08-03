@@ -15,7 +15,7 @@ from requests import HTTPError
 from rfc3339 import rfc3339
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import chunks, grouper, slugify
+from luftdatenpumpe.util import slugify
 
 log = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         if response.status_code != 200:
             try:
                 reason = response.json()
-            except:
+            except:  # noqa:E722
                 reason = "unknown"
             message = f"Request failed: {reason}"
             log.error(message)
@@ -387,7 +387,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         if timespan is None:
             timespan = f"PT12h/{self.this_hour()}"
 
-        url = urljoin(self.uri, f"timeseries/")
+        url = urljoin(self.uri, "timeseries/")
         data = self.send_request(url, params={"timespan": timespan, "expanded": "true"})
         # print(data)
 
@@ -418,11 +418,13 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
         - Three hours worth of data from designated starting point for a specific timeseries::
 
-            http POST 'http://geo.irceline.be/sos/api/v1/timeseries/getData' timeseries:='[6643]' timespan='2019-04-21T22:00:00+02:00/PT3h'
+            http POST 'http://geo.irceline.be/sos/api/v1/timeseries/getData' \
+                timeseries:='[6643]' timespan='2019-04-21T22:00:00+02:00/PT3h'
 
         - Get readings from two timeseries at specific time::
 
-            http POST 'http://geo.irceline.be/sos/api/v1/timeseries/getData' timeseries:='[6643,6693]' timespan='2019-04-20T01:00:00Z/PT0h'
+            http POST 'http://geo.irceline.be/sos/api/v1/timeseries/getData' \
+                timeseries:='[6643,6693]' timespan='2019-04-20T01:00:00Z/PT0h'
 
         """
 
@@ -442,7 +444,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
                 raise
             except HTTPError as ex:
                 log.error(f"Requesting data for timeseries {identifier} failed: {ex}")
-            except:
+            except:  # noqa:E722
                 log.exception(f"Decoding response for timeseries {identifier} failed")
 
         return results

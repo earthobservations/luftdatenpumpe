@@ -105,7 +105,7 @@ format: setup-virtualenv
 	$(isort) .
 
 lint: setup-virtualenv
-	$(flake8) --exit-zero luftdatenpumpe tests
+	$(flake8) luftdatenpumpe tests
 	$(proselint) *.rst doc/**/*.rst
 
 

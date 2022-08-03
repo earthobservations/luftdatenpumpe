@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 
 def resolve_source_handler(options, dry_run=False):
-    handler = None
 
     # TODO: Add more data sources.
     if options.network == "ldi":

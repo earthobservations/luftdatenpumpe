@@ -58,7 +58,9 @@ def json_grafana_formatter_vt(stations):
 
     Example::
 
-        luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.grafana.vt+stream://sys.stdout
+        luftdatenpumpe stations \
+            --source=postgresql://luftdatenpumpe@localhost/weatherbase \
+            --target=json.grafana.vt+stream://sys.stdout
 
     Emits items like::
 
@@ -82,7 +84,9 @@ def json_grafana_formatter_kn(stations):
 
     Example::
 
-        luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.grafana.kn+stream://sys.stdout
+        luftdatenpumpe stations \
+            --source=postgresql://luftdatenpumpe@localhost/weatherbase \
+            --target=json.grafana.kn+stream://sys.stdout
 
     Emits items like::
 
