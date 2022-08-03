@@ -14,7 +14,7 @@ def test_resolve_location_latlon():
     Test reverse geocoding with latitude/longitude.
     """
     location = resolve_location(latitude=48.778, longitude=9.236)
-    assert location.address.county == 'Stuttgart'
+    assert location.address.city == 'Stuttgart'
     assert location.address_more.building == 'Kulturhaus ARENA'
 
 
@@ -44,7 +44,7 @@ def test_format_address():
     improve_location(location)
     name = format_address(location)
 
-    assert name == 'Zwischenangriff Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
+    assert name == 'Ulmer Straße, Wangen, Stuttgart, Baden-Württemberg, DE'
 
 
 def test_city_missing():
@@ -91,11 +91,11 @@ def test_stadtstaat():
     location = resolve_location(latitude=53.448, longitude=10.228)
     improve_location(location)
     assert location.address.suburb == 'Curslack'
-    assert location.address.city_district == 'Bergedorf'
+    assert location.address.city_district == 'Curslack'
     assert location.address.city == 'Hamburg'
     assert location.address.state == 'Hamburg'
     name = format_address(location)
-    assert name == 'Curslacker Deich, Curslack, Bergedorf, Hamburg, DE'
+    assert name == 'Curslacker Deich, Curslack, Hamburg, DE'
 
 
 def test_stadtteil():
@@ -110,7 +110,7 @@ def test_stadtteil():
     assert location.address.state == 'Baden-Württemberg'
 
     name = format_address(location)
-    assert name == 'Sebastian-Kneipp-Straße, Ringelbach, Reutlingen, Baden-Württemberg, DE'
+    assert name == 'Albrechtstraße, Ringelbach, Reutlingen, Baden-Württemberg, DE'
 
 
 def test_residential_village():
@@ -166,14 +166,14 @@ def test_road_missing():
     improve_location(location)
     assert location.address.road == 'Hans-Holbein-Straße'
     name = format_address(location)
-    assert name == 'Hans-Holbein-Straße, Leinfelden-Echterdingen, Esslingen, Baden-Württemberg, DE'
+    assert name == 'Hans-Holbein-Straße, Oberaichen, Esslingen, Baden-Württemberg, DE'
 
     # From `house_number` attribute
     location = resolve_location(latitude=42.734, longitude=23.308)
     improve_location(location)
     assert location.address.road == "\u0431\u043b.402"
     name = format_address(location)
-    assert name == "бл.402, ж.к. Надежда 4, София, София-град, BG"
+    assert name == "бл.402, ж.к. Надежда 4, Надежда, София, София-град, BG"
 
 
 def test_road_unknown():
