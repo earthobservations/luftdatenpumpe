@@ -5,6 +5,10 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+
+
+2022-08-03 0.21.0
+=================
 - Fix Python sandbox and test infrastructure
 - Improve Nominatim reverse geocoding heuristics and corresponding tests
 - Fix dependencies. Thanks, @MauritsDescamps.
