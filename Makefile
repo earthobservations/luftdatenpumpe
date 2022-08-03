@@ -14,6 +14,12 @@ $(eval pytest       := $(venvpath)/bin/pytest)
 $(eval bumpversion  := $(venvpath)/bin/bumpversion)
 $(eval twine        := $(venvpath)/bin/twine)
 $(eval sphinx       := $(venvpath)/bin/sphinx-build)
+$(eval coverage     := $(venvpath)/bin/coverage)
+$(eval flake8       := $(venvpath)/bin/pflake8)
+$(eval black        := $(venvpath)/bin/black)
+$(eval isort        := $(venvpath)/bin/isort)
+$(eval proselint    := $(venvpath)/bin/proselint)
+
 
 # Setup Python virtualenv
 setup-virtualenv:
@@ -88,6 +94,20 @@ install-tests: setup-virtualenv
 	@touch $(venvpath)/bin/activate
 	@mkdir -p .pytest_results
 
+
+# ----------------------
+# Formatting and linting
+# ----------------------
+
+format: setup-virtualenv
+	$(pip) install --requirement=requirements-utils.txt
+	$(black) .
+	$(isort) .
+
+lint: setup-virtualenv
+	$(pip) install --requirement=requirements-utils.txt
+	$(flake8) --exit-zero luftdatenpumpe tests
+	$(proselint) *.rst doc/**/*.rst || true
 
 
 # -------
