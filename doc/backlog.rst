@@ -7,18 +7,22 @@ Luftdatenpumpe backlog
 ************
 Iteration +0
 ************
-- [o] Fix anomalies with Nominatim geocoder
-- [o] Use Docker Compose for starting auxiliary services
-- [o] Add CI/GHA and badges
-- [o] Linting and code formatting
+- [x] CI: Fix anomalies with Nominatim geocoder
+- [x] Add CI/GHA and badges
+- [x] Code formatting, satisfy linter
+- [x] Render ``luftdatenpumpe --help`` to documentation
 - [o] Release 0.21.0
+- [o] Add more tests
+- [o] Announce on https://forum.sensor.community/
+  https://community.panodata.org/t/luftdatenpumpe/21
+- [o] Sandbox: Use Docker Compose for starting auxiliary services
 
 
 
 ************
 Iteration +1
 ************
-- [o] LDI: Switch from luftdaten.info to sensor.community
+- [o] LDI: Naming things. Switch from "luftdaten.info" to "sensor.community".
 - [o] OpenAQ: Raise ``limit=10000`` to address more than 10000 stations
 - [o] OpenAQ: Add ``--timespan`` option
 - [o] OpenAQ: Filter by station id

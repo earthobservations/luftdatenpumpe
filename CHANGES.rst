@@ -12,6 +12,7 @@ in progress
 - LDI: Fix forwarding to MQTT
 - OpenAQ: Fix acquisition for certain records without geo information
 - Improve project tooling, add CI, linter, and code formatter
+- Sanitize code and prose with linters
 
 
 2020-01-28 0.20.2

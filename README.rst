@@ -190,7 +190,7 @@ panel-widgets like outlined in the "Testimonials" section.
 License
 *******
 
-This project is licensed under the terms of the AGPL license.
+This project is licensed under the terms of the GNU AGPL license.
 
 
 ********************
