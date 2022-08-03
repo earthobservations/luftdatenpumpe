@@ -6,4 +6,5 @@
 /dist
 /tmp
 /.coverage
+/coverage.xml
 /.pytest_results

@@ -5,6 +5,17 @@ Luftdatenpumpe backlog
 
 
 ************
+Iteration +0
+************
+- [o] Fix anomalies with Nominatim geocoder
+- [o] Use Docker Compose for starting auxiliary services
+- [o] Add CI/GHA and badges
+- [o] Linting and code formatting
+- [o] Release 0.21.0
+
+
+
+************
 Iteration +1
 ************
 - [o] LDI: Switch from luftdaten.info to sensor.community
