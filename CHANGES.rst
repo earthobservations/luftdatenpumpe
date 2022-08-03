@@ -7,7 +7,7 @@ in progress
 ===========
 - Fix Python sandbox and test infrastructure
 - Improve Nominatim reverse geocoding heuristics and corresponding tests
-- Fix dependencies. Thanks, @MauritsDescamps!
+- Fix dependencies. Thanks, @MauritsDescamps.
 - LDI: Fix data acquisition
 - LDI: Fix forwarding to MQTT
 - OpenAQ: Fix acquisition for certain records without geo information
@@ -17,7 +17,7 @@ in progress
 
 2020-01-28 0.20.2
 =================
-- Don't use caching for live data. Thanks, Matthias!
+- Don't use caching for live data. Thanks, Matthias.
 
 
 2020-01-08 0.20.1
@@ -35,14 +35,14 @@ in progress
 
 2019-12-09 0.19.1
 =================
-- Fix invalid JSON file export for stations list (#17). Thanks, David!
+- Fix invalid JSON file export for stations list (#17). Thanks, David.
 
 
 2019-10-30 0.19.0
 =================
 - Improve EEA station processing
 - Update "pflock" command to report if invocation failed
-- Use HTTP POST when creating the InfluxDB datasource. Thanks, David!
+- Use HTTP POST when creating the InfluxDB datasource. Thanks, David.
 
 
 2019-09-30 0.18.2
@@ -60,9 +60,9 @@ in progress
 2019-09-29 0.18.0
 =================
 - Update documentation for installing Grafana Worldmap Plugin
-- Add Redis setup documentation re. #7. Thanks, David!
-- Add PostgreSQL setup documentation re. #8. Thanks, David!
-- Fix LDI historical data import, #10. Thanks, Wetter!
+- Add Redis setup documentation re. #7. Thanks, David.
+- Add PostgreSQL setup documentation re. #8. Thanks, David.
+- Fix LDI historical data import, #10. Thanks, Wetter.
 
 
 2019-09-27 0.17.0
@@ -255,7 +255,7 @@ in progress
 
 2017-06-06 0.2.0
 ================
-- Add filtering by sensor id. Thanks, Panzki!
+- Add filtering by sensor id. Thanks, Panzki.
 
 
 2017-04-25 0.1.0

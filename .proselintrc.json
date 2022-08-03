@@ -1,5 +1,6 @@
 {
   "checks": {
-    "annotations.misc": false
+    "annotations.misc": false,
+    "typography.symbols": false
   }
 }

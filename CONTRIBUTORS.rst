@@ -2,7 +2,7 @@
 Contributors
 ############
 
-Here is an alphabetically-ordered list of the people who
+Here is an alphabetically ordered list of the people who
 contributed to this software in one way or another.
 
 * Andreas Motl <andreas.motl@panodata.org>
@@ -11,7 +11,7 @@ contributed to this software in one way or another.
 * Olav Peeters <https://en.vmm.be/>
 * Richard Pobering <richard.pobering@panodata.org>
 
-Thanks a bunch!
+Thanks a bunch.
 
 
 ****************

@@ -11,8 +11,9 @@ Data durability
 ===============
 To make this work best, you should enable data durability with your Redis instance.
 
-    The append-only file is an alternative, fully-durable strategy for Redis. It became available in version 1.1.
-    You can turn on the AOF in your Redis configuration file (e.g. `/etc/redis/redis.conf`)::
+    The append-only file is an alternative, fully durable strategy for Redis.
+    It became available in version 1.1. You can turn on the AOF in your Redis
+    configuration file (e.g. ``/etc/redis/redis.conf``)::
 
         appendonly yes
 
@@ -24,11 +25,11 @@ In order to run Redis from your local working tree, you might want to invoke::
 
 Looking glass
 =============
-In order to look into what's going on on the Redis substrate, you might want to invoke::
+In order to look into what is going on at the Redis substrate, you might want to invoke::
 
     redis-cli monitor
 
-Please take care, the output is very noisy.
+Please take care, the output is noisy.
 
 Running in production
 =====================
