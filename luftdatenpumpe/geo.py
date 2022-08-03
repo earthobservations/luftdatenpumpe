@@ -275,7 +275,10 @@ def improve_location(location):
     if 'city_district' not in address and 'address_more' in location and 'borough' in location.address_more:
         address.city_district = location.address_more.borough
 
-    # Be agnostic against road vs. path
+    if 'city_district' not in address and 'suburb' in address:
+        address.city_district = address.suburb
+
+        # Be agnostic against road vs. path
     if 'road' not in address:
         road_choices = ['path', 'pedestrian', 'cycleway', 'footway', 'neighbourhood', 'house_number']
         for fieldname in road_choices:
