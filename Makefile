@@ -106,7 +106,7 @@ format: setup-virtualenv
 
 lint: setup-virtualenv
 	$(flake8) --exit-zero luftdatenpumpe tests
-	$(proselint) *.rst doc/**/*.rst || true
+	$(proselint) *.rst doc/**/*.rst
 
 
 # -------
