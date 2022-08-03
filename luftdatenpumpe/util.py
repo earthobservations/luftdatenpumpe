@@ -224,8 +224,8 @@ def slugify(value):
     https://stackoverflow.com/questions/5574042/string-slugification-in-python/27264385#27264385
     """
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = re.sub('[^\w\s-]', '-', value).strip().lower()
-    value = re.sub('[-\s]+', '-', value)
+    value = re.sub(r'[^\w\s-]', '-', value).strip().lower()
+    value = re.sub(r'[-\s]+', '-', value)
     value = value.strip('-')
     return value
 

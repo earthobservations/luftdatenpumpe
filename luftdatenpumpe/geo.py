@@ -332,7 +332,7 @@ def format_address(location):
     # Build display location from components.
     address_components = ['road', 'suburb', 'city_district', 'city', 'county', 'state', 'country_code']
     address_parts = []
-    starts_with_number = re.compile('^\d+')
+    starts_with_number = re.compile(r'^\d+')
     for field_choices in address_components:
         field_choices = to_list(field_choices)
         for fieldname in field_choices:
