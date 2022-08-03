@@ -5,10 +5,10 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 from operator import itemgetter
+from urllib.parse import urljoin
 
 from munch import munchify
 from tablib import Dataset
-from urllib.parse import urljoin
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
 
@@ -28,10 +28,10 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
     """
 
     # Sensor network identifier.
-    network = 'eea'
+    network = "eea"
 
     # Download service REST API URI
-    uri = 'https://ereporting.blob.core.windows.net/downloadservice/'
+    uri = "https://ereporting.blob.core.windows.net/downloadservice/"
 
     timeout = 60
 
@@ -40,7 +40,7 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
 
     def send_request(self, endpoint=None, params=None):
         url = urljoin(self.uri, endpoint)
-        log.info(f'Requesting EEA at {url}')
+        log.info(f"Requesting EEA at {url}")
         params = params or {}
 
         response = self.session.get(url, params=params, timeout=self.timeout)
@@ -48,8 +48,8 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
             try:
                 reason = response.json()
             except:
-                reason = 'unknown'
-            message = f'Request failed: {reason}'
+                reason = "unknown"
+            message = f"Request failed: {reason}"
             log.error(message)
             response.raise_for_status()
 
@@ -89,75 +89,79 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
             }
         """
 
-        payload = self.send_request('metadata.csv')
+        payload = self.send_request("metadata.csv")
 
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
         try:
-            data = Dataset().load(payload, format='csv', delimiter=',')
+            data = Dataset().load(payload, format="csv", delimiter=",")
         except Exception:
-            log.exception(f'Error reading or decoding station CSV')
+            log.exception(f"Error reading or decoding station CSV")
             return
 
         # Apply data filter.
         data = self.apply_filter(data)
 
-        df_grouped = data.df.groupby(['Countrycode', 'AirQualityNetwork', 'AirQualityStationEoICode'], as_index=False)
+        df_grouped = data.df.groupby(["Countrycode", "AirQualityNetwork", "AirQualityStationEoICode"], as_index=False)
 
         stations = []
         for name, group in self.wrap_progress(df_grouped):
             first_sensor = group.head(1)
-            data = first_sensor.to_dict(orient='records')[0]
-            log.debug('Ingress data: %s', data)
+            data = first_sensor.to_dict(orient="records")[0]
+            log.debug("Ingress data: %s", data)
 
-            station_eoi_code = data.pop('AirQualityStationEoICode')
-            station_info = munchify({
-                'station_id': station_eoi_code,
-                'station_namespace': data.pop('Namespace'),
-                'station_network_code': data.pop('AirQualityNetwork'),
-                'station_code': data.pop('AirQualityStation'),
-                'station_nat_code': data.pop('AirQualityStationNatCode'),
-                'station_eoi_code': station_eoi_code,
-                'station_type': data.pop('AirQualityStationType'),
-                'station_area': data.pop('AirQualityStationArea'),
-                'position': {
-                    'country': data.pop('Countrycode'),
-                    'latitude': float(data.pop('Latitude')),
-                    'longitude': float(data.pop('Longitude')),
-                    'altitude': float(data.pop('Altitude')),
-                    'projection': data.pop('Projection'),
-                    'building_distance': float(data.pop('BuildingDistance')),
-                    'kerb_distance': float(data.pop('KerbDistance')),
+            station_eoi_code = data.pop("AirQualityStationEoICode")
+            station_info = munchify(
+                {
+                    "station_id": station_eoi_code,
+                    "station_namespace": data.pop("Namespace"),
+                    "station_network_code": data.pop("AirQualityNetwork"),
+                    "station_code": data.pop("AirQualityStation"),
+                    "station_nat_code": data.pop("AirQualityStationNatCode"),
+                    "station_eoi_code": station_eoi_code,
+                    "station_type": data.pop("AirQualityStationType"),
+                    "station_area": data.pop("AirQualityStationArea"),
+                    "position": {
+                        "country": data.pop("Countrycode"),
+                        "latitude": float(data.pop("Latitude")),
+                        "longitude": float(data.pop("Longitude")),
+                        "altitude": float(data.pop("Altitude")),
+                        "projection": data.pop("Projection"),
+                        "building_distance": float(data.pop("BuildingDistance")),
+                        "kerb_distance": float(data.pop("KerbDistance")),
+                    },
                 }
-            })
-            #print(data)
+            )
+            # print(data)
 
             # Transfer all other stuff.
-            #for key, value in data.items():
+            # for key, value in data.items():
             #    station_info[key] = value
 
-            #print('station_info:', station_info)
-            #continue
+            # print('station_info:', station_info)
+            # continue
 
             self.enrich_station(station_info)
 
             # FIXME: Add sensors.
             sensors = []
-            for measurement in group.to_dict(orient='records'):
-                #print('measurement:', measurement)
-                #data = measurement.to_dict(orient='records')[0]
-                #log.info('Sensor data: %s', json.dumps(measurement, indent=2))
-                sensor_info = munchify({
-                    'sensor_type': measurement.pop('AirPollutant'),
-                    'sensor_type_uri': measurement.pop('AirPollutantCode'),
-                    'sensor_measurement_type': measurement.pop('MeasurementType'),
-                    'sensor_measurement_method': measurement.pop('MeasurementMethod'),
-                    'sensor_measurement_equipment': measurement.pop('MeasurementEquipment'),
-                    'sensor_inlet_height': float(measurement.pop('InletHeight')),
-                    'sensor_equivalence_demonstrated': measurement.pop('EquivalenceDemonstrated'),
-                    'sensor_sampling_process': measurement.pop('SamplingProcess'),
-                    'sensor_sampling_id': measurement.pop('Sample'),
-                    'sensor_sampling_point': measurement.pop('SamplingPoint'),
-                })
+            for measurement in group.to_dict(orient="records"):
+                # print('measurement:', measurement)
+                # data = measurement.to_dict(orient='records')[0]
+                # log.info('Sensor data: %s', json.dumps(measurement, indent=2))
+                sensor_info = munchify(
+                    {
+                        "sensor_type": measurement.pop("AirPollutant"),
+                        "sensor_type_uri": measurement.pop("AirPollutantCode"),
+                        "sensor_measurement_type": measurement.pop("MeasurementType"),
+                        "sensor_measurement_method": measurement.pop("MeasurementMethod"),
+                        "sensor_measurement_equipment": measurement.pop("MeasurementEquipment"),
+                        "sensor_inlet_height": float(measurement.pop("InletHeight")),
+                        "sensor_equivalence_demonstrated": measurement.pop("EquivalenceDemonstrated"),
+                        "sensor_sampling_process": measurement.pop("SamplingProcess"),
+                        "sensor_sampling_id": measurement.pop("Sample"),
+                        "sensor_sampling_point": measurement.pop("SamplingPoint"),
+                    }
+                )
                 sensors.append(sensor_info)
 
             station_info.sensors = sensors
@@ -165,14 +169,14 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
             stations.append(station_info)
 
         # List of stations sorted by station identifier.
-        stations = sorted(stations, key=itemgetter('station_id'))
+        stations = sorted(stations, key=itemgetter("station_id"))
 
         return stations
 
     def filter_rule(self, data):
         df_filtered = data.df
-        if self.filter and 'country' in self.filter:
-            df_filtered = df_filtered[df_filtered['Countrycode'].isin(self.filter.country)]
+        if self.filter and "country" in self.filter:
+            df_filtered = df_filtered[df_filtered["Countrycode"].isin(self.filter.country)]
 
         data.df = df_filtered
         return data

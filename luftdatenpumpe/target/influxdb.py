@@ -4,9 +4,9 @@
 import json
 import logging
 
-from munch import munchify
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
+from munch import munchify
 
 from luftdatenpumpe.util import sanitize_dbsymbol
 
@@ -20,21 +20,21 @@ log = logging.getLogger(__name__)
 
 class InfluxDBStorage:
 
-    capabilities = ['readings']
+    capabilities = ["readings"]
 
     def __init__(self, dsn, network=None, dry_run=False):
 
         self.dry_run = dry_run
 
-        self.network = network or 'default'
-        self.measurement = sanitize_dbsymbol(self.network) + '_readings'
+        self.network = network or "default"
+        self.measurement = sanitize_dbsymbol(self.network) + "_readings"
 
         self.buffer = []
         self.is_udp = False
 
         # TODO: Use timeout value from settings.
         dsn_parts = urlparse(dsn)
-        if dsn_parts.scheme.startswith('udp+'):
+        if dsn_parts.scheme.startswith("udp+"):
             self.is_udp = True
             self.db = InfluxDBClient.from_dsn(dsn, udp_port=dsn_parts.port, timeout=5)
         else:
@@ -98,22 +98,24 @@ class InfluxDBStorage:
 
         # Debugging
         if log.getEffectiveLevel() is logging.DEBUG:
-            log.debug('Obtained reading for InfluxDB\n%s', json.dumps(reading, indent=2))
+            log.debug("Obtained reading for InfluxDB\n%s", json.dumps(reading, indent=2))
 
         # Build InfluxDB records.
         for observation in reading.observations:
 
-            record = munchify({
-                "measurement": self.measurement,
-                "tags": {
-                    "station_id": reading.station.station_id,
-                },
-            })
+            record = munchify(
+                {
+                    "measurement": self.measurement,
+                    "tags": {
+                        "station_id": reading.station.station_id,
+                    },
+                }
+            )
 
-            if 'sensor_id' in observation.meta:
+            if "sensor_id" in observation.meta:
                 record.tags.sensor_id = observation.meta.sensor_id
 
-            if 'position' in reading.station and 'geohash' in reading.station.position:
+            if "position" in reading.station and "geohash" in reading.station.position:
                 record.tags.geohash = reading.station.position.geohash
 
             record.time = observation.meta.timestamp
@@ -121,7 +123,7 @@ class InfluxDBStorage:
 
             # Debugging.
             if log.getEffectiveLevel() is logging.DEBUG:
-                log.debug('Emitting record to InfluxDB\n%s', json.dumps(record, indent=2))
+                log.debug("Emitting record to InfluxDB\n%s", json.dumps(record, indent=2))
 
             # Store into buffer.
             self.buffer.append(record)
@@ -131,11 +133,11 @@ class InfluxDBStorage:
 
     def flush(self, final=False):
         # Store into database.
-        log.debug(f'Flushing target {self}')
-        #print('Writing points:', len(self.buffer))
+        log.debug(f"Flushing target {self}")
+        # print('Writing points:', len(self.buffer))
         try:
             self.db.write_points(self.buffer)
         except InfluxDBClientError as ex:
-            if ex.code == 400 and 'unable to parse' in ex.content:
-                log.exception('Writing record to InfluxDB failed')
+            if ex.code == 400 and "unable to parse" in ex.content:
+                log.exception("Writing record to InfluxDB failed")
         self.buffer = []

@@ -3,19 +3,21 @@
 # (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import sys
 import logging
+import sys
+
 from docopt import DocoptExit
+
 from luftdatenpumpe import __appname__, __version__
+from luftdatenpumpe.engine import LuftdatenEngine
 from luftdatenpumpe.grafana import get_artefact
 from luftdatenpumpe.source import resolve_source_handler
 from luftdatenpumpe.source.rdbms import stations_from_rdbms, stations_from_rdbms_flex
-from luftdatenpumpe.engine import LuftdatenEngine
-from luftdatenpumpe.util import read_pairs, Application
+from luftdatenpumpe.util import Application, read_pairs
 
 log = logging.getLogger(__name__)
 
-network_list = ['ldi', 'irceline', 'openaq']
+network_list = ["ldi", "irceline", "openaq"]
 
 
 def run():
@@ -170,7 +172,7 @@ def run():
 
     # 1. Run some sanity checks on ingress parameters.
     if options.networks:
-        log.info('List of available networks: %s', network_list)
+        log.info("List of available networks: %s", network_list)
         sys.exit(0)
     sanitize_options(options)
 
@@ -191,13 +193,13 @@ def run_maintenance(options):
     if options.database:
 
         if not options.target:
-            message = 'No target for database operation given'
+            message = "No target for database operation given"
             log.error(message)
             raise NotImplementedError(message)
 
         engine = get_engine(options)
         for target in options.target:
-            if target.startswith('postgresql:'):
+            if target.startswith("postgresql:"):
                 handler = engine.resolve_target_handler(target)
 
                 try:
@@ -212,7 +214,7 @@ def run_maintenance(options):
                         handler.drop_database()
 
                     if options.create_views:
-                        log.info('Creating database views')
+                        log.info("Creating database views")
                         handler.create_views()
 
                     if options.grant_user:
@@ -220,7 +222,7 @@ def run_maintenance(options):
                         handler.grant_read_privileges(options.grant_user)
 
                 except Exception as ex:
-                    log.exception('Database operation failed. Reason: %s', ex, exc_info=False)
+                    log.exception("Database operation failed. Reason: %s", ex, exc_info=False)
 
             else:
                 log.warning('Can not run database operation on "%s"', target)
@@ -240,7 +242,7 @@ def sanitize_options(options):
 
     # 1. Sanity checks
     if not options.network:
-        message = '--network parameter missing'
+        message = "--network parameter missing"
         log.error(message)
         raise DocoptExit(message)
 
@@ -249,13 +251,13 @@ def sanitize_options(options):
 
     # 3. Resolve data domain (stations vs. readings).
     options.domain = None
-    for flavor in ['stations', 'readings']:
+    for flavor in ["stations", "readings"]:
         if options[flavor]:
             options.domain = flavor
             break
 
     # 4. Check json.flex output target vs. --target-fieldmap option.
-    options.json_flex_enabled = any(map(lambda target: 'json.flex' in target, options.target))
+    options.json_flex_enabled = any(map(lambda target: "json.flex" in target, options.target))
     if options.json_flex_enabled:
         options.target_fieldmap = read_pairs(options.target_fieldmap)
 
@@ -267,7 +269,7 @@ def get_engine(options):
         batch_size = 250
 
     # Create and run output processing engine.
-    log.info(f'Will publish data to {options.target}')
+    log.info(f"Will publish data to {options.target}")
     engine = LuftdatenEngine(
         network=options.network,
         domain=options.domain,
@@ -275,7 +277,7 @@ def get_engine(options):
         fieldmap=options.target_fieldmap,
         batch_size=batch_size,
         progressbar=options.progress,
-        dry_run=options['dry-run'],
+        dry_run=options["dry-run"],
     )
 
     return engine
@@ -286,10 +288,10 @@ def get_data(options):
     pump = resolve_source_handler(options)
 
     # Acquire data.
-    if options.domain == 'stations':
+    if options.domain == "stations":
         log.info(f'Acquiring list of stations from network "{options.network}" with source "{options.source}"')
 
-        if options.source.startswith('postgresql://'):
+        if options.source.startswith("postgresql://"):
 
             if options.json_flex_enabled:
                 data = stations_from_rdbms_flex(options.source, options.network)
@@ -302,18 +304,18 @@ def get_data(options):
         # Materialize generator.
         data = list(data)
 
-        log.info(f'Acquired #{len(data)} stations')
+        log.info(f"Acquired #{len(data)} stations")
 
-    elif options.domain == 'readings':
+    elif options.domain == "readings":
         log.info(f'Acquiring readings from network "{options.network}" with source "{options.source}"')
         data = pump.get_readings()
 
     else:
-        raise DocoptExit('Subcommand not implemented')
+        raise DocoptExit("Subcommand not implemented")
 
     # Sanity checks.
     if data is None:
-        log.error('No data to process')
+        log.error("No data to process")
         sys.exit(2)
 
     return data

@@ -2,8 +2,8 @@
 # (c) 2018-2019 Andreas Motl <andreas@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import json
-import types
 import logging
+import types
 from collections import OrderedDict
 
 log = logging.getLogger(__name__)
@@ -20,14 +20,13 @@ def curated_station_list(stations):
     for station in stations:
         if station.station_id in seen:
             continue
-        if 'name' not in station:
-            station.name = u'Station #{}, {}'.format(station.station_id, station.position.country)
+        if "name" not in station:
+            station.name = "Station #{}, {}".format(station.station_id, station.position.country)
         seen[station.station_id] = True
         yield station
 
 
 class JsonFlexFormatter:
-
     def __init__(self, fieldmap):
         self.fieldmap = fieldmap
 
@@ -39,8 +38,8 @@ class JsonFlexFormatter:
 
                 # Compute value, optionally applying conversion.
                 conversion = None
-                if '|' in key_right:
-                    key_right, conversion = key_right.split('|')
+                if "|" in key_right:
+                    key_right, conversion = key_right.split("|")
                 value = station[str(key_right)]
                 if conversion is not None:
                     converter = eval(conversion)
@@ -71,7 +70,7 @@ def json_grafana_formatter_vt(stations):
     """
     entries = []
     for station in curated_station_list(stations):
-        entry = {'value': str(station.station_id), 'text': station.name}
+        entry = {"value": str(station.station_id), "text": station.name}
         entries.append(entry)
     return json_formatter(entries)
 
@@ -95,6 +94,6 @@ def json_grafana_formatter_kn(stations):
     """
     entries = []
     for station in curated_station_list(stations):
-        entry = {'key': str(station.station_id), 'name': station.name}
+        entry = {"key": str(station.station_id), "name": station.name}
         entries.append(entry)
     return json_formatter(entries)

@@ -4,18 +4,18 @@
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
 import logging
+from collections import OrderedDict
 from copy import deepcopy
 from datetime import datetime, timedelta
 from operator import itemgetter
+from urllib.parse import urljoin
 
+from munch import Munch, munchify
 from requests import HTTPError
 from rfc3339 import rfc3339
-from munch import munchify, Munch
-from urllib.parse import urljoin
-from collections import OrderedDict
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import slugify, grouper, chunks
+from luftdatenpumpe.util import chunks, grouper, slugify
 
 log = logging.getLogger(__name__)
 
@@ -40,10 +40,10 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
     """
 
     # Sensor network identifier.
-    network = 'irceline'
+    network = "irceline"
 
     # IRCELINE SOS REST API URI
-    uri = 'http://geo.irceline.be/sos/api/v1/'
+    uri = "http://geo.irceline.be/sos/api/v1/"
 
     timeout = 60
 
@@ -52,7 +52,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
 
     def send_request(self, endpoint=None, params=None):
         url = urljoin(self.uri, endpoint)
-        log.debug(f'Requesting IRCELINE live API at {url}')
+        log.debug(f"Requesting IRCELINE live API at {url}")
         params = params or {}
 
         response = self.session.get(url, params=params, timeout=self.timeout)
@@ -60,8 +60,8 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             try:
                 reason = response.json()
             except:
-                reason = 'unknown'
-            message = f'Request failed: {reason}'
+                reason = "unknown"
+            message = f"Request failed: {reason}"
             log.error(message)
             response.raise_for_status()
 
@@ -72,11 +72,11 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         http://geo.irceline.be/sos/api/v1/stations/?service=1&expand=true&locale=en
         """
 
-        data = self.send_request('stations', params={'expanded': 'true'})
-        #import sys, json; print(json.dumps(data, indent=2)); sys.exit(0)
+        data = self.send_request("stations", params={"expanded": "true"})
+        # import sys, json; print(json.dumps(data, indent=2)); sys.exit(0)
 
         timeseries_index = self.get_timeseries_index()
-        #import sys, json; print(json.dumps(timeseries_index, indent=2)); sys.exit(0)
+        # import sys, json; print(json.dumps(timeseries_index, indent=2)); sys.exit(0)
 
         # Apply data filter.
         data = self.apply_filter(data)
@@ -84,64 +84,70 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         stations = []
         for upstream_station in self.wrap_progress(data):
             upstream_station = munchify(upstream_station)
-            #print('upstream_station:', upstream_station)
-            station_info = munchify({
-                'station_id': upstream_station.properties.id,
-                'station_label': upstream_station.properties.label,
-                'position': {
-                    'country': 'BE',
-                    'latitude': upstream_station.geometry.coordinates[1],
-                    'longitude': upstream_station.geometry.coordinates[0],
-                    'altitude': None,
+            # print('upstream_station:', upstream_station)
+            station_info = munchify(
+                {
+                    "station_id": upstream_station.properties.id,
+                    "station_label": upstream_station.properties.label,
+                    "position": {
+                        "country": "BE",
+                        "latitude": upstream_station.geometry.coordinates[1],
+                        "longitude": upstream_station.geometry.coordinates[0],
+                        "altitude": None,
+                    },
                 }
-            })
+            )
             self.enrich_station(station_info)
 
             station_info.sensors = self.timeseries_to_sensors(upstream_station.properties.timeseries)
 
             # Enrich sensor information by timestamps of first / most recent reading.
             for sensor in station_info.sensors:
-                timeseries_id = sensor['sensor_id']
+                timeseries_id = sensor["sensor_id"]
                 if timeseries_id in timeseries_index:
-                    sensor['sensor_first_date'] = self.convert_timestamp(timeseries_index[timeseries_id].firstValue.timestamp)
-                    sensor['sensor_last_date'] = self.convert_timestamp(timeseries_index[timeseries_id].lastValue.timestamp)
+                    sensor["sensor_first_date"] = self.convert_timestamp(
+                        timeseries_index[timeseries_id].firstValue.timestamp
+                    )
+                    sensor["sensor_last_date"] = self.convert_timestamp(
+                        timeseries_index[timeseries_id].lastValue.timestamp
+                    )
 
-            #print(station_info)
+            # print(station_info)
             stations.append(station_info)
 
         # List of stations sorted by station identifier.
-        stations = sorted(stations, key=itemgetter('station_id'))
+        stations = sorted(stations, key=itemgetter("station_id"))
 
         return stations
 
     def filter_rule(self, data):
 
-        if self.filter and 'country' in self.filter and self.filter.country != ['BE']:
+        if self.filter and "country" in self.filter and self.filter.country != ["BE"]:
             raise NotImplementedError("Filtering by country not supported for IRCELINE/SOS, it's Belgium at all.")
 
         for item in data:
 
-            #log.info('item: %s', item)
+            # log.info('item: %s', item)
 
             # Decode JSON item
-            #country_code = item['location']['country'].upper()
-            station_id = item['properties']['id']
-            sensor_ids = map(int, item['properties']['timeseries'].keys())
+            # country_code = item['location']['country'].upper()
+            station_id = item["properties"]["id"]
+            sensor_ids = map(int, item["properties"]["timeseries"].keys())
 
             # If there is a filter defined, evaluate it.
             # Skip further processing for specific country codes, station ids or sensor ids.
             # TODO: Improve evaluating conditions.
             skip = False
-            #if 'country' in self.filter:
+            # if 'country' in self.filter:
             #    if country_code not in self.filter['country']:
             #        skip = True
-            if 'station' in self.filter:
-                if station_id not in self.filter['station']:
+            if "station" in self.filter:
+                if station_id not in self.filter["station"]:
                     skip = True
-            if 'sensor' in self.filter:
+            if "sensor" in self.filter:
                 skip = True
                 for sensor_id in sensor_ids:
-                    if sensor_id in self.filter['sensor']:
+                    if sensor_id in self.filter["sensor"]:
                         skip = False
                         break
 
@@ -208,26 +214,26 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         sensors = []
 
         # Stable
-        property_names = ['service', 'category', 'phenomenon']
+        property_names = ["service", "category", "phenomenon"]
 
         # Unstable / Legacy
-        property_names_legacy = ['offering', 'feature', 'procedure']
+        property_names_legacy = ["offering", "feature", "procedure"]
 
         # TODO: Which ones to use? Use all for now.
         property_names += property_names_legacy
 
         for sensor_id, timeseries in measurements.items():
             sensor = OrderedDict()
-            sensor['sensor_id'] = int(sensor_id)
+            sensor["sensor_id"] = int(sensor_id)
             for property_name in property_names:
-                sensor[f'sensor_{property_name}_id'] = int(timeseries[property_name]['id'])
-                sensor[f'sensor_{property_name}_label'] = timeseries[property_name]['label']
+                sensor[f"sensor_{property_name}_id"] = int(timeseries[property_name]["id"])
+                sensor[f"sensor_{property_name}_label"] = timeseries[property_name]["label"]
 
-            sensor['sensor_type_name'] = sensor['sensor_category_label']
-            sensor['sensor_type_id'] = sensor['sensor_category_id']
+            sensor["sensor_type_name"] = sensor["sensor_category_label"]
+            sensor["sensor_type_id"] = sensor["sensor_category_id"]
 
-            sensor['sensor_label'] = sensor['sensor_phenomenon_label']
-            sensor['sensor_fieldname'] = self.slugify_fieldname(sensor['sensor_label'])
+            sensor["sensor_label"] = sensor["sensor_phenomenon_label"]
+            sensor["sensor_fieldname"] = self.slugify_fieldname(sensor["sensor_label"])
 
             sensors.append(sensor)
 
@@ -250,7 +256,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             "label": "Particulate Matter < 1 \u00b5m"
         },
         """
-        return self.send_request('phenomena')
+        return self.send_request("phenomena")
 
     def get_timeseries_single(self):
         """
@@ -299,7 +305,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             station_map[station_id] = station
 
             for sensor in station.sensors:
-                timeseries_id = sensor['sensor_id']
+                timeseries_id = sensor["sensor_id"]
                 timeseries_id_list.append(timeseries_id)
                 timeseries_sensor_map[timeseries_id] = sensor
 
@@ -307,24 +313,26 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         # Attention: While this is just a single call for the client,
         # this operation might be expensive at the backend.
         # TODO: We might move to chunked transfer in the future.
-        #print('timeseries_id_list:', timeseries_id_list)
+        # print('timeseries_id_list:', timeseries_id_list)
 
         # Debugging
-        #timeseries = self.get_timeseries(timeseries_ids=[6895, 6931], timespan=self.filter.get('timespan'))
+        # timeseries = self.get_timeseries(timeseries_ids=[6895, 6931], timespan=self.filter.get('timespan'))
 
         # Fails
-        #timeseries = self.get_timeseries(timeseries_ids=[1180, 6895], timespan=self.filter.get('timespan'))
+        # timeseries = self.get_timeseries(timeseries_ids=[1180, 6895], timespan=self.filter.get('timespan'))
 
         # For real
-        timeseries = self.get_timeseries_details(timeseries_ids=timeseries_id_list, timespan=self.filter.get('timespan'))
+        timeseries = self.get_timeseries_details(
+            timeseries_ids=timeseries_id_list, timespan=self.filter.get("timespan")
+        )
 
         # Map timeseries to readings.
         timeseries_readings_map = {}
         for tsid, item in timeseries.items():
-            #print(tsid, item)
+            # print(tsid, item)
             timeseries_id = int(tsid)
-            fieldname = timeseries_sensor_map[timeseries_id]['sensor_fieldname']
-            data = self.reading_data_from_timeseries(fieldname, item['values'])
+            fieldname = timeseries_sensor_map[timeseries_id]["sensor_fieldname"]
+            data = self.reading_data_from_timeseries(fieldname, item["values"])
             data = list(data)
             # TODO: Emit warning here if station has no data whatsoever?
             if not data:
@@ -338,7 +346,7 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
             all_data = []
             for sensor in station.sensors:
 
-                timeseries_id = sensor['sensor_id']
+                timeseries_id = sensor["sensor_id"]
                 if timeseries_id not in timeseries_readings_map:
                     log.warning(f'Station "{station_id}" has no data for timeseries "{timeseries_id}"')
                     continue
@@ -346,44 +354,46 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
                 all_data += timeseries_readings_map[timeseries_id]
 
             item_station = deepcopy(station)
-            del item_station['sensors']
+            del item_station["sensors"]
 
             # Group by timestamp.
             timestamp_data_map = {}
             for data_item in all_data:
-                timestamp = data_item['timestamp']
-                #del data_item['timestamp']
+                timestamp = data_item["timestamp"]
+                # del data_item['timestamp']
                 timestamp_data_map.setdefault(timestamp, {})
                 timestamp_data_map[timestamp].update(data_item)
 
             # Build list of observations.
             observations = []
-            for data in sorted(timestamp_data_map.values(), key=itemgetter('timestamp')):
-                timestamp = data['timestamp']
-                del data['timestamp']
-                observation = munchify(dict(meta={'timestamp': timestamp}, data=data))
+            for data in sorted(timestamp_data_map.values(), key=itemgetter("timestamp")):
+                timestamp = data["timestamp"]
+                del data["timestamp"]
+                observation = munchify(dict(meta={"timestamp": timestamp}, data=data))
                 observations.append(observation)
 
             # List of all readings by timestamp, ascending.
-            item = Munch({
-                'station': item_station,
-                'observations': observations,
-            })
+            item = Munch(
+                {
+                    "station": item_station,
+                    "observations": observations,
+                }
+            )
             items.append(item)
 
         return items
 
     def get_timeseries_index(self, timespan=None):
         if timespan is None:
-            timespan = f'PT12h/{self.this_hour()}'
+            timespan = f"PT12h/{self.this_hour()}"
 
-        url = urljoin(self.uri, f'timeseries/')
-        data = self.send_request(url, params={'timespan': timespan, 'expanded': 'true'})
-        #print(data)
+        url = urljoin(self.uri, f"timeseries/")
+        data = self.send_request(url, params={"timespan": timespan, "expanded": "true"})
+        # print(data)
 
         items = {}
         for entry in data:
-            key = int(entry['id'])
+            key = int(entry["id"])
             items[key] = munchify(entry)
 
         return items
@@ -417,23 +427,23 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         """
 
         if timespan is None:
-            timespan = f'PT12h/{self.this_hour()}'
+            timespan = f"PT12h/{self.this_hour()}"
 
         log.info(f'Requesting IRCELINE live API with timespan "{timespan}" and {len(timeseries_ids)} timeseries')
 
         results = {}
         for identifier in self.wrap_progress(sorted(timeseries_ids)):
-            url = urljoin(self.uri, f'timeseries/{identifier}/getData')
-            log.debug(f'Requesting SOS timeseries {identifier} from {url}')
+            url = urljoin(self.uri, f"timeseries/{identifier}/getData")
+            log.debug(f"Requesting SOS timeseries {identifier} from {url}")
             try:
-                data = self.send_request(url, params={'timespan': timespan, 'expanded': 'true'})
+                data = self.send_request(url, params={"timespan": timespan, "expanded": "true"})
                 results.update(data)
             except KeyboardInterrupt:
                 raise
             except HTTPError as ex:
-                log.error(f'Requesting data for timeseries {identifier} failed: {ex}')
+                log.error(f"Requesting data for timeseries {identifier} failed: {ex}")
             except:
-                log.exception(f'Decoding response for timeseries {identifier} failed')
+                log.exception(f"Decoding response for timeseries {identifier} failed")
 
         return results
 
@@ -481,15 +491,15 @@ class IrcelinePumpe(AbstractLuftdatenPumpe):
         """
         for observation in values:
 
-            value = observation['value']
+            value = observation["value"]
 
             # Skip empty or non-numeric values.
             # TODO: Emit warning here?
-            if value is None or str(value).lower() == 'nan' or value == -99.99:
+            if value is None or str(value).lower() == "nan" or value == -99.99:
                 continue
 
             entry = {
-                'timestamp': self.convert_timestamp(observation['timestamp']),
+                "timestamp": self.convert_timestamp(observation["timestamp"]),
                 name: value,
             }
             yield entry

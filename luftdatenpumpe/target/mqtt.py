@@ -2,14 +2,14 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import os
 import json
 import logging
+import os
 from copy import deepcopy
-
-from munch import Munch
 from pprint import pformat
+
 import paho.mqtt.client as mqtt
+from munch import Munch
 
 try:
     from urlparse import urlsplit
@@ -21,20 +21,20 @@ log = logging.getLogger(__name__)
 
 class MQTTAdapter(object):
 
-    capabilities = ['readings']
+    capabilities = ["readings"]
 
     def __init__(self, uri, keepalive=60, client_id_prefix=None, dry_run=False):
 
         address = urlsplit(uri)
-        self.host       = address.hostname
-        self.port       = address.port or 1883
-        self.username   = address.username
-        self.password   = address.password
-        self.topic      = address.path
+        self.host = address.hostname
+        self.port = address.port or 1883
+        self.username = address.username
+        self.password = address.password
+        self.topic = address.path
 
-        self.keepalive  = keepalive
+        self.keepalive = keepalive
 
-        self.client_id_prefix = client_id_prefix or 'luftdatenpumpe'
+        self.client_id_prefix = client_id_prefix or "luftdatenpumpe"
 
         self.dry_run = dry_run
 
@@ -68,8 +68,8 @@ class MQTTAdapter(object):
             else:
                 message_blueprint[key] = value
 
-        message_blueprint['location_id'] = message_blueprint['station_id']
-        del message_blueprint['station_id']
+        message_blueprint["location_id"] = message_blueprint["station_id"]
+        del message_blueprint["station_id"]
 
         for observation in reading.observations:
             message = deepcopy(message_blueprint)
@@ -82,7 +82,7 @@ class MQTTAdapter(object):
 
             # Publish to MQTT bus.
             if self.dry_run:
-                log.info('Dry-run. Would publish record:\n{}'.format(pformat(message_blueprint)))
+                log.info("Dry-run. Would publish record:\n{}".format(pformat(message_blueprint)))
             else:
                 # FIXME: Don't only use ``sort_keys``. Also honor the field names of the actual readings by
                 # putting them first. This is:
@@ -102,7 +102,7 @@ class MQTTAdapter(object):
 
         # Create a mqtt client object
         pid = os.getpid()
-        client_id = '{}:{}'.format(self.client_id_prefix, str(pid))
+        client_id = "{}:{}".format(self.client_id_prefix, str(pid))
         self.mqttc = mqtt.Client(client_id=client_id, clean_session=True)
 
         # Handle authentication
@@ -119,12 +119,12 @@ class MQTTAdapter(object):
 
     def effective_topic(self, topic=None):
         parts = []
-        base_topic = self.topic.strip(u'/')
+        base_topic = self.topic.strip("/")
         if base_topic:
             parts.append(base_topic)
         if topic:
             parts.append(topic)
-        return u'/'.join(parts)
+        return "/".join(parts)
 
     def publish(self, message, topic=None):
         topic = self.effective_topic(topic)

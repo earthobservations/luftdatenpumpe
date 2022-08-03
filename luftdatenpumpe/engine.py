@@ -5,11 +5,16 @@ import json
 import logging
 from urllib.parse import urlparse
 
-from tqdm import tqdm
 from munch import Munch
+from tqdm import tqdm
 
 from luftdatenpumpe.target.influxdb import InfluxDBStorage
-from luftdatenpumpe.target.json import json_formatter, json_grafana_formatter_vt, json_grafana_formatter_kn, JsonFlexFormatter
+from luftdatenpumpe.target.json import (
+    JsonFlexFormatter,
+    json_formatter,
+    json_grafana_formatter_kn,
+    json_grafana_formatter_vt,
+)
 from luftdatenpumpe.target.mqtt import MQTTAdapter
 from luftdatenpumpe.target.rdbms import RDBMSStorage
 from luftdatenpumpe.target.stream import StreamTarget
@@ -18,7 +23,6 @@ log = logging.getLogger(__name__)
 
 
 class LuftdatenEngine:
-
     def __init__(self, network, domain, targets, fieldmap=None, batch_size=None, progressbar=False, dry_run=False):
         self.network = network
         self.domain = domain
@@ -43,7 +47,7 @@ class LuftdatenEngine:
                 continue
 
             if target is None:
-                log.error(f'Could not resolve data sink {target_expression}')
+                log.error(f"Could not resolve data sink {target_expression}")
                 continue
 
             if self.domain not in target.capabilities:
@@ -54,10 +58,10 @@ class LuftdatenEngine:
 
         # Sanity checks.
         if not targets:
-            raise ValueError('No data sinks enabled, please check the log file for errors')
+            raise ValueError("No data sinks enabled, please check the log file for errors")
 
         # Emit to active target subsystems.
-        log.info('Emitting to target data sinks, this might take some time')
+        log.info("Emitting to target data sinks, this might take some time")
 
         if self.progressbar:
             data = tqdm(data)
@@ -81,37 +85,38 @@ class LuftdatenEngine:
         for target in targets:
             target.flush(final=True)
 
-        log.info('Processed {} records'.format(item_count))
+        log.info("Processed {} records".format(item_count))
 
     def resolve_target_handler(self, target, dry_run=False):
         handler = None
 
         url = Munch(urlparse(target)._asdict())
-        log.debug('Resolving target: %s', json.dumps(url))
+        log.debug("Resolving target: %s", json.dumps(url))
 
         formatter = json_formatter
-        if '+' in url.scheme:
-            format, scheme = url.scheme.split('+')
+        if "+" in url.scheme:
+            format, scheme = url.scheme.split("+")
             url.scheme = scheme
 
-            if format.startswith('json.grafana.vt'):
+            if format.startswith("json.grafana.vt"):
                 formatter = json_grafana_formatter_vt
-            elif format.startswith('json.grafana.kn'):
+            elif format.startswith("json.grafana.kn"):
                 formatter = json_grafana_formatter_kn
-            elif format.startswith('json.flex'):
+            elif format.startswith("json.flex"):
                 formatter = JsonFlexFormatter(self.fieldmap).formatter
-            elif format.startswith('json'):
+            elif format.startswith("json"):
                 formatter = json_formatter
 
             # Do we need this anymore?
-            #formatter.format = format
+            # formatter.format = format
 
-        #effective_url = urlunparse(url.values())
+        # effective_url = urlunparse(url.values())
 
-        if url.scheme == 'stream':
+        if url.scheme == "stream":
 
             # FIXME: There might be dragons?
             import sys
+
             stream = eval(url.netloc)
 
             handler = StreamTarget(stream, formatter)
@@ -119,10 +124,10 @@ class LuftdatenEngine:
         elif url.scheme in RDBMSStorage.get_dialects():
             handler = RDBMSStorage(target, network=self.network, dry_run=dry_run)
 
-        elif url.scheme == 'mqtt':
+        elif url.scheme == "mqtt":
             handler = MQTTAdapter(target, dry_run=dry_run)
 
-        elif url.scheme == 'influxdb':
+        elif url.scheme == "influxdb":
             handler = InfluxDBStorage(target, network=self.network, dry_run=dry_run)
 
         return handler

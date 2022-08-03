@@ -78,8 +78,8 @@ def stations_from_rdbms(dsuri, prefix):
                 "longitude": station.longitude,
                 "altitude": station.altitude,
                 "country": station.country,
-                "geohash": station.geohash
-            }
+                "geohash": station.geohash,
+            },
         }
         yield munchify(entry)
 
