@@ -1,0 +1,28 @@
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+
+[tool.flake8]
+max-line-length = 120
+
+[tool.pytest.ini_options]
+minversion = "2.0"
+addopts = "-rsfEX -p pytester --strict-markers --verbosity=3 --cov --cov-report=term-missing --cov-report=xml"
+log_level = "DEBUG"
+testpaths = ["tests"]
+xfail_strict = true
+markers = [
+]
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+]
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true

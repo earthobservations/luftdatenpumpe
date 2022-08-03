@@ -1,20 +1,30 @@
 .. image:: https://github.com/earthobservations/luftdatenpumpe/workflows/Tests/badge.svg
     :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
+    :alt: CI outcome
 
-.. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
-
-.. image:: https://img.shields.io/pypi/status/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
-
-.. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
+.. image:: https://codecov.io/gh/earthobservations/luftdatenpumpe/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/earthobservations/luftdatenpumpe
+    :alt: Test suite code coverage
 
 .. image:: https://pepy.tech/badge/luftdatenpumpe/month
     :target: https://pypi.org/project/luftdatenpumpe/
+    :alt: PyPI downloads per month
+
+.. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+    :alt: Package version on PyPI
+
+.. image:: https://img.shields.io/pypi/status/luftdatenpumpe.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+    :alt: Project status (alpha, beta, stable)
+
+.. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
+    :target: https://pypi.org/project/luftdatenpumpe/
+    :alt: Support Python versions
 
 .. image:: https://img.shields.io/pypi/l/luftdatenpumpe.svg
     :target: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE
+    :alt: Project license
 
 |
 
