@@ -111,5 +111,3 @@ mosquitto-start:
 
 grafana-start:
 	docker run --rm -it --publish=3000:3000 --env='GF_SECURITY_ADMIN_PASSWORD=admin' grafana/grafana:8.5.6
-
-start-foundation-services: redis-start postgis-start influxdb-start grafana-start mosquitto-start
