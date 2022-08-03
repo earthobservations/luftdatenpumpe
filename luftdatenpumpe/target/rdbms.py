@@ -7,7 +7,7 @@ from collections import OrderedDict
 from copy import deepcopy
 
 import dataset
-from geoalchemy2 import Geometry  # Pulls PostGIS capabilities into SQLAlchemy. Don't remove.
+from geoalchemy2 import Geometry  # Pull PostGIS capabilities into SQLAlchemy. Do not remove.  # noqa:F401
 from munch import munchify
 from sqlalchemy_utils import drop_database
 
@@ -153,7 +153,8 @@ class RDBMSStorage:
         # TODO: Convert to EPSG:4258.
 
         # TODO: Convert to EPSG:31370.
-        # self.db.query(f'ALTER TABLE {self.realm}_stations ADD COLUMN IF NOT EXISTS "geopoint_31370" geometry(Point,31370)')
+        # self.db.query(f'ALTER TABLE {self.realm}_stations ADD COLUMN IF NOT EXISTS '
+        #               f'"geopoint_31370" geometry(Point,31370)')
 
     @property
     def tableinfos(self):
@@ -178,8 +179,12 @@ class RDBMSStorage:
             station.position.geopoint = "POINT({} {})".format(station.position.longitude, station.position.latitude)
 
             # TODO: Convert to EPSG:31370.
-            # station.position.geopoint_31370 = f"ST_GeomFromText('POINT({station.position.longitude} {station.position.latitude})', 4326)"
-            # station.position.geopoint_31370 = 'POINT({} {})'.format(station.position.longitude, station.position.latitude)
+            """
+            station.position.geopoint_31370 = f"ST_GeomFromText('" \
+                                              f"POINT({station.position.longitude} {station.position.latitude})', 4326)"
+            station.position.geopoint_31370 = 'POINT({} {})'.format(
+                station.position.longitude, station.position.latitude)
+            """
 
         # Debugging
         # log.info('station: %s', station)
@@ -241,7 +246,10 @@ class RDBMSStorage:
         # print(dir(self.stationtable.table))
 
         # https://dataset.readthedocs.io/en/latest/quickstart.html#running-custom-sql-queries
-        expression = f"SELECT * FROM {self.realm}_stations, {self.realm}_osmdata WHERE {self.realm}_stations.station_id = {self.realm}_osmdata.station_id"
+        expression = (
+            f"SELECT * FROM {self.realm}_stations, {self.realm}_osmdata "
+            f"WHERE {self.realm}_stations.station_id = {self.realm}_osmdata.station_id"
+        )
         print("### Expression:", expression)
         result = self.db.query(expression)
         for record in result:
@@ -260,7 +268,7 @@ class RDBMSStorage:
             from sqlalchemy.dialects import __all__ as sql_dialects
 
             results = list(sql_dialects)
-        except:
+        except:  # noqa:E722
             pass
         # log.info('SQLAlchemy dialects: %s', results)
         return results
@@ -296,7 +304,7 @@ class RDBMSStorage:
         if self.realm == "irceline":
             conditional_fields_stage1.append(f"{prefix}_sensors.sensor_feature_label")
             conditional_fields_stage2.append(
-                f"concat(sensor_feature_label, ' ', station_id_suffix) AS sos_feature_and_id"
+                "concat(sensor_feature_label, ' ', station_id_suffix) AS sos_feature_and_id"
             )
 
         # Create unified view.
@@ -309,8 +317,8 @@ class RDBMSStorage:
 
               -- Baseline fields.
               {prefix}_stations.station_id,
-              {prefix}_stations.name, {prefix}_stations.country, 
-              {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude, 
+              {prefix}_stations.name, {prefix}_stations.country,
+              {prefix}_stations.longitude, {prefix}_stations.latitude, {prefix}_stations.altitude,
               {prefix}_stations.geohash, {prefix}_stations.geopoint,
               {prefix}_sensors.sensor_id, {prefix}_sensors.sensor_type_id, {prefix}_sensors.sensor_type_name,
               {prefix}_sensors.sensor_first_date, {prefix}_sensors.sensor_last_date,
@@ -339,7 +347,8 @@ class RDBMSStorage:
               concat(osm_road, ', ', osm_city, ' ', station_id_suffix) AS road_and_name_and_id,
               concat(osm_country, ' (', osm_country_code, ')') AS country_and_countrycode,
               concat(concat_ws(', ', osm_state, osm_country), ' ', country_code_suffix) AS state_and_country,
-              concat(concat_ws(', ', osm_city, osm_state, osm_country), ' ', country_code_suffix) AS city_and_state_and_country,
+              concat(concat_ws(', ', osm_city, osm_state, osm_country), ' ', country_code_suffix)
+                AS city_and_state_and_country,
               {self.render_fields(conditional_fields_stage2)}
               ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active
 
@@ -411,7 +420,7 @@ class RDBMSStorage:
             log.info("Dropping table %s", table.name)
             try:
                 table.drop()
-            except:
+            except:  # noqa:E722
                 log.warning('Skipped dropping table/view "%s"', table.name)
 
     @staticmethod

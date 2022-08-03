@@ -8,7 +8,6 @@ README = open(os.path.join(here, "README.rst")).read()
 
 requires = [
     # Core
-    "six",
     "appdirs<2",
     "docopt<1",
     "munch<3",

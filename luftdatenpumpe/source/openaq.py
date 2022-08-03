@@ -13,7 +13,6 @@ from munch import Munch
 from rfc3339 import rfc3339
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import exception_traceback
 
 log = logging.getLogger(__name__)
 
@@ -70,9 +69,9 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
                 # Build and record sensor information.
                 sensor_info = Munch(
                     {
-                        #'sensor_id': observation.meta.sensor_id,
+                        # 'sensor_id': observation.meta.sensor_id,
                         "sensor_type_name": key,
-                        #'sensor_type_id': observation.meta.sensor_type_id,
+                        # 'sensor_type_id': observation.meta.sensor_type_id,
                     }
                 )
                 station["sensors"].append(sensor_info)
@@ -134,8 +133,8 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
             try:
                 self.process_measurement(readings, item)
 
-            except Exception as ex:
-                log.warning("Could not use observation from {}.\n{}".format(item, exception_traceback()))
+            except:  # noqa:E722
+                log.exception(f"Could not use observation from item: {item}")
 
         for reading in readings.values():
             has_data = False
@@ -283,8 +282,8 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
 
                 yield reading
 
-            except Exception as ex:
-                log.warning("Could not make reading from {}.\n{}".format(item, exception_traceback()))
+            except:  # noqa:E722
+                log.exception(f"Could not make reading from item: {item}")
 
     def make_reading_from_latest(self, item):
         """

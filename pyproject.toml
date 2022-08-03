@@ -8,6 +8,10 @@ multi_line_output = 3
 
 [tool.flake8]
 max-line-length = 120
+per-file-ignores = """
+    luftdatenpumpe/commands.py: E501
+    luftdatenpumpe/source/rdbms.py: E501
+"""
 
 [tool.pytest.ini_options]
 minversion = "2.0"

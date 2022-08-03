@@ -10,10 +10,9 @@ from operator import itemgetter
 
 from munch import Munch
 from tablib import Dataset
-from tqdm import tqdm
 
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
-from luftdatenpumpe.util import exception_traceback, find_files, is_nan
+from luftdatenpumpe.util import find_files, is_nan
 
 log = logging.getLogger(__name__)
 
@@ -109,8 +108,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
                 yield reading
 
-            except Exception as ex:
-                log.warning("Could not make reading from {}.\n{}".format(item, exception_traceback()))
+            except Exception:
+                log.exception(f"Could not make reading from item: {item}")
 
     def make_observations_from_api(self, item, reading):
 
@@ -129,8 +128,8 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
                 # Skip NaN values.
                 # Prevent "influxdb.exceptions.InfluxDBClientError: 400".
-                # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number
-                # unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.6 1556133773000000000': invalid number dropped=0"}
+                # {"error":"partial write: unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.8 1556133497000000000': invalid number  # noqa:E501
+                # unable to parse 'ldi_readings,geohash=srxwdb8ny7j6,sensor_id=22674,station_id=11504 humidity=nan,temperature=18.6 1556133773000000000': invalid number dropped=0"}               # noqa:E501
                 # TODO: Emit warning here?
                 if is_nan(value):
                     continue
@@ -216,7 +215,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             if key in ["latitude", "longitude", "altitude"]:
                 try:
                     value = float(value)
-                except:
+                except:  # noqa:E722
                     value = None
             entry.station.position[key] = value
 
@@ -367,7 +366,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             try:
                 payload = open(csvpath).read(256)
                 payload = "\n".join(payload.split("\n")[:2])
-            except:
+            except:  # noqa:E722
                 pass
         else:
             payload = open(csvpath).read()
@@ -379,7 +378,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
         try:
             imported_data = Dataset().load(payload, format="csv", delimiter=";")
-        except Exception:
+        except:  # noqa:E722
             log.exception(f"Error decoding CSV from file {csvpath}")
             return
 
@@ -431,7 +430,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             # TODO: Emit warning here?
             try:
                 value = float(value)
-            except:
+            except:  # noqa:E722
                 continue
 
             # Actually use this reading. LDI has single observations only.
@@ -471,7 +470,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
             if "sensor" in self.filter:
                 # Decode station id from filename, e.g. ``2017-01-13_dht22_sensor_318.csv``.
-                m = re.match(".+sensor_(\d+)\.csv$", csvpath)
+                m = re.match(r".+sensor_(\d+)\.csv$", csvpath)
                 if m:
                     sensor_id = int(m.group(1))
                     if sensor_id not in self.filter["sensor"]:
@@ -479,7 +478,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
             if "sensor-type" in self.filter:
                 # Decode sensor type from filename, e.g. ``2017-01-13_dht22_sensor_318.csv``.
-                m = re.match(".+_(\w+)_sensor_\d+\.csv$", csvpath)
+                m = re.match(r".+_(\w+)_sensor_\d+\.csv$", csvpath)
                 if m:
                     sensor_type = m.group(1)
                     if sensor_type not in self.filter["sensor-type"]:

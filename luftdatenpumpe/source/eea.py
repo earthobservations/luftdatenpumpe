@@ -47,7 +47,7 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
         if response.status_code != 200:
             try:
                 reason = response.json()
-            except:
+            except:  # noqa:E722
                 reason = "unknown"
             message = f"Request failed: {reason}"
             log.error(message)
@@ -94,8 +94,8 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
         try:
             data = Dataset().load(payload, format="csv", delimiter=",")
-        except Exception:
-            log.exception(f"Error reading or decoding station CSV")
+        except:  # noqa:E722
+            log.exception("Error reading or decoding station CSV")
             return
 
         # Apply data filter.
