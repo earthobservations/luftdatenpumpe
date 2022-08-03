@@ -4,9 +4,11 @@
 # License: GNU Affero General Public License, Version 3
 import logging
 import sys
+from urllib.parse import urlparse
 
 import redis
 import requests
+from requests_cache import CachedSession
 from tqdm import tqdm
 
 from luftdatenpumpe import __appname__ as APP_NAME
@@ -20,6 +22,9 @@ class AbstractLuftdatenPumpe:
 
     network = None
     uri = None
+
+    cache_enabled = False
+    cache_ttl = 300
 
     def __init__(
         self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False
@@ -39,19 +44,24 @@ class AbstractLuftdatenPumpe:
         # Configure User-Agent string.
         user_agent = APP_NAME + "/" + APP_VERSION
 
-        # Use hostname of url as cache prefix.
-        # from urllib.parse import urlparse
-        # cache_name = urlparse(self.uri).netloc
+        # Cache all downloaded requests.
+        if self.cache_enabled:
 
-        # Configure cached requests session.
-        # from requests_cache import CachedSession
-        # self.session = CachedSession(
-        #    cache_name=cache_name, backend='redis', expire_after=300,
-        #    user_agent=user_agent)
+            log.info(f"Using request caching, ttl={self.cache_ttl}s")
 
-        # Disable request cache by overriding it with a vanilla requests session.
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": user_agent})
+            # Use hostname of url as cache prefix.
+            cache_name = urlparse(self.uri).netloc
+
+            # Configure cached requests session.
+            self.session = CachedSession(
+                cache_name=cache_name, backend="redis", expire_after=self.cache_ttl, user_agent=user_agent
+            )
+
+        # Disable request cache by using a vanilla requests session.
+        else:
+            log.info("Downloading without caching")
+            self.session = requests.Session()
+            self.session.headers.update({"User-Agent": user_agent})
 
         # Gracefully probe Redis for availability if cache is enabled.
         if hasattr(self.session, "cache"):
