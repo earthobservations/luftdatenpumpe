@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# (c) 2019 Andreas Motl <andreas@hiveeyes.org>
+# (c) 2019-2022 Andreas Motl <andreas.motl@panodata.org>
 # (c) 2019 Richard Pobering <richard@hiveeyes.org>
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
@@ -17,30 +17,43 @@ log = logging.getLogger(__name__)
 
 class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
     """
-    Ingest air quality measurements from the
-    European Environment Agency (EEA).
+    Ingest air quality measurements from the European Environment Agency (EEA).
 
-    - http://discomap.eea.europa.eu/map/fme/AirQualityExport.htm
-    - http://ftp.eea.europa.eu/www/aqereporting-3/AQeReporting_products_2018_v1.pdf
-    - http://dd.eionet.europa.eu/vocabulary/aq/pollutant
+    Tracking ticket:
+    https://github.com/earthobservations/luftdatenpumpe/issues/12
 
-    - http://discomap.eea.europa.eu/map/fme/AirQualityUTDExport.htm (discontinued)
+    Resources:
+
+    - https://discomap.eea.europa.eu/map/fme/AirQualityExport.htm
+    - https://discomap.eea.europa.eu/map/fme/AirQualityUTDExport.htm (discontinued)
+
+    - https://discomap.eea.europa.eu/map/fme/doc/UTDAirQualityDownloadGuide.pdf
+    - https://ftp.eea.europa.eu/www/aqereporting-3/AQeReporting_products_2018_v1.pdf
+
+    - https://dd.eionet.europa.eu/vocabulary/aq/pollutant
+    - https://tableau.discomap.eea.europa.eu/t/Aironline/views/Airquality_E2a_monitoring/DashboardE2a
+    - https://discomap.eea.europa.eu/map/fme/metadata/PanEuropean_metadata.csv
+
+    - https://discomap.eea.europa.eu/map/fme/latest/
     """
 
     # Sensor network identifier.
     network = "eea"
 
     # Download service REST API URI
-    uri = "https://ereporting.blob.core.windows.net/downloadservice/"
+    uri = "https://discomap.eea.europa.eu/map/fme/"
 
     timeout = 60
+
+    cache_enabled = True
+    cache_ttl = 3000
 
     def get_index(self):
         return self.send_request()
 
     def send_request(self, endpoint=None, params=None):
         url = urljoin(self.uri, endpoint)
-        log.info(f"Requesting EEA at {url}")
+        log.info(f"Requesting station list from EEA at {url}")
         params = params or {}
 
         response = self.session.get(url, params=params, timeout=self.timeout)
@@ -57,9 +70,10 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
 
     def get_stations(self):
         """
-        https://ereporting.blob.core.windows.net/downloadservice/metadata.csv
+        1. Example ingress record - 2019
+           URL: https://ereporting.blob.core.windows.net/downloadservice/metadata.csv
 
-        Example ingress record::
+        ::
 
             {
               "Countrycode": "CZ",
@@ -87,13 +101,46 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
               "Latitude": "49.825294494628906",
               "Altitude": "242"
             }
+
+        2. Example ingress record - 2022
+           URL: https://discomap.eea.europa.eu/map/fme/metadata/PanEuropean_metadata.csv
+
+        ::
+
+            {
+              "Countrycode": "AD",
+              "Timezone": "http://dd.eionet.europa.eu/vocabulary/aq/timezone/UTC+01",
+              "Namespace": "AD.GovernAndorra.AQ",
+              "AirQualityNetwork": "NET-AD001A",
+              "AirQualityStation": "STA-AD0942A",
+              "AirQualityStationEoICode": "AD0942A",
+              "AirQualityStationNatCode": "942",
+              "SamplingPoint": "SPO-AD0942A-0001",
+              "SamplingProces": "SPP-AD0942A-0001-API100E",
+              "Sample": "SAM-AD0942A-0001",
+              "AirPollutantCode": "http://dd.eionet.europa.eu/vocabulary/aq/pollutant/1",
+              "ObservationDateBegin": "2005-01-01T00:00:00",
+              "ObservationDateEnd": "",
+              "Projection": "EPSG:4979",
+              "Longitude": "1.539138",
+              "Latitude": "42.50969399946506",
+              "Altitude": "1080",
+              "MeasurementType": "automatic",
+              "AirQualityStationType": "background",
+              "AirQualityStationArea": "urban",
+              "EquivalenceDemonstrated": "ref",
+              "MeasurementEquipment": "http://dd.eionet.europa.eu/vocabulary/aq/measurementequipment/API100E",
+              "InletHeight": "3",
+              "BuildingDistance": "6",
+              "KerbDistance": "-999"
+            }
         """
 
-        payload = self.send_request("metadata.csv")
+        payload = self.send_request("metadata/PanEuropean_metadata.csv")
 
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
         try:
-            data = Dataset().load(payload, format="csv", delimiter=",")
+            data = Dataset().load(payload, format="csv", delimiter="\t")
         except:  # noqa:E722
             log.exception("Error reading or decoding station CSV")
             return
@@ -150,14 +197,16 @@ class EEAAirQualityPumpe(AbstractLuftdatenPumpe):
                 # log.info('Sensor data: %s', json.dumps(measurement, indent=2))
                 sensor_info = munchify(
                     {
-                        "sensor_type": measurement.pop("AirPollutant"),
+                        # FIXME: Compute `AirPollutant` from `AirPollutantCode`.
+                        #        The original field was decommissioned.
+                        # "sensor_type": measurement.pop("AirPollutant"),
                         "sensor_type_uri": measurement.pop("AirPollutantCode"),
                         "sensor_measurement_type": measurement.pop("MeasurementType"),
-                        "sensor_measurement_method": measurement.pop("MeasurementMethod"),
+                        # "sensor_measurement_method": measurement.pop("MeasurementMethod"),
                         "sensor_measurement_equipment": measurement.pop("MeasurementEquipment"),
                         "sensor_inlet_height": float(measurement.pop("InletHeight")),
                         "sensor_equivalence_demonstrated": measurement.pop("EquivalenceDemonstrated"),
-                        "sensor_sampling_process": measurement.pop("SamplingProcess"),
+                        "sensor_sampling_process": measurement.pop("SamplingProces"),
                         "sensor_sampling_id": measurement.pop("Sample"),
                         "sensor_sampling_point": measurement.pop("SamplingPoint"),
                     }
