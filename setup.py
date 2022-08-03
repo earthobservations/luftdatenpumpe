@@ -55,9 +55,9 @@ extras = {
 
 setup(name='luftdatenpumpe',
       version='0.20.2',
-      description='Process live and historical data from luftdaten.info. Filter by station-id, '
-                  'sensor-id and sensor-type, apply reverse geocoding, store into TSDB and '
-                  'RDBMS databases, publish to MQTT or just output as JSON.',
+      description='Process live and historical data from luftdaten.info, IRCELINE and OpenAQ. Filter by '
+                  'station-id, sensor-id and sensor-type, apply reverse geocoding, store into time-series '
+                  'and RDBMS databases, publish to MQTT, output as JSON, or visualize in Grafana.',
       long_description=README,
       license="AGPL 3, EUPL 1.2",
       classifiers=[
