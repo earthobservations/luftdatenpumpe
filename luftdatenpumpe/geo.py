@@ -2,47 +2,62 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
+import logging
 import re
 import time
-import logging
-import geohash2
 from copy import deepcopy
-from munch import Munch
+
+import geohash2
 from dogpile.cache import make_region
 from dogpile.cache.util import kwarg_function_key_generator, to_list
 from geopy.geocoders import Nominatim
+from munch import Munch
 
 from luftdatenpumpe.util import invalidate_dogpile_cache
+
 from . import __appname__ as APP_NAME
 from . import __version__ as APP_VERSION
-
 
 log = logging.getLogger(__name__)
 
 
 # Configure cache for responses from Nominatim
-nominatim_cache = make_region(
-    function_key_generator=kwarg_function_key_generator) \
-    .configure('dogpile.cache.redis')
+nominatim_cache = make_region(function_key_generator=kwarg_function_key_generator).configure("dogpile.cache.redis")
 
 # Configure Nominatim client
-nominatim_user_agent = APP_NAME + '/' + APP_VERSION
+nominatim_user_agent = APP_NAME + "/" + APP_VERSION
 
 
 # Maybe also add building, public_building
-osm_address_fields = \
-    [
-        'continent',
-        'country_code', 'country', 'state', 'state_district', 'county',
-        'postcode',
-        'post_box',
-        'city', 'town', 'village', 'city_district', 'suburb', 'residential',
-        'road', 'pedestrian', 'cycleway', 'footway', 'path',
-        'house_number',
-
-        'administrative', 'region', 'neighbourhood', 'industrial', 'common',
-        'address26', 'address29',
-    ]
+osm_address_fields = [
+    "continent",
+    "country_code",
+    "country",
+    "state",
+    "state_district",
+    "county",
+    "postcode",
+    "post_box",
+    "city",
+    "town",
+    "village",
+    "city_district",
+    "suburb",
+    "residential",
+    "road",
+    "pedestrian",
+    "cycleway",
+    "footway",
+    "path",
+    "house_number",
+    "administrative",
+    "region",
+    "neighbourhood",
+    "industrial",
+    "common",
+    "address26",
+    "address29",
+]
 
 
 def resolve_location(latitude=None, longitude=None, geohash=None, country_code=None, improve=True):
@@ -55,11 +70,11 @@ def resolve_location(latitude=None, longitude=None, geohash=None, country_code=N
     location = reverse_geocode(latitude, longitude, country_code)
 
     # Backward compatibility re. already cached objects from ``reverse_geocode``.
-    if hasattr(location, 'raw'):
+    if hasattr(location, "raw"):
         location = location.raw
 
-    if location is None or 'error' in location:
-        raise ValueError('Reverse geocoding failed for lat={}, lon={}'.format(latitude, longitude))
+    if location is None or "error" in location:
+        raise ValueError("Reverse geocoding failed for lat={}, lon={}".format(latitude, longitude))
 
     location = rebundle_location(location)
 
@@ -70,15 +85,15 @@ def rebundle_location(location):
 
     address = Munch()
     for field in osm_address_fields:
-        if field in location['address']:
-            address[field] = location['address'][field]
-            del location['address'][field]
+        if field in location["address"]:
+            address[field] = location["address"][field]
+            del location["address"][field]
 
     address_more = Munch()
-    for key, value in location['address'].items():
+    for key, value in location["address"].items():
         address_more[key] = value
 
-    del location['address']
+    del location["address"]
 
     result = Munch(location)
     result.address = address
@@ -108,43 +123,43 @@ def reverse_geocode(latitude, longitude, country_code):
     """
 
     location = None
-    if country_code == 'DE':
+    if country_code == "DE":
         location = reverse_geocode_main(latitude, longitude)
 
-    if location is None or 'error' in location:
+    if location is None or "error" in location:
         location = reverse_geocode_fallback(latitude, longitude)
 
-    if location is None or 'error' in location:
+    if location is None or "error" in location:
         # Must raise an exception here to let the result not be cached.
-        raise ValueError('Reverse geocoding failed for lat={}, lon={}'.format(latitude, longitude))
+        raise ValueError("Reverse geocoding failed for lat={}, lon={}".format(latitude, longitude))
 
     return location
 
 
 def reverse_geocode_main(latitude, longitude):
 
-    log.debug('Reverse geocoding I: {}'.format(locals()))
+    log.debug("Reverse geocoding I: {}".format(locals()))
 
     location = None
     try:
-        geolocator = Nominatim(domain='nominatim.hiveeyes.org', user_agent=nominatim_user_agent, timeout=1.25)
+        geolocator = Nominatim(domain="nominatim.hiveeyes.org", user_agent=nominatim_user_agent, timeout=1.25)
         position = (latitude, longitude)
         location = geolocator.reverse(position).raw
 
         # Sanity checks
-        if location['address'] == {'country': 'Deutschland', 'country_code': 'de', 'continent': 'Europe'}:
+        if location["address"] == {"country": "Deutschland", "country_code": "de", "continent": "Europe"}:
             return None
 
     except Exception as ex:
         name = ex.__class__.__name__
-        log.warning('Reverse geocoding I failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
+        log.warning("Reverse geocoding I failed: {}: {}. lat={}, lon={}".format(name, ex, latitude, longitude))
 
     return location
 
 
 def reverse_geocode_fallback(latitude, longitude):
 
-    log.debug('Reverse geocoding II: {}'.format(locals()))
+    log.debug("Reverse geocoding II: {}".format(locals()))
 
     location = None
     try:
@@ -158,14 +173,14 @@ def reverse_geocode_fallback(latitude, longitude):
         # FIXME: When using "HTTP_PROXY" from environment, use scheme='http'
         # export HTTP_PROXY=http://weather.hiveeyes.org:8912/
         # See also https://github.com/geopy/geopy/issues/263
-        #geolocator = Nominatim(user_agent=nominatim_user_agent, scheme='http')
+        # geolocator = Nominatim(user_agent=nominatim_user_agent, scheme='http')
 
         position = (latitude, longitude)
         location = geolocator.reverse(position).raw
 
     except Exception as ex:
         name = ex.__class__.__name__
-        log.error('Reverse geocoding II failed: {}: {}. lat={}, lon={}'.format(name, ex, latitude, longitude))
+        log.error("Reverse geocoding II failed: {}: {}. lat={}, lon={}".format(name, ex, latitude, longitude))
 
     finally:
         # Obey to fair use policy (an absolute maximum of 1 request per second).
@@ -200,26 +215,24 @@ def improve_location(location):
     # print("location:", json.dumps(location, indent=2))
 
     address = location.address
-    #log.info('Address: %s', address)
+    # log.info('Address: %s', address)
 
     # Uppercase `country_code` attribute.
-    if 'country_code' in address:
+    if "country_code" in address:
         address.country_code = address.country_code.upper()
 
-
     # Patch `country` field.
-    if 'country_code' in address:
+    if "country_code" in address:
 
         # R.D. => Dominican Republic
         # Example: Guayacanes, Costámbar, Puerto Plata, DO (#109)
-        if address.country_code == 'DO':
-            address.country = 'Dominican Republic'
+        if address.country_code == "DO":
+            address.country = "Dominican Republic"
 
         # RP => Republic of Poland
         # Example: Polarna, Krzyki, Osiedle Krzyki-Partynice, Wrocław, dolnośląskie, PL (#1463)
-        if address.country_code == 'PL':
-            address.country = 'Poland'
-
+        if address.country_code == "PL":
+            address.country = "Poland"
 
     # Improve `city` attribute.
 
@@ -228,66 +241,67 @@ def improve_location(location):
     # - if `state` is missing, use `city` attribute.
     # https://de.wikipedia.org/wiki/Stadtstaat#Souver%C3%A4ne_Stadtstaaten
     stadtstaaten = [
-
         # Germany
-        'Berlin', 'Bremen', 'Hamburg',
-
+        "Berlin",
+        "Bremen",
+        "Hamburg",
         # Austria
-        'Wien',
+        "Wien",
     ]
-    city_or_state = address.get('city', address.get('state'))
+    city_or_state = address.get("city", address.get("state"))
     if city_or_state in stadtstaaten:
         address.state = address.city = city_or_state
 
     # If `city` is missing, try a number of alternative attributes.
     city_choices = [
-
         # Aliases
-        'village', 'town', 'county', 'suburb', 'city_district',
-
+        "village",
+        "town",
+        "county",
+        "suburb",
+        "city_district",
         # Stadtstaat
-        'state',
+        "state",
     ]
-    if 'city' not in address:
+    if "city" not in address:
         for fieldname in city_choices:
             if fieldname in address:
                 address.city = address[fieldname]
                 break
 
     # Patch `city` field.
-    if 'city' in address and address.city == 'Rgbg':
-        address.city = 'Regensburg'
+    if "city" in address and address.city == "Rgbg":
+        address.city = "Regensburg"
 
-    if 'city' not in address:
-        address.city = 'Unknown City'
-
+    if "city" not in address:
+        address.city = "Unknown City"
 
     # Improve Stadtteil.
     # Use `residential` or `neighbourhood` for missing `suburb` attribute.
-    if 'suburb' not in address and 'residential' in address:
+    if "suburb" not in address and "residential" in address:
         address.suburb = address.residential
-    if 'suburb' not in address and 'neighbourhood' in address:
+    if "suburb" not in address and "neighbourhood" in address:
         address.suburb = address.neighbourhood
-    if 'suburb' not in address and 'address_more' in location and 'city_block' in location.address_more:
+    if "suburb" not in address and "address_more" in location and "city_block" in location.address_more:
         address.suburb = location.address_more.city_block
 
     # 2022-07-09: When `city_district` is missing, backfill with `borough` from `address_more` slot.
-    if 'city_district' not in address and 'address_more' in location and 'borough' in location.address_more:
+    if "city_district" not in address and "address_more" in location and "borough" in location.address_more:
         address.city_district = location.address_more.borough
 
-    if 'city_district' not in address and 'suburb' in address:
+    if "city_district" not in address and "suburb" in address:
         address.city_district = address.suburb
 
         # Be agnostic against road vs. path
-    if 'road' not in address:
-        road_choices = ['path', 'pedestrian', 'cycleway', 'footway', 'neighbourhood', 'house_number']
+    if "road" not in address:
+        road_choices = ["path", "pedestrian", "cycleway", "footway", "neighbourhood", "house_number"]
         for fieldname in road_choices:
             if fieldname in address:
                 address.road = address[fieldname]
                 break
 
-    if 'road' not in address:
-        address.road = 'Unknown Road'
+    if "road" not in address:
+        address.road = "Unknown Road"
 
 
 def format_address(location):
@@ -311,35 +325,36 @@ def format_address(location):
     # Clean up `county`, 'city_district` and `suburb` fields.
     blacklist = [
         # county
-        'Landkreis', 'Kreis', 'Verwaltungsgemeinschaft',
-
+        "Landkreis",
+        "Kreis",
+        "Verwaltungsgemeinschaft",
         # city_district
-        'Stadtbezirk',
-
+        "Stadtbezirk",
         # suburb: prefixes
-        'Bezirksteil', 'Bezirk', 'KG',
-
+        "Bezirksteil",
+        "Bezirk",
+        "KG",
         # suburb: values
-        'Fhain',
+        "Fhain",
     ]
-    blacklist_fields = ['county', 'city_district', 'suburb']
+    blacklist_fields = ["county", "city_district", "suburb"]
     for fieldname in blacklist_fields:
         if fieldname in address:
             for black in blacklist:
                 if black in address[fieldname]:
-                    address[fieldname] = address[fieldname].replace(black, '').strip()
+                    address[fieldname] = address[fieldname].replace(black, "").strip()
 
     # Build display location from components.
-    address_components = ['road', 'suburb', 'city_district', 'city', 'county', 'state', 'country_code']
+    address_components = ["road", "suburb", "city_district", "city", "county", "state", "country_code"]
     address_parts = []
-    starts_with_number = re.compile(r'^\d+')
+    starts_with_number = re.compile(r"^\d+")
     for field_choices in address_components:
         field_choices = to_list(field_choices)
         for fieldname in field_choices:
             if fieldname in address:
                 component = address[fieldname]
 
-                if not component or component.startswith('Unknown'):
+                if not component or component.startswith("Unknown"):
                     continue
 
                 if address_parts and component == address_parts[-1]:
@@ -351,7 +366,7 @@ def format_address(location):
                 address_parts.append(component)
                 break
 
-    location_label = ', '.join(address_parts)
+    location_label = ", ".join(address_parts)
     return location_label
 
 
@@ -364,7 +379,7 @@ def geohash_encode(latitude, longitude):
     geohash = geohash2.encode(float(latitude), float(longitude))
 
     # Eight characters should be fine?
-    #geohash = geohash[:8]
+    # geohash = geohash[:8]
 
     return geohash
 
@@ -379,7 +394,7 @@ def geohash_decode(geohash):
 
 
 def disable_nominatim_cache():
-    log.info('Disabling Nominatim cache')
+    log.info("Disabling Nominatim cache")
     # Invalidate the Nominatim cache; this applies only for this session, it will _not_ _purge_ all data at once.
     invalidate_dogpile_cache(nominatim_cache)
 

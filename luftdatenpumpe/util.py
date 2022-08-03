@@ -2,27 +2,25 @@
 # (c) 2017,2018 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017,2018 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import os
-import re
-import sys
 import glob
 import json
 import logging
+import os
+import re
+import sys
 import traceback
 import unicodedata
+from collections import OrderedDict
 from itertools import zip_longest
 
-from six import StringIO
 from docopt import docopt
 from munch import Munch, munchify
-from collections import OrderedDict
-
+from six import StringIO
 
 log = logging.getLogger(__name__)
 
 
 class Application:
-
     def __init__(self, name=None, version=None, docopt_recipe=None):
 
         self.name = name
@@ -39,16 +37,16 @@ class Application:
         # Honor "LDP_" environment variables.
         argv = self.get_argv_with_environment()
 
-        #print(argv)
+        # print(argv)
 
         # Parse command line arguments.
-        self.options = normalize_options(docopt(self.docopt_recipe, argv=argv, version=f'{self.name} {self.version}'))
+        self.options = normalize_options(docopt(self.docopt_recipe, argv=argv, version=f"{self.name} {self.version}"))
 
         # Setup logging.
         self.setup_logging()
 
     def setup_logging(self):
-        debug = self.options.get('debug')
+        debug = self.options.get("debug")
         log_level = logging.INFO
         if debug:
             log_level = logging.DEBUG
@@ -57,16 +55,16 @@ class Application:
 
     def log_options(self):
         # Debugging
-        log.info('Options: {}'.format(json.dumps(self.options, indent=4)))
+        log.info("Options: {}".format(json.dumps(self.options, indent=4)))
 
     def get_argv_with_environment(self):
 
-        envvar_prefix = 'LDP_'
+        envvar_prefix = "LDP_"
 
         argv = sys.argv[1:]
 
         def search_argv_option(barename):
-            optname = '--' + barename
+            optname = "--" + barename
             for arg in argv:
                 if optname in arg:
                     return True
@@ -74,23 +72,20 @@ class Application:
 
         for name, value in os.environ.items():
             if name.startswith(envvar_prefix):
-                optname = name.replace(envvar_prefix, '').lower()
+                optname = name.replace(envvar_prefix, "").lower()
                 if not search_argv_option(optname):
-                    option = f'--{optname}={value}'
+                    option = f"--{optname}={value}"
                     argv.append(option)
 
         return argv
 
 
 def setup_logging(level=logging.INFO):
-    log_format = '%(asctime)-15s [%(name)-36s] %(levelname)-7s: %(message)s'
-    logging.basicConfig(
-        format=log_format,
-        stream=sys.stderr,
-        level=level)
+    log_format = "%(asctime)-15s [%(name)-36s] %(levelname)-7s: %(message)s"
+    logging.basicConfig(format=log_format, stream=sys.stderr, level=level)
 
     # TODO: Control debug logging of HTTP requests through yet another commandline option "--debug-http" or "--debug-requests"
-    requests_log = logging.getLogger('requests')
+    requests_log = logging.getLogger("requests")
     requests_log.setLevel(logging.WARN)
 
 
@@ -99,17 +94,17 @@ def normalize_options(options):
     for key, value in options.items():
 
         # Add primary variant.
-        key = key.strip('--<>')
+        key = key.strip("--<>")
         normalized[key] = value
 
         # Add secondary variant.
-        key = key.replace('-', '_')
+        key = key.replace("-", "_")
         normalized[key] = value
 
     return munchify(normalized, factory=OptionMunch)
 
 
-def read_list(data, separator=u','):
+def read_list(data, separator=","):
     if data is None:
         return []
     result = list(map(lambda x: x.strip(), data.split(separator)))
@@ -118,7 +113,7 @@ def read_list(data, separator=u','):
     return result
 
 
-def read_pairs(data, listsep=u',', pairsep=u'='):
+def read_pairs(data, listsep=",", pairsep="="):
     if data is None:
         return {}
     pairs = list(map(lambda x: x.strip(), data.split(listsep)))
@@ -152,7 +147,9 @@ def exception_traceback(exc_info=None):
 def to_list(obj):
     """Convert an object to a list if it is not already one"""
     if not isinstance(obj, (list, tuple)):
-        obj = [obj, ]
+        obj = [
+            obj,
+        ]
     return obj
 
 
@@ -201,11 +198,12 @@ def find_files_walk(path, suffix):
             if realname.endswith(suffix):
                 yield realname
 
+
 find_files = find_files_glob
 
 
 def sanitize_dbsymbol(symbol):
-    return symbol.replace('-', '_')
+    return symbol.replace("-", "_")
 
 
 def slugify(value):
@@ -223,10 +221,10 @@ def slugify(value):
 
     https://stackoverflow.com/questions/5574042/string-slugification-in-python/27264385#27264385
     """
-    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = re.sub(r'[^\w\s-]', '-', value).strip().lower()
-    value = re.sub(r'[-\s]+', '-', value)
-    value = value.strip('-')
+    value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    value = re.sub(r"[^\w\s-]", "-", value).strip().lower()
+    value = re.sub(r"[-\s]+", "-", value)
+    value = value.strip("-")
     return value
 
 
@@ -234,7 +232,7 @@ def is_nan(value):
     if value is None:
         return True
     strval = str(value).lower()
-    if strval in ['nan', 'unknown']:
+    if strval in ["nan", "unknown"]:
         return True
     return False
 
@@ -245,6 +243,7 @@ def run_once(f):
         if not wrapper.has_run:
             wrapper.has_run = True
             return f(*args, **kwargs)
+
     wrapper.has_run = False
     return wrapper
 
@@ -274,10 +273,9 @@ def chunks(iterable, chunksize):
 
 
 class OptionMunch(Munch):
-
     def __setattr__(self, k, v):
-        super().__setattr__(k.replace('-', '_'), v)
-        super().__setattr__(k.replace('_', '-'), v)
+        super().__setattr__(k.replace("-", "_"), v)
+        super().__setattr__(k.replace("_", "-"), v)
 
 
 def jd(data):

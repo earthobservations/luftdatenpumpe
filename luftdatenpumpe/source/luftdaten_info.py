@@ -3,13 +3,15 @@
 # (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
 # (c) 2019 Matthias Mehldau <wetter@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import re
 import json
 import logging
-from tqdm import tqdm
+import re
+from operator import itemgetter
+
 from munch import Munch
 from tablib import Dataset
-from operator import itemgetter
+from tqdm import tqdm
+
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
 from luftdatenpumpe.util import exception_traceback, find_files, is_nan
 
@@ -28,15 +30,15 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
     """
 
     # Sensor network identifier.
-    network = 'ldi'
+    network = "ldi"
 
     # Live data API URI for luftdaten.info.
-    uri = 'https://api.luftdaten.info/static/v1/data.json'
+    uri = "https://api.luftdaten.info/static/v1/data.json"
 
     def get_stations(self):
 
         stations = {}
-        field_candidates = ['station_id', 'name', 'position', 'location']
+        field_candidates = ["station_id", "name", "position", "location"]
         for reading in self.get_readings():
 
             # LDI Location ID is "station_id" here.
@@ -60,32 +62,34 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             for observation in reading.observations:
 
                 # Don't list sensors twice.
-                if any(map(lambda item: item.sensor_id == observation.meta.sensor_id, station['sensors'])):
+                if any(map(lambda item: item.sensor_id == observation.meta.sensor_id, station["sensors"])):
                     continue
 
                 # Build and record sensor information.
-                sensor_info = Munch({
-                    'sensor_id': observation.meta.sensor_id,
-                    'sensor_type_name': observation.meta.sensor_type_name,
-                    'sensor_type_id': observation.meta.sensor_type_id,
-                })
-                station['sensors'].append(sensor_info)
+                sensor_info = Munch(
+                    {
+                        "sensor_id": observation.meta.sensor_id,
+                        "sensor_type_name": observation.meta.sensor_type_name,
+                        "sensor_type_id": observation.meta.sensor_type_id,
+                    }
+                )
+                station["sensors"].append(sensor_info)
 
         # List of stations sorted by station identifier.
-        results = sorted(stations.values(), key=itemgetter('station_id'))
+        results = sorted(stations.values(), key=itemgetter("station_id"))
         return results
 
     def get_readings_from_api(self):
 
         # Fetch data from remote API.
-        log.info('Requesting luftdaten.info live API at {}'.format(self.uri))
-        payload = self.session.get(self.uri).content.decode('utf-8')
+        log.info("Requesting luftdaten.info live API at {}".format(self.uri))
+        payload = self.session.get(self.uri).content.decode("utf-8")
         data = json.loads(payload)
-        #pprint(data)
+        # pprint(data)
 
         # Mungle timestamp to be formally in ISO 8601 format (UTC).
-        timestamp = self.convert_timestamp(data[0]['timestamp'])
-        log.info('Timestamp of first record: {}'.format(timestamp))
+        timestamp = self.convert_timestamp(data[0]["timestamp"])
+        log.info("Timestamp of first record: {}".format(timestamp))
 
         # Apply data filter.
         data = self.apply_filter(data)
@@ -101,26 +105,26 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 if not self.make_observations_from_api(item, reading):
                     continue
 
-                log.debug(f'API reading:\n{json.dumps(reading, indent=2)}')
+                log.debug(f"API reading:\n{json.dumps(reading, indent=2)}")
 
                 yield reading
 
             except Exception as ex:
-                log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
+                log.warning("Could not make reading from {}.\n{}".format(item, exception_traceback()))
 
     def make_observations_from_api(self, item, reading):
 
         # Collect sensor values.
         has_data = False
-        if 'sensordatavalues' in item:
-            for sensor in item['sensordatavalues']:
-                fieldname = sensor['value_type']
-                value = sensor['value']
+        if "sensordatavalues" in item:
+            for sensor in item["sensordatavalues"]:
+                fieldname = sensor["value_type"]
+                value = sensor["value"]
 
                 # 2022-07-10: Skip specific non-measurement `sensordatavalues`.
                 # TODO: Those values apparently are originating from the node.
                 #       It might make sense to handle them as well.
-                if fieldname in ['lat', 'lon', 'height', 'timestamp']:
+                if fieldname in ["lat", "lon", "height", "timestamp"]:
                     continue
 
                 # Skip NaN values.
@@ -134,14 +138,14 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 value = float(value)
 
                 # Actually use this reading. LDI has single observations only.
-                reading.observations[0]['data'][fieldname] = value
+                reading.observations[0]["data"][fieldname] = value
 
                 # Signal positive dataness.
                 has_data = True
 
         # Skip this observation if it contains no data at all.
         if not has_data:
-            log.warning('Observation without sensor values for station %s', reading.station)
+            log.warning("Observation without sensor values for station %s", reading.station)
 
         return has_data
 
@@ -149,25 +153,25 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
         for item in data:
 
-            #log.info('item: %s', item)
+            # log.info('item: %s', item)
 
             # Decode JSON item
-            country_code = item['location']['country'].upper()
-            station_id = item['location']['id']
-            sensor_id = item['sensor']['id']
+            country_code = item["location"]["country"].upper()
+            station_id = item["location"]["id"]
+            sensor_id = item["sensor"]["id"]
 
             # If there is a filter defined, evaluate it.
             # Skip further processing for specific country codes, station ids or sensor ids.
             # TODO: Improve evaluating conditions.
             skip = False
-            if 'country' in self.filter:
-                if country_code not in self.filter['country']:
+            if "country" in self.filter:
+                if country_code not in self.filter["country"]:
                     skip = True
-            if 'station' in self.filter:
-                if station_id not in self.filter['station']:
+            if "station" in self.filter:
+                if station_id not in self.filter["station"]:
                     skip = True
-            if 'sensor' in self.filter:
-                if sensor_id not in self.filter['sensor']:
+            if "sensor" in self.filter:
+                if sensor_id not in self.filter["sensor"]:
                     skip = True
 
             if skip:
@@ -177,13 +181,13 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     def make_reading(self, item):
 
-        log.debug('Making reading from item: %s', item)
+        log.debug("Making reading from item: %s", item)
 
         # Decode JSON item.
-        station_id = item['location']['id']
-        sensor_id = item['sensor']['id']
-        sensor_type_name = item['sensor']['sensor_type']['name']
-        sensor_type_id = item['sensor']['sensor_type'].get('id')
+        station_id = item["location"]["id"]
+        sensor_id = item["sensor"]["id"]
+        sensor_type_name = item["sensor"]["sensor_type"]["name"]
+        sensor_type_id = item["sensor"]["sensor_type"].get("id")
 
         # Build observation.
         observation = Munch(
@@ -200,16 +204,16 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         entry.station.station_id = station_id
 
         # Set observation metadata.
-        observation.meta.timestamp = self.convert_timestamp(item['timestamp'])
+        observation.meta.timestamp = self.convert_timestamp(item["timestamp"])
         observation.meta.sensor_id = sensor_id
         observation.meta.sensor_type_name = sensor_type_name
         observation.meta.sensor_type_id = sensor_type_id
 
         # Collect position information.
-        del item['location']['id']
+        del item["location"]["id"]
         entry.station.position = Munch()
-        for key, value in item['location'].items():
-            if key in ['latitude', 'longitude', 'altitude']:
+        for key, value in item["location"].items():
+            if key in ["latitude", "longitude", "altitude"]:
                 try:
                     value = float(value)
                 except:
@@ -219,32 +223,32 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # Add more detailed location information.
         self.enrich_station(entry.station)
 
-        #log.debug('Observation: %s', json.dumps(observation))
+        # log.debug('Observation: %s', json.dumps(observation))
 
         # Debugging.
-        #break
+        # break
 
         return entry
 
     @staticmethod
     def convert_timestamp(timestamp):
         # Mungle timestamp to be formally in ISO 8601 format (UTC).
-        if ' ' in timestamp:
-            timestamp = timestamp.replace(' ', 'T')
-        if '+' not in timestamp:
-            timestamp += 'Z'
+        if " " in timestamp:
+            timestamp = timestamp.replace(" ", "T")
+        if "+" not in timestamp:
+            timestamp += "Z"
         return timestamp
 
     def get_readings_from_csv(self, path):
 
         # Optionally append suffix appropriately.
-        suffix = '.csv'
+        suffix = ".csv"
         if not path.endswith(suffix):
-            path += '/**/*' + suffix
+            path += "/**/*" + suffix
 
-        log.info('Building list of CSV files from {}'.format(path))
+        log.info("Building list of CSV files from {}".format(path))
         data = list(find_files(path))
-        log.info('Processing {} files'.format(len(data)))
+        log.info("Processing {} files".format(len(data)))
 
         # Process all files, optionally add progressbar indicator.
         for csvpath in self.wrap_progress(data):
@@ -284,9 +288,9 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         logger = log.info
         if self.progressbar:
             logger = log.debug
-        logger('Reading CSV file {}'.format(csvpath))
+        logger("Reading CSV file {}".format(csvpath))
 
-        if self.sensor_matches(csvpath, ['ppd42ns', 'sds011', 'pms3003', 'pms5003', 'pms7003', 'hpm']):
+        if self.sensor_matches(csvpath, ["ppd42ns", "sds011", "pms3003", "pms5003", "pms7003", "hpm"]):
             """
             PPD42NS
             sensor_id;sensor_type;location;lat;lon;timestamp;P1;durP1;ratioP1;P2;durP2;ratioP2
@@ -312,9 +316,9 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             sensor_id;sensor_type;location;lat;lon;timestamp;P1;P2
             7096;HPM;3590;50.853;4.342;2017-11-25T00:04:50;22;21
             """
-            fieldnames = ['P0', 'P1', 'P2']
+            fieldnames = ["P0", "P1", "P2"]
 
-        elif self.sensor_matches(csvpath, ['dht22', 'htu21d']):
+        elif self.sensor_matches(csvpath, ["dht22", "htu21d"]):
             """
             DHT22
             sensor_id;sensor_type;location;lat;lon;timestamp;temperature;humidity
@@ -324,9 +328,9 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             sensor_id;sensor_type;location;lat;lon;timestamp;temperature;humidity
             2875;HTU21D;1445;52.600;13.327;2017-11-26T00:00:38;2.80;99.90
             """
-            fieldnames = ['temperature', 'humidity']
+            fieldnames = ["temperature", "humidity"]
 
-        elif self.sensor_matches(csvpath, ['bmp180', 'bmp280', 'bme280']):
+        elif self.sensor_matches(csvpath, ["bmp180", "bmp280", "bme280"]):
             """
             BMP180
             sensor_id;sensor_type;location;lat;lon;timestamp;pressure;altitude;pressure_sealevel;temperature
@@ -340,18 +344,18 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
             sensor_id;sensor_type;location;lat;lon;timestamp;pressure;altitude;pressure_sealevel;temperature;humidity
             1093;BME280;535;48.746;9.211;2017-03-31T00:00:47;96913.02;;;12.75;63.35
             """
-            fieldnames = ['temperature', 'humidity', 'pressure', 'altitude', 'pressure_sealevel']
+            fieldnames = ["temperature", "humidity", "pressure", "altitude", "pressure_sealevel"]
 
-        elif self.sensor_matches(csvpath, ['ds18b20']):
+        elif self.sensor_matches(csvpath, ["ds18b20"]):
             """
             DS18B20
             sensor_id;sensor_type;location;lat;lon;timestamp;temperature
             19319;DS18B20;9794;43.851;125.304;2019-01-02T00:04:02;-14.94
             """
-            fieldnames = ['temperature']
+            fieldnames = ["temperature"]
 
         else:
-            log.warning('Skip import of {}. Unknown sensor type'.format(csvpath))
+            log.warning("Skip import of {}. Unknown sensor type".format(csvpath))
             return
 
         return self.csv_reader(csvpath, fieldnames)
@@ -362,7 +366,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         if self.quick_mode:
             try:
                 payload = open(csvpath).read(256)
-                payload = '\n'.join(payload.split('\n')[:2])
+                payload = "\n".join(payload.split("\n")[:2])
             except:
                 pass
         else:
@@ -374,9 +378,9 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
         # Read CSV file into tablib's Dataset and cast to dictionary representation.
         try:
-            imported_data = Dataset().load(payload, format='csv', delimiter=';')
+            imported_data = Dataset().load(payload, format="csv", delimiter=";")
         except Exception:
-            log.exception(f'Error decoding CSV from file {csvpath}')
+            log.exception(f"Error decoding CSV from file {csvpath}")
             return
 
         records = imported_data.dict
@@ -396,12 +400,12 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 if not self.make_observations(record, reading, fieldnames):
                     continue
 
-                log.debug(f'CSV reading:\n{json.dumps(reading, indent=2)}')
+                log.debug(f"CSV reading:\n{json.dumps(reading, indent=2)}")
 
                 yield reading
 
             except Exception:
-                log.exception(f'Could not make observation from CSV record {record}')
+                log.exception(f"Could not make observation from CSV record {record}")
 
     def make_observations(self, record, reading, fieldnames):
 
@@ -431,7 +435,7 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
                 continue
 
             # Actually use this reading. LDI has single observations only.
-            reading.observations[0]['data'][fieldname] = value
+            reading.observations[0]["data"][fieldname] = value
 
             # Signal positive dataness.
             has_data = True
@@ -440,23 +444,23 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
 
     def read_csv_record(self, csvitem):
 
-        #log.debug('CSV item: %s', csvitem)
+        # log.debug('CSV item: %s', csvitem)
 
         item = {
-            'timestamp': csvitem['timestamp'],
-            'location': {
-                'id': int(csvitem['location']),
+            "timestamp": csvitem["timestamp"],
+            "location": {
+                "id": int(csvitem["location"]),
             },
-            'sensor': {
-                'id': int(csvitem['sensor_id']),
-                'sensor_type': {
-                    'name': csvitem['sensor_type'],
-                }
+            "sensor": {
+                "id": int(csvitem["sensor_id"]),
+                "sensor_type": {
+                    "name": csvitem["sensor_type"],
+                },
             },
         }
 
-        if csvitem['lat'] and csvitem['lon']:
-            item['location'].update(latitude=float(csvitem['lat']), longitude=float(csvitem['lon']))
+        if csvitem["lat"] and csvitem["lon"]:
+            item["location"].update(latitude=float(csvitem["lat"]), longitude=float(csvitem["lon"]))
 
         return item
 
@@ -465,20 +469,20 @@ class LuftdatenPumpe(AbstractLuftdatenPumpe):
         # For specific location|sensor ids, skip further processing.
         if self.filter:
 
-            if 'sensor' in self.filter:
+            if "sensor" in self.filter:
                 # Decode station id from filename, e.g. ``2017-01-13_dht22_sensor_318.csv``.
-                m = re.match('.+sensor_(\d+)\.csv$', csvpath)
+                m = re.match(".+sensor_(\d+)\.csv$", csvpath)
                 if m:
                     sensor_id = int(m.group(1))
-                    if sensor_id not in self.filter['sensor']:
+                    if sensor_id not in self.filter["sensor"]:
                         return False
 
-            if 'sensor-type' in self.filter:
+            if "sensor-type" in self.filter:
                 # Decode sensor type from filename, e.g. ``2017-01-13_dht22_sensor_318.csv``.
-                m = re.match('.+_(\w+)_sensor_\d+\.csv$', csvpath)
+                m = re.match(".+_(\w+)_sensor_\d+\.csv$", csvpath)
                 if m:
                     sensor_type = m.group(1)
-                    if sensor_type not in self.filter['sensor-type']:
+                    if sensor_type not in self.filter["sensor-type"]:
                         return False
 
         return True

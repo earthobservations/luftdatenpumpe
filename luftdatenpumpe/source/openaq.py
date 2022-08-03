@@ -6,12 +6,12 @@
 import json
 import logging
 from datetime import datetime, timedelta
-
-from rfc3339 import rfc3339
-from munch import Munch
 from operator import itemgetter
 
 import openaq
+from munch import Munch
+from rfc3339 import rfc3339
+
 from luftdatenpumpe.source.common import AbstractLuftdatenPumpe
 from luftdatenpumpe.util import exception_traceback
 
@@ -29,13 +29,13 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
     """
 
     # Sensor network identifier.
-    network = 'openaq'
-    uri = 'data.openaq.org'
+    network = "openaq"
+    uri = "data.openaq.org"
 
     def get_stations(self):
 
         stations = {}
-        field_candidates = ['station_id', 'name', 'position', 'location']
+        field_candidates = ["station_id", "name", "position", "location"]
         for reading in self.get_readings():
 
             # Location ID is "station_id" here.
@@ -64,29 +64,33 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
 
             for key in keys:
                 # Don't list sensors twice.
-                #if any(map(lambda item: item.sensor_id == observation.meta.sensor_id, station['sensors'])):
+                # if any(map(lambda item: item.sensor_id == observation.meta.sensor_id, station['sensors'])):
                 #    continue
 
                 # Build and record sensor information.
-                sensor_info = Munch({
-                    #'sensor_id': observation.meta.sensor_id,
-                    'sensor_type_name': key,
-                    #'sensor_type_id': observation.meta.sensor_type_id,
-                })
-                station['sensors'].append(sensor_info)
+                sensor_info = Munch(
+                    {
+                        #'sensor_id': observation.meta.sensor_id,
+                        "sensor_type_name": key,
+                        #'sensor_type_id': observation.meta.sensor_type_id,
+                    }
+                )
+                station["sensors"].append(sensor_info)
 
         # List of stations sorted by station identifier.
-        results = sorted(stations.values(), key=itemgetter('station_id'))
+        results = sorted(stations.values(), key=itemgetter("station_id"))
         return results
 
     def get_readings_from_api(self):
-        #return self.get_latest_readings()
+        # return self.get_latest_readings()
         return self.get_current_measurement_readings()
 
     @staticmethod
     def last_hour():
         now = datetime.now()
-        now_aligned_to_hour = now - timedelta(hours=1, minutes=now.minute, seconds=now.second, microseconds=now.microsecond)
+        now_aligned_to_hour = now - timedelta(
+            hours=1, minutes=now.minute, seconds=now.second, microseconds=now.microsecond
+        )
         return rfc3339(now_aligned_to_hour, utc=True)
 
     def get_current_measurement_readings(self):
@@ -96,32 +100,32 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         """
 
         # Fetch data from remote API.
-        log.info('Requesting measurement data from OpenAQ')
+        log.info("Requesting measurement data from OpenAQ")
 
         api = openaq.OpenAQ()
 
         params = {}
-        if self.filter and 'country' in self.filter:
-            params['country'] = self.filter['country']
+        if self.filter and "country" in self.filter:
+            params["country"] = self.filter["country"]
 
         # TODO: What to do with readings which do not have any geographic information?
         # TODO: Raise limit by introducing result paging.
         date_from = self.last_hour()
         status, response = api.measurements(
-            date_from=date_from, has_geo=True, limit=10000,
-            include_fields=['attribution'], **params)
-        data = response['results']
+            date_from=date_from, has_geo=True, limit=10000, include_fields=["attribution"], **params
+        )
+        data = response["results"]
 
         if not data:
-            log.warning('No records found beginning {} with filter {}'.format(date_from, params))
+            log.warning("No records found beginning {} with filter {}".format(date_from, params))
             return
 
         # Mungle timestamp to be formally in ISO 8601 format (UTC).
-        timestamp = data[0]['date']['utc']
-        log.info('Timestamp of first record: {}'.format(timestamp))
+        timestamp = data[0]["date"]["utc"]
+        log.info("Timestamp of first record: {}".format(timestamp))
 
         # Apply data filter.
-        #data = self.apply_filter(data)
+        # data = self.apply_filter(data)
 
         # Transform live API items to actual readings while optionally
         # applying a number of transformation and enrichment steps.
@@ -131,16 +135,16 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
                 self.process_measurement(readings, item)
 
             except Exception as ex:
-                log.warning('Could not use observation from {}.\n{}'.format(item, exception_traceback()))
+                log.warning("Could not use observation from {}.\n{}".format(item, exception_traceback()))
 
         for reading in readings.values():
             has_data = False
             for observation in reading.observations:
-                if observation['data']:
+                if observation["data"]:
                     has_data = True
                     break
             if has_data:
-               yield reading
+                yield reading
 
     def process_measurement(self, readings, item):
         """
@@ -166,9 +170,9 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         :return:
         """
 
-        log.debug('Making reading from item: %s', item)
+        log.debug("Making reading from item: %s", item)
 
-        location = item['location']
+        location = item["location"]
 
         # TODO: Enrich location by requesting...
         # https://api.openaq.org/v1/locations/?location[]=CRRI%20Mathura%20Road,%20Delhi%20-%20IMD
@@ -182,26 +186,26 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
             )
 
             # Set station metadata.
-            entry.station.station_id = '[{}] {}'.format(item['country'], item['location'])
+            entry.station.station_id = "[{}] {}".format(item["country"], item["location"])
 
             # Collect position information.
             entry.station.position = Munch()
-            entry.station.position['country'] = item['country']
-            entry.station.position['city'] = item['city']
-            if 'coordinates' in item and isinstance(item['coordinates'], dict):
-                entry.station.position['latitude'] = item['coordinates']['latitude']
-                entry.station.position['longitude'] = item['coordinates']['longitude']
+            entry.station.position["country"] = item["country"]
+            entry.station.position["city"] = item["city"]
+            if "coordinates" in item and isinstance(item["coordinates"], dict):
+                entry.station.position["latitude"] = item["coordinates"]["latitude"]
+                entry.station.position["longitude"] = item["coordinates"]["longitude"]
 
             # Add more detailed location information.
             self.enrich_station(entry.station)
 
             readings[location] = entry
 
-        #readings.setdefault(location, {})
-        #readings[location].setdefault(timestamp, [])
+        # readings.setdefault(location, {})
+        # readings[location].setdefault(timestamp, [])
 
         # Decode item.
-        timestamp = item['date']['utc']
+        timestamp = item["date"]["utc"]
 
         # Find observation.
         observation = None
@@ -218,21 +222,21 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
 
             # Set observation metadata.
             observation.meta.timestamp = timestamp
-            observation.meta.sensor_type_name = 'unknown'
-            #observation.meta.sensor_type_id = 'aq'
+            observation.meta.sensor_type_name = "unknown"
+            # observation.meta.sensor_type_id = 'aq'
 
             entry.observations.append(observation)
 
         # Set observation data.
-        value = float(item['value'])
+        value = float(item["value"])
         if value >= 0:
-            parameter = item['parameter']
+            parameter = item["parameter"]
             observation.data[parameter] = value
 
-        #log.debug('Observation: %s', json.dumps(observation))
+        # log.debug('Observation: %s', json.dumps(observation))
 
         # Debugging.
-        #break
+        # break
 
     def get_latest_readings(self):
         """
@@ -241,29 +245,31 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         """
 
         # Fetch data from remote API.
-        log.info('Requesting latest data from OpenAQ')
+        log.info("Requesting latest data from OpenAQ")
 
         api = openaq.OpenAQ()
 
         # Example.
-        #res = api.latest(city='Delhi', parameter='pm25', df=True)
-        #print(res.columns)
+        # res = api.latest(city='Delhi', parameter='pm25', df=True)
+        # print(res.columns)
 
         params = {}
-        if self.filter and 'country' in self.filter:
-            params['country'] = self.filter['country']
+        if self.filter and "country" in self.filter:
+            params["country"] = self.filter["country"]
 
         # TODO: What to do with readings which do not have any geographic information?
         # TODO: Raise limit by introducing result paging.
-        status, response = api.latest(has_geo=True, limit=10000, include_fields=['attribution', 'averagingPeriod', 'sourceName'], **params)
-        data = response['results']
+        status, response = api.latest(
+            has_geo=True, limit=10000, include_fields=["attribution", "averagingPeriod", "sourceName"], **params
+        )
+        data = response["results"]
 
         # Mungle timestamp to be formally in ISO 8601 format (UTC).
-        timestamp = data[0]['measurements'][0]['lastUpdated']
-        log.info('Timestamp of first record: {}'.format(timestamp))
+        timestamp = data[0]["measurements"][0]["lastUpdated"]
+        log.info("Timestamp of first record: {}".format(timestamp))
 
         # Apply data filter.
-        #data = self.apply_filter(data)
+        # data = self.apply_filter(data)
 
         # Transform live API items to actual readings while optionally
         # applying a number of transformation and enrichment steps.
@@ -273,12 +279,12 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
                 if reading is None:
                     continue
 
-                log.debug(f'API reading:\n{json.dumps(reading, indent=2)}')
+                log.debug(f"API reading:\n{json.dumps(reading, indent=2)}")
 
                 yield reading
 
             except Exception as ex:
-                log.warning('Could not make reading from {}.\n{}'.format(item, exception_traceback()))
+                log.warning("Could not make reading from {}.\n{}".format(item, exception_traceback()))
 
     def make_reading_from_latest(self, item):
         """
@@ -310,7 +316,7 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         :return:
         """
 
-        log.debug('Making reading from item: %s', item)
+        log.debug("Making reading from item: %s", item)
 
         # Decode item.
         entry = Munch(
@@ -319,23 +325,23 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         )
 
         # Set station metadata.
-        entry.station.station_id = '{}:{}:{}'.format(item['country'], item['city'], item['location'])
+        entry.station.station_id = "{}:{}:{}".format(item["country"], item["city"], item["location"])
 
         # Collect position information.
         entry.station.position = Munch()
-        entry.station.position['country'] = item['country']
-        entry.station.position['city'] = item['city']
-        if 'coordinates' in item:
-            entry.station.position['latitude'] = item['coordinates']['latitude']
-            entry.station.position['longitude'] = item['coordinates']['longitude']
+        entry.station.position["country"] = item["country"]
+        entry.station.position["city"] = item["city"]
+        if "coordinates" in item:
+            entry.station.position["latitude"] = item["coordinates"]["latitude"]
+            entry.station.position["longitude"] = item["coordinates"]["longitude"]
 
         # Add more detailed location information.
         self.enrich_station(entry.station)
 
         observations_seen = {}
-        for measurement in item['measurements']:
+        for measurement in item["measurements"]:
 
-            timestamp = measurement['lastUpdated']
+            timestamp = measurement["lastUpdated"]
 
             # Build new observation.
             if timestamp not in observations_seen:
@@ -347,9 +353,9 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
 
                 # Set observation metadata.
                 observation.meta.timestamp = timestamp
-                observation.meta.sensor_type_name = 'aq'
-                observation.meta.sensor_type_id = 'aq'
-                observation.meta.source = measurement['sourceName']
+                observation.meta.sensor_type_name = "aq"
+                observation.meta.sensor_type_id = "aq"
+                observation.meta.source = measurement["sourceName"]
 
                 entry.observations.append(observation)
                 observations_seen[timestamp] = observation
@@ -359,14 +365,14 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
                 observation = observations_seen[timestamp]
 
             # Set observation data.
-            value = float(item['value'])
+            value = float(item["value"])
             if value >= 0:
-                parameter = measurement['parameter']
+                parameter = measurement["parameter"]
                 observation.data[parameter] = value
 
-            #log.debug('Observation: %s', json.dumps(observation))
+            # log.debug('Observation: %s', json.dumps(observation))
 
             # Debugging.
-            #break
+            # break
 
         return entry

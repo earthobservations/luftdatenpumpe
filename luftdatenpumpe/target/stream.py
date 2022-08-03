@@ -5,7 +5,7 @@
 
 class StreamTarget:
 
-    capabilities = ['stations', 'readings']
+    capabilities = ["stations", "readings"]
 
     def __init__(self, handle, formatter):
         self.handle = handle
@@ -16,7 +16,7 @@ class StreamTarget:
         self.buffer.append(data)
 
     def flush(self, final=False):
-        #if not final:
+        # if not final:
         #    return
         self.handle.write(self.formatter(self.buffer))
         self.buffer = []

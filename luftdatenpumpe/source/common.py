@@ -2,19 +2,18 @@
 # (c) 2017-2019 Andreas Motl <andreas@hiveeyes.org>
 # (c) 2017-2019 Richard Pobering <richard@hiveeyes.org>
 # License: GNU Affero General Public License, Version 3
-import sys
 import logging
-import requests
+import sys
 from urllib.parse import urlparse
 
 import redis
-from tqdm import tqdm
+import requests
 from requests_cache import CachedSession
-from luftdatenpumpe.geo import geohash_encode, resolve_location, improve_location, format_address
+from tqdm import tqdm
 
 from luftdatenpumpe import __appname__ as APP_NAME
 from luftdatenpumpe import __version__ as APP_VERSION
-
+from luftdatenpumpe.geo import format_address, geohash_encode, improve_location, resolve_location
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +23,9 @@ class AbstractLuftdatenPumpe:
     network = None
     uri = None
 
-    def __init__(self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False):
+    def __init__(
+        self, source=None, filter=None, reverse_geocode=False, progressbar=False, quick_mode=False, dry_run=False
+    ):
         self.source = source
         self.reverse_geocode = reverse_geocode
         self.dry_run = dry_run
@@ -38,13 +39,13 @@ class AbstractLuftdatenPumpe:
         # TODO: Make backend configurable.
 
         # Configure User-Agent string.
-        user_agent = APP_NAME + '/' + APP_VERSION
+        user_agent = APP_NAME + "/" + APP_VERSION
 
         # Use hostname of url as cache prefix.
         cache_name = urlparse(self.uri).netloc
 
         # Configure cached requests session.
-        #self.session = CachedSession(
+        # self.session = CachedSession(
         #    cache_name=cache_name, backend='redis', expire_after=300,
         #    user_agent=user_agent)
 
@@ -52,27 +53,27 @@ class AbstractLuftdatenPumpe:
         self.session = requests.Session()
 
         # Gracefully probe Redis for availability if cache is enabled.
-        if hasattr(self.session, 'cache'):
+        if hasattr(self.session, "cache"):
             try:
-                self.session.cache.responses.get('test')
+                self.session.cache.responses.get("test")
             except redis.exceptions.ConnectionError as ex:
-                log.error('Unable to connect to Redis: %s', ex)
+                log.error("Unable to connect to Redis: %s", ex)
                 sys.exit(2)
 
     def get_readings(self):
 
-        if self.source == 'api':
+        if self.source == "api":
             data = self.get_readings_from_api()
 
-        elif self.source.startswith('file://'):
-            path = self.source.replace('file://', '')
+        elif self.source.startswith("file://"):
+            path = self.source.replace("file://", "")
             data = self.get_readings_from_csv(path)
 
         else:
-            raise ValueError('Unknown data source: {}'.format(self.source))
+            raise ValueError("Unknown data source: {}".format(self.source))
 
         if data is None:
-            raise KeyError('No data selected. Please check connectivity and filter definition.')
+            raise KeyError("No data selected. Please check connectivity and filter definition.")
 
         return data
 
@@ -85,8 +86,9 @@ class AbstractLuftdatenPumpe:
     def enrich_station(self, station):
 
         # Sanity checks.
-        if ('latitude' not in station.position or 'longitude' not in station.position) or \
-           (station.position.latitude is None or station.position.longitude is None):
+        if ("latitude" not in station.position or "longitude" not in station.position) or (
+            station.position.latitude is None or station.position.longitude is None
+        ):
 
             # Just emit this message once per station.
             StationGeocodingFailed.emit_warning(station.station_id)
@@ -105,7 +107,7 @@ class AbstractLuftdatenPumpe:
                     latitude=station.position.latitude,
                     longitude=station.position.longitude,
                     geohash=station.position.geohash,
-                    country_code=station.position.get('country'),
+                    country_code=station.position.get("country"),
                 )
 
                 # Improve location information.
@@ -117,17 +119,17 @@ class AbstractLuftdatenPumpe:
                 # Apply some fixups.
                 try:
                     if station.name.lower() == station.position.country.lower():
-                        del station['name']
+                        del station["name"]
                 except:
                     pass
 
             except Exception:
-                log.exception(f'Failed computing humanized name for station {station}')
+                log.exception(f"Failed computing humanized name for station {station}")
 
-            if 'name' not in station:
-                station.name = f'Station #{station.station_id}'
+            if "name" not in station:
+                station.name = f"Station #{station.station_id}"
                 try:
-                    station.name += ', ' + station.position.country
+                    station.name += ", " + station.position.country
                 except:
                     pass
 
@@ -144,7 +146,7 @@ class AbstractLuftdatenPumpe:
             total = len(data)
             if stepsize is not False:
                 total *= stepsize
-            log.info(f'Processing {total} items')
+            log.info(f"Processing {total} items")
             data = tqdm(data, unit_scale=stepsize)
         return data
 
