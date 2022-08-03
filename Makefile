@@ -24,6 +24,7 @@ $(eval proselint    := $(venvpath)/bin/proselint)
 # Setup Python virtualenv
 setup-virtualenv:
 	@test -e $(python) || python3 -m venv $(venvpath)
+	$(pip) install --requirement=requirements-utils.txt
 
 
 # -------
@@ -55,7 +56,7 @@ test-coverage: install-tests
 # Release this piece of software
 # Synopsis:
 #   make release bump=minor  (major,minor,patch)
-release: bumpversion push sdist pypi-upload
+release: bumpversion push build upload
 
 
 # -------------
@@ -77,11 +78,11 @@ bumpversion: install-releasetools
 push:
 	git push && git push --tags
 
-sdist:
-	@$(python) setup.py sdist
+build:
+	@$(python) -m build
 
-pypi-upload: install-releasetools
-	twine upload --skip-existing --verbose dist/*.tar.gz
+upload:
+	$(twine) upload --skip-existing dist/*{.tar.gz,.whl}
 
 install-doctools: setup-virtualenv
 	@$(pip) install --quiet --requirement requirements-docs.txt --upgrade
@@ -100,12 +101,10 @@ install-tests: setup-virtualenv
 # ----------------------
 
 format: setup-virtualenv
-	$(pip) install --requirement=requirements-utils.txt
 	$(black) .
 	$(isort) .
 
 lint: setup-virtualenv
-	$(pip) install --requirement=requirements-utils.txt
 	$(flake8) --exit-zero luftdatenpumpe tests
 	$(proselint) *.rst doc/**/*.rst || true
 
