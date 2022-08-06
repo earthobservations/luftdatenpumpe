@@ -20,7 +20,7 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
     :target: https://pypi.org/project/luftdatenpumpe/
-    :alt: Support Python versions
+    :alt: Supported Python versions
 
 .. image:: https://img.shields.io/pypi/l/luftdatenpumpe.svg
     :target: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE

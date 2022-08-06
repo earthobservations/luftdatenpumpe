@@ -11,7 +11,10 @@ Iteration +0
 - [x] Add CI/GHA and badges
 - [x] Code formatting, satisfy linter
 - [x] Render ``luftdatenpumpe --help`` to documentation
-- [o] Release 0.21.0
+- [x] Release 0.21.0
+- [o] Add support for EEA
+
+  - Stations list: Compute ``AirPollutant`` from ``AirPollutantCode``
 - [o] Add more tests
 - [o] Announce on https://forum.sensor.community/
   https://community.panodata.org/t/luftdatenpumpe/21
