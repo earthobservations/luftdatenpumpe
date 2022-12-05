@@ -5,6 +5,7 @@ Luftdatenpumpe changelog
 
 in progress
 ===========
+- Fix acquisition of station list from EEA
 
 
 2022-08-03 0.21.0
