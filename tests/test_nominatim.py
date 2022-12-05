@@ -62,7 +62,7 @@ def test_city_missing():
 
     location = resolve_location(latitude=24.074, longitude=120.34)
     improve_location(location)
-    assert location.address.city == "Unknown City"
+    assert location.address.city == "南投縣"
 
 
 def test_stadtstaat():
@@ -73,7 +73,7 @@ def test_stadtstaat():
     location = resolve_location(latitude=53.112, longitude=8.896)
     improve_location(location)
     assert location.address.suburb == "Horn-Lehe"
-    assert location.address.city_district == "Stadtbezirk Bremen-Ost"
+    assert location.address.city_district == "Bremen-Ost"
     assert location.address.city == "Bremen"
     assert location.address.state == "Bremen"
     name = format_address(location)
@@ -255,4 +255,4 @@ def test_taiwan_poor():
     assert location.address.country_code == "TW"
     assert location.address.country == "臺灣"
     name = format_address(location)
-    assert name == "TW"
+    assert name == "南投縣, 臺灣省, TW"
