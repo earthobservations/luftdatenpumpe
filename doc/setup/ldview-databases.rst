@@ -3,30 +3,51 @@ Luftdaten-Viewer Databases
 ##########################
 
 
+************
+Introduction
+************
+
+This section of the documentation outlines how to provision the PostGIS and
+InfluxDB databases. It will assume all services are properly installed and
+configured on your system, and otherwise will give you instructions how to
+start the corresponding services in sandbox mode.
+
+Prerequisites
+=============
+
+When running in sandbox mode, those commands will start the services required
+to follow this tutorial. It is InfluxDB, PostGIS, and Redis::
+
+    make influxdb-start
+    make postgis-start
+    make redis-start
+
+
+
 *******
 PostGIS
 *******
 
-
 Create and provision PostGIS database
 =====================================
 
-.. note::
+Connect to PostGIS::
 
-    Sometimes, for example when working with Docker, adding options where the
-    PostGIS can be found, is sensible. Example::
+    psql postgres://postgres@localhost:5432
 
-         export PGHOST=localhost
-         export PGUSER=postgres
+When working on a classic Linux host, where PostGIS is installed as a system
+service, this command might be needed to connect::
+
+    su - postgres
+    psql
 
 Create database::
 
-    su - postgres
-    createdb weatherbase
+    CREATE DATABASE weatherbase;
+    \connect weatherbase;
 
 Enable PostGIS extension::
 
-    psql weatherbase
     CREATE EXTENSION postgis;
 
 Optionally drop users first::
@@ -41,7 +62,7 @@ Create users::
 
 Pre-flight checks::
 
-    psql -U luftdatenpumpe -h localhost -d weatherbase
+    psql postgres://luftdatenpumpe@localhost:5432/weatherbase
 
 Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
@@ -101,7 +122,7 @@ Create and provision InfluxDB database
 ======================================
 ::
 
-    luftdatenpumpe readings --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+    luftdatenpumpe readings --network=ldi --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
 Sanity checks

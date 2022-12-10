@@ -19,7 +19,7 @@ jobs:
     # https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
     services:
 
-      influxdb:
+      redis:
         image: redis:7
         ports:
           - 6379:6379
