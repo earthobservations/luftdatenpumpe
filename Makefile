@@ -120,13 +120,13 @@ redis-start: mkvar
 	docker run --rm -it --publish 6379:6379 redis:7
 
 postgis-start:
-	docker run --rm -it --publish=5432:5432 --env "POSTGRES_HOST_AUTH_METHOD=trust" postgis/postgis:14-3.2
+	docker run --rm -it --publish=5432:5432 --env "POSTGRES_HOST_AUTH_METHOD=trust" postgis/postgis:14-3.3
 
 influxdb-start:
 	docker run --rm -it --publish=8086:8086 influxdb:1.8
 
 mosquitto-start:
-	docker run --rm -it --publish=1883:1883 eclipse-mosquitto:2.0.14 mosquitto -c /mosquitto-no-auth.conf
+	docker run --rm -it --publish=1883:1883 eclipse-mosquitto:2.0.15 mosquitto -c /mosquitto-no-auth.conf
 
 grafana-start:
-	docker run --rm -it --publish=3000:3000 --env='GF_SECURITY_ADMIN_PASSWORD=admin' grafana/grafana:8.5.6
+	docker run --rm -it --publish=3000:3000 --env='GF_SECURITY_ADMIN_PASSWORD=admin' grafana/grafana:8.5.15
