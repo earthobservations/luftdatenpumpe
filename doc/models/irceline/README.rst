@@ -12,14 +12,19 @@ Stations
 ::
 
     # Stations
-    http 'http://geo.irceline.be/sos/api/v1/stations?expanded=true' | jq '[ .[] | select(.properties.id==1234 or .properties.id==1720) ]' > upstream-stations.json
+    http 'http://geo.irceline.be/sos/api/v1/stations?expanded=true' | \
+        jq '[ .[] | select(.properties.id==1234 or .properties.id==1720) ]' \
+        > upstream-stations.json
 
 Readings
 ========
 ::
 
     # Readings
-    http POST http://geo.irceline.be/sos/api/v1/timeseries/getData timeseries:='[10744,7185]' timespan='PT3h/2019-04-24T01:00:00Z' | jq . > upstream-timeseries.json
+    http POST http://geo.irceline.be/sos/api/v1/timeseries/getData \
+        timeseries:='[10744,7185]' \
+        timespan='PT3h/2019-04-24T01:00:00Z' | \
+        jq . > upstream-timeseries.json
 
 
 **********

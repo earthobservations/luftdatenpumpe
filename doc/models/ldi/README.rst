@@ -8,7 +8,8 @@ Upstream
 ********
 ::
 
-    http https://api.luftdaten.info/static/v1/data.json | jq '[ .[] | select(.location.id==49 or .location.id==1033) ]' > upstream.json
+    http https://api.luftdaten.info/static/v1/data.json | \
+        jq '[ .[] | select(.location.id==49 or .location.id==1033) ]' > upstream.json
 
 
 **********

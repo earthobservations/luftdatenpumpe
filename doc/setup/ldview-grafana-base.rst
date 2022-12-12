@@ -75,20 +75,27 @@ Create station list
 Write stations and metadata to RDBMS database (PostgreSQL)::
 
     # Acquire baseline from live API.
-    luftdatenpumpe stations --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    luftdatenpumpe stations --reverse-geocode \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
     # Optionally acquire more stations from CSV archive files.
-    luftdatenpumpe stations --reverse-geocode --source=file:///var/spool/archive.luftdaten.info --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    luftdatenpumpe stations --reverse-geocode \
+        --source=file:///var/spool/archive.luftdaten.info \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
 Create RDBMS database view ``ldi_network``::
 
     # This is important to do *after* importing the metadata, as the
     # previous steps will properly populate the database on the first hand.
-    luftdatenpumpe database --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-views --grant-user=grafana
+    luftdatenpumpe database \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-views --grant-user=grafana
 
 Export station metadata from RDBMS database (PostgreSQL) to JSON file for Grafana Worldmap Panel::
 
-    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id|str,name=road_and_name_and_id' > $stationsfile
+    luftdatenpumpe stations \
+        --source=postgresql://luftdatenpumpe@localhost/weatherbase \
+        --target=json.flex+stream://sys.stdout \
+        --target-fieldmap='key=station_id|str,name=road_and_name_and_id' > $stationsfile
 
 Check::
 
