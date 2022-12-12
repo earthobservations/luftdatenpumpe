@@ -17,3 +17,4 @@ Result (reformatted for better readability)::
     luftdaten.info {"latitude": 52.56, "longitude": 13.374, "altitude": 44.3, "country": "DE", "exact_location": 0, "indoor": 0, "geohash": "u33e0268hy1h", "location_id": 1033, "time": "2022-07-10T14:36:04Z", "sensor_id": 2055, "sensor_type": "SDS011", "P1": 3.4, "P2": 1.4}
     luftdaten.info {"latitude": 52.56, "longitude": 13.374, "altitude": 44.3, "country": "DE", "exact_location": 0, "indoor": 0, "geohash": "u33e0268hy1h", "location_id": 1033, "time": "2022-07-10T14:36:05Z", "sensor_id": 2056, "sensor_type": "DHT22", "temperature": 20.2, "humidity": 3.9}
     luftdaten.info {"latitude": 52.56, "longitude": 13.374, "altitude": 44.3, "country": "DE", "exact_location": 0, "indoor": 0, "geohash": "u33e0268hy1h", "location_id": 1033, "time": "2022-07-10T14:36:05Z", "sensor_id": 67015, "sensor_type": "BME280", "temperature": 20.39, "pressure": 101364.47, "humidity": 41.09, "pressure_at_sealevel": 101888.09}
+
