@@ -67,13 +67,23 @@ Pre-flight checks::
 
 Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
-    luftdatenpumpe stations --network=ldi --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
-    luftdatenpumpe stations --network=irceline --station=1030,1751 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    luftdatenpumpe stations \
+        --network=ldi --station=49,1033 --reverse-geocode \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+
+    luftdatenpumpe stations \
+        --network=irceline --station=1030,1751 --reverse-geocode \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
 Create database view and grant permissions to "grafana" user::
 
-    luftdatenpumpe database --network=ldi --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-view --grant-user=grafana
-    luftdatenpumpe database --network=irceline --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-view --grant-user=grafana
+    luftdatenpumpe database --network=ldi \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase \
+        --create-view --grant-user=grafana
+
+    luftdatenpumpe database --network=irceline \
+        --target=postgresql://luftdatenpumpe@localhost/weatherbase \
+        --create-view --grant-user=grafana
 
 .. note::
 
@@ -106,9 +116,14 @@ Data
 ----
 - Query the database view ``ldi_network`` here.
 - Use read-only account pretending to be Grafana.
+
 ::
 
-    psql --username=grafana --host=localhost --dbname=weatherbase --command='select count(*) from ldi_network;'
+    psql \
+        --username=grafana --host=localhost \
+        --dbname=weatherbase --command='SELECT COUNT(*) FROM ldi_network;'
+
+::
 
      count
     -------
@@ -123,7 +138,8 @@ Create and provision InfluxDB database
 ======================================
 ::
 
-    luftdatenpumpe readings --network=ldi --station=49,1033 --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
+    luftdatenpumpe readings --network=ldi --station=49,1033 \
+        --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
 Sanity checks
@@ -134,7 +150,12 @@ Database schema
 ---------------
 ::
 
-    $ influx -host localhost -username luftdatenpumpe -database luftdaten_info -execute 'SHOW FIELD KEYS; SHOW TAG KEYS;'
+    influx \
+        -host localhost -username luftdatenpumpe \
+        -database luftdaten_info \
+        -execute 'SHOW FIELD KEYS; SHOW TAG KEYS;'
+
+::
 
     fieldKey    fieldType
     --------    ---------
@@ -153,7 +174,12 @@ Database content
 ----------------
 ::
 
-    $ influx -host localhost -username luftdatenpumpe -database luftdaten_info -execute 'SHOW TAG VALUES WITH KEY = station_id;'
+    influx \
+        -host localhost -username luftdatenpumpe \
+        -database luftdaten_info \
+        -execute 'SHOW TAG VALUES WITH KEY = station_id;'
+
+::
 
     key        value
     ---        -----
@@ -162,7 +188,12 @@ Database content
 
 ::
 
-    $ influx -host localhost -username luftdatenpumpe -database luftdaten_info -execute 'SELECT COUNT(*) FROM ldi_readings;'
+    influx \
+        -host localhost -username luftdatenpumpe \
+        -database luftdaten_info \
+        -execute 'SELECT COUNT(*) FROM ldi_readings;'
+
+::
 
     time count_P1 count_P2 count_humidity count_temperature
     ---- -------- -------- -------------- -----------------
