@@ -221,7 +221,7 @@ Icons and pictograms
 .. _install Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/luftdatenpumpe.rst
 .. _Luftdaten-Viewer Applications: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-applications.rst
 .. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
-.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana.rst
+.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana-base.rst
 .. _Luftdaten-Viewer Cron Job: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-cronjob.rst
 
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199

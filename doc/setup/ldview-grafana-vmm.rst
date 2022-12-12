@@ -1,9 +1,10 @@
-#####################################
-Luftdaten-Viewer Grafana for IRCELINE
-#####################################
+################################
+Luftdaten-Viewer Grafana for VMM
+################################
 
-This brings everything in place to visualize
-the data feed of IRCELINE using Grafana.
+This walkthrough builds upon the baseline documentation about setting up
+Luftdatenpumpe with `Grafana`_, and is a guideline for `VMM`_ to visualize the
+data feed of `IRCELINE`_.
 
 
 *****
@@ -47,7 +48,7 @@ Create "trend" dashboard::
         --fields=pm1=particulate-matter-1-m,pm2-5=particulate-matter-2-5-m,pm10=particulate-matter-10-m \
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
 
-Create station list file for Grafana Worldmap Panel from RDBMS database (PostgreSQL)::
+Export station metadata from RDBMS database (PostgreSQL) to JSON file for Grafana Worldmap Panel::
 
     stationsfile=/var/lib/grafana/data/json/vmm-stations.json
     # macOS: stationsfile=/usr/local/var/lib/grafana/data/json/vmm-stations.json
@@ -60,3 +61,8 @@ Worldmap Panel IRCELINE::
         --variables=tsdbDatasource=vmm,sensorNetwork=irceline,timeFromOffset=120m,timeRefresh=1h,mapCenterLatitude=50.82502,mapCenterLongitude=4.46045,initialZoom=7,jsonUrl=/public/data/json/vmm-stations.json,autoPanLabels=false \
         --fields=pm1=particulate-matter-1-m,pm2-5=particulate-matter-2-5-m,pm10=particulate-matter-10-m \
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
+
+
+.. _Grafana: https://grafana.com/
+.. _IRCELINE: https://www.irceline.be/en
+.. _VMM: https://www.vmm.be/

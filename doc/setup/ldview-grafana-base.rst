@@ -2,8 +2,8 @@
 Luftdaten-Viewer Grafana
 ########################
 
-This brings everything in place to visualize
-the data feed of luftdaten.info using Grafana.
+This walkthrough brings everything in place to visualize the data feed of
+`sensor.community`_, formerly `luftdaten.info`_, using `Grafana`_.
 
 
 ************
@@ -86,7 +86,7 @@ Create RDBMS database view ``ldi_network``::
     # previous steps will properly populate the database on the first hand.
     luftdatenpumpe database --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-views --grant-user=grafana
 
-Create station list file for Grafana Worldmap Panel from RDBMS database (PostgreSQL)::
+Export station metadata from RDBMS database (PostgreSQL) to JSON file for Grafana Worldmap Panel::
 
     luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id|str,name=road_and_name_and_id' > $stationsfile
 
@@ -158,3 +158,8 @@ Create dashboard with worldmap and table panels::
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
 
 .. note:: This references the station list JSON file created in one of the previous steps.
+
+
+.. _Grafana: https://grafana.com/
+.. _luftdaten.info: https://luftdaten.info
+.. _sensor.community: https://sensor.community/en/
