@@ -4,7 +4,8 @@ Python virtualenv
 
 About
 =====
-virtualenv_ is a tool to create isolated Python environments.
+
+`virtualenv`_ is a tool to create isolated Python environments.
 We recommend it for installing the software and its dependencies
 independently of your Python distribution.
 
@@ -14,12 +15,12 @@ Install
 
 Create Python3 virtualenv::
 
-    virtualenv --no-site-packages --python python3 .venv3
+    python3 -m venv .venv
 
 Install::
 
     # Activate virtualenv
-    source .venv3/bin/activate
+    source .venv/bin/activate
 
     # Install Python package
     pip install $program
@@ -27,6 +28,6 @@ Install::
 .. note::
 
     Don't forget to activate the virtualenv again when trying to use the
-    program. Alternatively, use the full path to `/path/to/.venv3/bin/$program`.
+    program. Alternatively, use the full path to `/path/to/.venv/bin/$program`.
 
 .. _virtualenv: https://virtualenv.pypa.io/
