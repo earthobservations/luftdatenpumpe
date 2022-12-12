@@ -7,7 +7,7 @@
     :alt: Test suite code coverage
 
 .. image:: https://pepy.tech/badge/luftdatenpumpe/month
-    :target: https://pypi.org/project/luftdatenpumpe/
+    :target: https://pepy.tech/project/luftdatenpumpe/
     :alt: PyPI downloads per month
 
 .. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
@@ -46,7 +46,9 @@ Luftdatenpumpe
 About
 *****
 
-Process live and historical data from `luftdaten.info`_, irceline_ and OpenAQ_.
+Process live and historical data from `sensor.community`_ (formerly
+`luftdaten.info`_), `IRCELINE`_, and `OpenAQ`_.
+
 Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
 store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
 publish to MQTT_ or just output as JSON.
@@ -80,7 +82,7 @@ Features
    - stored into RDBMS_ databases like PostgreSQL_ using the fine dataset_ package.
      Being built on top of SQLAlchemy_, this supports all major databases.
    - queried using advanced geospatial features when running PostGIS_, please
-     follow up reading the `Luftdatenpumpe PostGIS tutorial <doc-postgis_>`_.
+     follow up reading the `Luftdatenpumpe PostGIS tutorial`_.
 
 5. Measurement readings can be
 
@@ -149,9 +151,12 @@ Map popup labels
 Installation
 ************
 
-If you are running Python 3 already, installing the program should be as easy as::
+If you are running Python 3 already, you can installing the program using
+``pip``. We recommend to use a `Python virtualenv`_.
 
-    pip install luftdatenpumpe
+::
+
+    pip install luftdatenpumpe --upgrade
 
 At this point, you should be able to conduct simple tests like
 ``luftdatenpumpe stations`` as seen in the synopsis section above.
@@ -202,45 +207,38 @@ The copyright of particular images and pictograms are held by their respective o
 Icons and pictograms
 ====================
 - `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ from
-  `Icon Fonts <http://www.onlinewebfonts.com/icon>`_ is licensed by CC BY 3.0.
+  `Icon Fonts <https://www.onlinewebfonts.com/icon/>`_ is licensed by CC BY 3.0.
 
 
 
-.. _doc-virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/virtualenv.rst
-.. _doc-postgis: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/postgis.rst
-
-
-.. _luftdaten.info: https://luftdaten.info/
-.. _irceline: http://www.irceline.be/en/documentation/open-data
-.. _OpenAQ: https://openaq.org/
-
-.. _Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe
-
-.. _Testimonials for Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/testimonials.rst
-.. _luftdatenpumpe --help: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/usage.rst
-.. _install Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/luftdatenpumpe.rst
-.. _Luftdaten-Viewer Applications: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-applications.rst
-.. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
-.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana-base.rst
-.. _Luftdaten-Viewer Cron Job: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-cronjob.rst
-
-.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
-
-.. _The Hiveeyes Project: https://hiveeyes.org/
-
-.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
-.. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
-.. _Geohash: https://en.wikipedia.org/wiki/Geohash
 .. _dataset: https://dataset.readthedocs.io/
-.. _SQLAlchemy: https://www.sqlalchemy.org/
-.. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
-.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
-.. _MQTT: http://mqtt.org/
-
+.. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
+.. _Geohash: https://en.wikipedia.org/wiki/Geohash
+.. _Grafana: https://github.com/grafana/grafana
+.. _InfluxDB: https://github.com/influxdata/influxdb
+.. _IRCELINE: https://www.irceline.be/en/documentation/open-data
+.. _jq: https://stedolan.github.io/jq/
+.. _OpenAQ: https://openaq.org/
+.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
+.. _luftdaten.info: https://luftdaten.info/
+.. _Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe
+.. _MQTT: https://mqtt.org/
+.. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
 .. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _PostgreSQL: https://www.postgresql.org/
 .. _PostGIS: https://postgis.net/
-.. _InfluxDB: https://github.com/influxdata/influxdb
-.. _Grafana: https://github.com/grafana/grafana
+.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
+.. _sensor.community: https://sensor.community/en/
+.. _SQLAlchemy: https://www.sqlalchemy.org/
+.. _The Hiveeyes Project: https://hiveeyes.org/
+.. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
 
-.. _jq: https://stedolan.github.io/jq/
+.. _luftdatenpumpe --help: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/usage.rst
+.. _install Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/luftdatenpumpe.rst
+.. _Luftdaten-Viewer Applications: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-applications.rst
+.. _Luftdaten-Viewer Cron Job: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-cronjob.rst
+.. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
+.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana-base.rst
+.. _Luftdatenpumpe PostGIS tutorial: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/postgis.rst
+.. _Python virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/virtualenv.rst
+.. _Testimonials for Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/testimonials.rst
