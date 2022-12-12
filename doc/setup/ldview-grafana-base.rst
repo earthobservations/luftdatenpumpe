@@ -16,7 +16,7 @@ Flux datasource::
 
     grafana-cli plugins install grafana-influxdb-flux-datasource
 
-Install Worldmap Panel NG::
+Install Panodata Map Panel::
 
     grafana-cli \
         --pluginUrl https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip \
@@ -26,9 +26,7 @@ Restart Grafana instance::
 
     systemctl restart grafana-server
 
-You are welcome to read about the details behind `Grafana Worldmap Panel NG`_.
-
-.. _Grafana Worldmap Panel NG: https://community.hiveeyes.org/t/grafana-worldmap-panel-ng/1824
+You are welcome to read about the details behind `Panodata Map Panel`_.
 
 
 ************
@@ -38,12 +36,14 @@ LDI Metadata
 
 Storage for station list
 ========================
-The Grafana Worldmap Panel requires a JSON file ``ldi-stations.json`` to
-display appropriate popup labels to each data point on the map.
+
+The Panodata Map Panel (ex. Grafana Worldmap Panel) requires a JSON file
+``ldi-stations.json`` to display appropriate popup labels to each data point
+on the map.
 
 This section of the documentation describes how to create the
 corresponding file using ``luftdatenpumpe`` in a way it can be
-picked up by the Grafana Worldmap Panel through HTTP.
+picked up by the map panel through HTTP.
 
 Create directory for stations file::
 
@@ -90,7 +90,7 @@ Create RDBMS database view ``ldi_network``::
     luftdatenpumpe database \
         --target=postgresql://luftdatenpumpe@localhost/weatherbase --create-views --grant-user=grafana
 
-Export station metadata from RDBMS database (PostgreSQL) to JSON file for Grafana Worldmap Panel::
+Export station metadata from RDBMS database (PostgreSQL) to JSON file for Panodata Map Panel::
 
     luftdatenpumpe stations \
         --source=postgresql://luftdatenpumpe@localhost/weatherbase \
@@ -157,7 +157,7 @@ Create dashboard with graph panel::
         --fields=pm2-5=P2,pm10=P1 \
         | http --session=grafana POST $GRAFANA_URL/api/dashboards/db
 
-Create dashboard with worldmap and table panels::
+Create dashboard with map and table panels::
 
     luftdatenpumpe grafana --kind=dashboard --name=map \
         --variables=tsdbDatasource=luftdaten_info,sensorNetwork=ldi,jsonUrl=/public/data/json/ldi-stations.json,autoPanLabels=false \
@@ -169,4 +169,5 @@ Create dashboard with worldmap and table panels::
 
 .. _Grafana: https://grafana.com/
 .. _luftdaten.info: https://luftdaten.info
+.. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _sensor.community: https://sensor.community/en/

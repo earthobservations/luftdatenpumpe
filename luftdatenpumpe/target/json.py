@@ -80,7 +80,7 @@ def json_grafana_formatter_vt(stations):
 def json_grafana_formatter_kn(stations):
     """
     Format list of stations in JSON format made of key/name items,
-    suitable for use as a mapping in Grafana Worldmap Panel.
+    suitable for use as a mapping in Panodata Map Panel.
 
     Example::
 

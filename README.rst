@@ -127,7 +127,7 @@ Luftdaten-Viewer displays stations and measurements from luftdaten.info (LDI) in
 Map display and filtering
 =========================
 - Filter by different synthesized address components and sensor type.
-- Display measurements from filtered stations on Grafana Worldmap Panel.
+- Display measurements from filtered stations on `Panodata Map Panel`_.
 - Display filtered list of stations with corresponding information in tabular form.
 - Measurement values are held against configured thresholds so points are colored appropriately.
 
@@ -237,6 +237,7 @@ Icons and pictograms
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _MQTT: http://mqtt.org/
 
+.. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _PostgreSQL: https://www.postgresql.org/
 .. _PostGIS: https://postgis.net/
 .. _InfluxDB: https://github.com/influxdata/influxdb
