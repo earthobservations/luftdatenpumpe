@@ -35,3 +35,4 @@ Also, you might want to increase the data acquisition rate in ``/etc/cron.d/luft
 
     # Run data import each 5 minutes
     */5     *	* * *   workbench	pflock luftdatenpumpe readings --country=BE --target=${tsdb_uri} >/dev/null 2>&1
+

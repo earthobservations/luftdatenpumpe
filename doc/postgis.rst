@@ -182,3 +182,4 @@ Match within range
     FROM ldi_stations, stuttgart
     WHERE ST_DWithin(geopoint, stuttgart.position, 3000)
     ORDER BY geopoint <-> stuttgart.position;
+

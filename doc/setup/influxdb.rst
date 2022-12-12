@@ -46,3 +46,4 @@ Configure UDP data sink with InfluxDB in ``influxdb.conf``::
       # UDP read buffer size: 8 MB (8*1024*1024)
       #read-buffer = 8388608
       read-buffer = 0
+

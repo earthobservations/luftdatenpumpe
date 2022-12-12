@@ -69,3 +69,4 @@ Example for SDS011 sensor::
         ],
         "timestamp": "2017-03-30T19:24:02"
     }
+
