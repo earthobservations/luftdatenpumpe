@@ -59,6 +59,7 @@ Create users::
 
     CREATE ROLE luftdatenpumpe WITH LOGIN;
     CREATE ROLE grafana WITH LOGIN PASSWORD 'readonly';
+    \q
 
 Pre-flight checks::
 
