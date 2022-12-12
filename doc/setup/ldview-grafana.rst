@@ -88,7 +88,7 @@ Create RDBMS database view ``ldi_network``::
 
 Create station list file for Grafana Worldmap Panel from RDBMS database (PostgreSQL)::
 
-    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id\|str,name=road_and_name_and_id' > $stationsfile
+    luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.flex+stream://sys.stdout --target-fieldmap='key=station_id|str,name=road_and_name_and_id' > $stationsfile
 
 Check::
 
