@@ -86,7 +86,7 @@ luftdatenpumpe --help
       # Display list of stations in JSON format made of value/text items, suitable for use as a Grafana JSON data source
       luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=json.grafana.vt+stream://sys.stdout
 
-      # Display list of stations in JSON format made of key/name items, suitable for use as a mapping in Grafana Worldmap Panel
+      # Display list of stations in JSON format made of key/name items, suitable for use as a mapping in Panodata Map Panel
       luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=json.grafana.kn+stream://sys.stdout
 
 
@@ -95,7 +95,7 @@ luftdatenpumpe --help
       # Store list of stations and metadata into RDBMS database (PostgreSQL)
       luftdatenpumpe stations --station=49,1033 --reverse-geocode --target=postgresql://luftdatenpumpe@localhost/weatherbase
 
-      # Read station information from RDBMS database (PostgreSQL) and format for Grafana Worldmap Panel
+      # Read station information from RDBMS database (PostgreSQL) and format for Panodata Map Panel
       luftdatenpumpe stations --source=postgresql://luftdatenpumpe@localhost/weatherbase --target=json.grafana.kn+stream://sys.stdout
 
 

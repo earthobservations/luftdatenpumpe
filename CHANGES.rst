@@ -41,7 +41,7 @@ in progress
 =================
 - Add adapter for OpenAQ
 - Slightly improve reverse geocoding
-- Use improved "panodata-map-panel" instead of the original Worldmap
+- Use improved "Panodata Map Panel" instead of the original "Grafana Worldmap Panel"
 - Update documentation
 
 
@@ -126,7 +126,7 @@ in progress
 - Always fetch last 12 hours worth of data to reduce gaps when API is offline.
 - Update documentation
 - Distinguish between "sensor_type_name" and "sensor_type_id"
-- Tune worldmap panel default settings
+- Tune map panel default settings
 
 
 2019-04-26 0.11.0

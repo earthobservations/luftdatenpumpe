@@ -63,8 +63,8 @@ Iteration +2
   https://vmm.hiveeyes.org/grafana/d/gG-dP2kWk/luftdaten-viewer-ldi-trend?var-ldi_station_id=8667
 - [o] Grafana: Enhanced popover with structured (meta)data transfer
 - [o] Grafana: Drill-down to detail view via popover
-- [o] As the Grafana Worldmap Panel decodes the geohash to lat/lon using ``decodeGeoHash()`` anyway,
-  let's go back to storing the position as lat/lon again.
+- [o] As the Panodata Map Panel (ex. Grafana Worldmap Panel) decodes the geohash to lat/lon
+  using ``decodeGeoHash()`` anyway, let's go back to storing the position as lat/lon again.
 - [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
 - [o] When acquiring data from specific sensors, use API endpoints like http://api.luftdaten.info/v1/sensor/25735/
 - [o] Look at world air quality data
@@ -188,7 +188,7 @@ Iteration +6
 
   - https://luftdata.se/
 
-- [o] How to improve Grafana Worldmap Panel JSON document becoming stale?
+- [o] How to improve Panodata Map Panel JSON document becoming stale?
   ``/public/json/ldi-stations.json?_cache=4``
 - [o] Check out wizzy for Grafana provisioning?
   https://github.com/utkarshcmu/wizzy
@@ -277,7 +277,8 @@ All the machinery
 - [x] Overhaul station metadata process:
 
   1. Collect station information from API or CSV into PostgreSQL
-  2. Export station information from PostgreSQL as JSON, optionally in format suitable for Grafana Worldmap Panel
+  2. Export station information from PostgreSQL as JSON, optionally in format suitable
+     for Panodata Map Panel.
 - [x] Improve README
 
   - [x] Add link to Demo #5
