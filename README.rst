@@ -2,6 +2,10 @@
     :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
     :alt: CI outcome
 
+.. image:: https://readthedocs.org/projects/luftdatenpumpe/badge/
+    :target: https://luftdatenpumpe.readthedocs.io/
+    :alt: Documentation build status
+
 .. image:: https://codecov.io/gh/earthobservations/luftdatenpumpe/branch/main/graph/badge.svg
     :target: https://codecov.io/gh/earthobservations/luftdatenpumpe
     :alt: Test suite code coverage
