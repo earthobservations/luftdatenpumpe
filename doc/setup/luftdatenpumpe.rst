@@ -3,28 +3,27 @@ Install Luftdatenpumpe
 ######################
 
 
-*************
-Prerequisites
-*************
+*****
+Setup
+*****
 
-Install Luftdatenpumpe
-======================
-::
+Install prerequisites::
 
     apt install build-essential python3-dev libicu-dev
 
-::
+Install Luftdatenpumpe::
 
     pip install luftdatenpumpe
 
-*****
-Notes
-*****
-
 .. note::
 
-    We recommend to use a Python `virtualenv <doc-virtualenv_>`_ to install and operate this
-    software independently from your local system-wide Python installation.
+    - We recommend to use a Python `virtualenv <doc-virtualenv_>`_ to install and operate this
+      software independently from your local system-wide Python installation.
+
+    - In order to make the ``luftdatenpumpe`` command available system-wide, just place a
+      symlink into ``/usr/local/bin``, like::
+
+        ln -s /opt/luftdatenpumpe/.venv/bin/luftdatenpumpe /usr/local/bin/luftdatenpumpe
 
 
 ***************
@@ -45,3 +44,4 @@ Troubleshooting
         $ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
         $ pkg-config --modversion icu-i18n
         63.1
+
