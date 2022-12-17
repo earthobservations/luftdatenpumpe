@@ -350,8 +350,10 @@ class RDBMSStorage:
               concat(concat_ws(', ', osm_state, osm_country), ' ', country_code_suffix) AS state_and_country,
               concat(concat_ws(', ', osm_city, osm_state, osm_country), ' ', country_code_suffix)
                 AS city_and_state_and_country,
-              concat(concat_ws(', ', osm_state_district, osm_postcode, osm_city), ' ', sensor_id_suffix)
+              concat(osm_state_district, ', ', osm_postcode, ' ', osm_city, ' ', sensor_id_suffix)
                 AS district_postcode_city_sensorid,
+              concat(osm_suburb, ', ', osm_postcode, ' ', osm_city, ' ', sensor_id_suffix)
+                AS suburb_postcode_city_sensorid,
               {self.render_fields(conditional_fields_stage2)}
               ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active
 
