@@ -37,7 +37,7 @@ SE Data Platform
 JRC
 ===
 - https://publications.jrc.ec.europa.eu/repository/bitstream/JRC102703/jrc102703%20-1600907%20host%20report%20final.pdf
-- https://inspire.ec.europa.eu/sites/default/files/presentations/observational_and_measurement_data_in_inspire_-_inspire_conference_2017-final_1.pdf
+- `<https://inspire.ec.europa.eu/sites/default/files/presentations/observational_and_measurement_data_in_inspire_-_inspire_conference_2017-final_1.pdf>`_
 - https://www.slideshare.net/justb4/open-sensor-networks-with-lora-ttn-and-sensorthings-api
 - https://smartplatform.readthedocs.io/en/latest/_static/dissemination/rivm-17jan2017/SmartEmission-RIVM-170117.pdf
 

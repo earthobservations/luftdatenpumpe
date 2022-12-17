@@ -17,7 +17,7 @@ Install Luftdatenpumpe::
 
 .. note::
 
-    - We recommend to use a Python `virtualenv <doc-virtualenv_>`_ to install and operate this
+    - We recommend to use a :ref:`python-virtualenv` to install and operate this
       software independently from your local system-wide Python installation.
 
     - In order to make the ``luftdatenpumpe`` command available system-wide, just place a
