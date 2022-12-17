@@ -8,3 +8,4 @@
 /.coverage
 /coverage.xml
 /.pytest_results
+/doc/_build
