@@ -8,6 +8,8 @@ in progress
 - Fix "Luftdaten-Viewer Grafana" documentation section about
   exporting station metadata from PostGIS to JSON file.
   Thanks, @ohobby.
+- Add OSM-based synthetic geolocation field for micro-regions.
+  Thanks, @ohobby.
 
 
 2022-12-05 0.21.1
