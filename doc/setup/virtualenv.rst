@@ -1,3 +1,5 @@
+.. _python-virtualenv:
+
 #################
 Python virtualenv
 #################
