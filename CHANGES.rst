@@ -11,6 +11,7 @@ in progress
 - Add two new OSM-based synthetic geolocation fields for better
   addressing of micro-regions, ``district_postcode_city_sensorid``,
   and ``suburb_postcode_city_sensorid``. Thanks, @ohobby.
+- Add rendered documentation at https://luftdatenpumpe.readthedocs.io/
 
 
 2022-12-05 0.21.1
