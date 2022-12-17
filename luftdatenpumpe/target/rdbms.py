@@ -326,6 +326,7 @@ class RDBMSStorage:
 
               -- Synthesized fields.
               concat('(#', CAST({prefix}_stations.station_id AS text), ')') AS station_id_suffix,
+              concat('(#', CAST({prefix}_sensors.sensor_id AS text), ')') AS sensor_id_suffix,
               concat('(', {prefix}_osmdata.osm_country_code, ')') AS country_code_suffix,
 
               -- OSM fields.
@@ -349,6 +350,8 @@ class RDBMSStorage:
               concat(concat_ws(', ', osm_state, osm_country), ' ', country_code_suffix) AS state_and_country,
               concat(concat_ws(', ', osm_city, osm_state, osm_country), ' ', country_code_suffix)
                 AS city_and_state_and_country,
+              concat(concat_ws(', ', osm_state_district, osm_postcode, osm_city), ' ', sensor_id_suffix)
+                AS district_postcode_city_sensorid,
               {self.render_fields(conditional_fields_stage2)}
               ABS(DATE_PART('day', sensor_last_date - now())) <= 7 AS is_active
 
