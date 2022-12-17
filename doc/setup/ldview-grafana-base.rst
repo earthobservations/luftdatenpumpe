@@ -10,23 +10,40 @@ This walkthrough brings everything in place to visualize the data feed of
 Installation
 ************
 
-Install Grafana Plugins
-=======================
+
+Flux datasource
+===============
+
 Flux datasource::
 
     grafana-cli plugins install grafana-influxdb-flux-datasource
 
-Install Panodata Map Panel::
+
+Panodata Map Panel
+==================
+The map component for Grafana used within this setup is the `Panodata Map Panel`_.
+
+Because it is not a built-in plugin, and not available on the `Grafana plugin catalog`_,
+it is not signed. To allow using unsigned plugins starting with Grafana 7.x, please use
+the `allow_loading_unsigned_plugins`_ configuration setting, which is located within
+the ``[plugins]`` section of ``/etc/grafana/grafana.ini``::
+
+    allow_loading_unsigned_plugins = panodata-map-panel
+
+Install `Panodata Map Panel`_::
 
     grafana-cli \
         --pluginUrl https://github.com/panodata/panodata-map-panel/releases/download/0.16.0/panodata-map-panel-0.16.0.zip \
         plugins install panodata-map-panel
 
-Restart Grafana instance::
+Finally, restart your Grafana instance::
 
     systemctl restart grafana-server
 
-You are welcome to read about the details behind `Panodata Map Panel`_.
+.. note::
+
+    Please note this procedure has been confirmed to work with Grafana versions up
+    to Grafana 8.x. It has not been verified on the most recent Grafana 9.x version.
 
 
 ************
@@ -167,7 +184,9 @@ Create dashboard with map and table panels::
 .. note:: This references the station list JSON file created in one of the previous steps.
 
 
+.. _allow_loading_unsigned_plugins: https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#allow_loading_unsigned_plugins
 .. _Grafana: https://grafana.com/
+.. _Grafana plugin catalog: https://grafana.com/grafana/plugins/
 .. _luftdaten.info: https://luftdaten.info
 .. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _sensor.community: https://sensor.community/en/
