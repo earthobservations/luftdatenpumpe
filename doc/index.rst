@@ -36,8 +36,10 @@ Handbook
 
    Introduction <README>
    setup/index
-   Usage <usage>
+   usage
    gallery
+   postgis
+   mqtt
 
 
 ***********
@@ -51,16 +53,6 @@ Development
    CHANGES
    backlog
 
-
-*******
-Details
-*******
-
-.. toctree::
-   :maxdepth: 1
-
-   postgis
-   mqtt
    ldi-schema
    models/ldi/README
    models/irceline/README
@@ -73,18 +65,9 @@ Research
 .. toctree::
    :maxdepth: 1
 
-   research/tech-radar
-   research/other-projects
    research/open-data
-
-
-******************
-Indices and tables
-******************
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   research/other-projects
+   research/tech-radar
 
 
 .. _InfluxDB: https://github.com/influxdata/influxdb

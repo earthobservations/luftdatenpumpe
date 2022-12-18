@@ -8,14 +8,15 @@ Luftdatenpumpe
 
 .. container:: align-center
 
-    .. figure:: https://raw.githubusercontent.com/earthobservations/luftdatenpumpe/main/doc/logo.svg
+    .. figure:: https://cdn.jsdelivr.net/gh/earthobservations/luftdatenpumpe@main/doc/logo.svg
+        :target: https://github.com/earthobservations/luftdatenpumpe
         :alt: Luftdatenpumpe logo
-        :width: 240px
-        :target: .
+        :height: 200px
+        :width: 200px
 
     |
 
-    *Processing live and historical air quality data for humans.*
+    *Acquire and process live and historical air quality data without efforts.*
 
     .. image:: https://assets.okfn.org/images/ok_buttons/oc_80x15_blue.png
         :target: https://okfn.org/opendata/
@@ -28,6 +29,8 @@ Luftdatenpumpe
 
     .. image:: https://assets.okfn.org/images/ok_buttons/os_80x15_orange_grey.png
         :target: https://okfn.org/opendata/
+
+|
 
 - **Status**
 
@@ -100,11 +103,6 @@ Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
 store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
 publish to MQTT_ or just output as JSON.
 
-.. figure:: https://cdn.jsdelivr.net/gh/earthobservations/luftdatenpumpe@main/doc/logo.svg
-    :target: https://github.com/earthobservations/luftdatenpumpe
-    :height: 200px
-    :width: 200px
-
 
 ********
 Features
@@ -161,8 +159,8 @@ Synopsis
 
 
 For a full overview about all program options including meaningful examples,
-you might just want to run ``luftdatenpumpe --help`` on your command line
-or visit `luftdatenpumpe --help`_.
+you might just want to run ``luftdatenpumpe --help`` on your command line,
+or visit the `Luftdatenpumpe usage`_ documentation section.
 
 
 
@@ -310,11 +308,11 @@ owners, unless otherwise noted.
 .. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
 
 .. _install Luftdatenpumpe: https://luftdatenpumpe.readthedocs.io/setup/luftdatenpumpe.html
-.. _luftdatenpumpe --help: https://luftdatenpumpe.readthedocs.io/usage.html
 .. _Luftdaten-Viewer Applications: https://luftdatenpumpe.readthedocs.io/setup/ldview-applications.html
 .. _Luftdaten-Viewer Cron Job: https://luftdatenpumpe.readthedocs.io/setup/ldview-cronjob.html
 .. _Luftdaten-Viewer Databases: https://luftdatenpumpe.readthedocs.io/setup/ldview-databases.html
 .. _Luftdaten-Viewer Grafana: https://luftdatenpumpe.readthedocs.io/setup/ldview-grafana-base.html
 .. _Luftdatenpumpe gallery: https://luftdatenpumpe.readthedocs.io/gallery.html
 .. _Luftdatenpumpe PostGIS tutorial: https://luftdatenpumpe.readthedocs.io/postgis.html
+.. _Luftdatenpumpe usage: https://luftdatenpumpe.readthedocs.io/usage.html
 .. _Python virtualenv: https://luftdatenpumpe.readthedocs.io/setup/virtualenv.html
