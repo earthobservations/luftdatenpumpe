@@ -105,6 +105,7 @@ setup(
         "Changelog": "https://luftdatenpumpe.readthedocs.io/CHANGES.html",
         "Documentation": "https://luftdatenpumpe.readthedocs.io/",
         "Download": "https://pypi.org/project/luftdatenpumpe/#files",
+        "Forum": "https://community.panodata.org/",
         "Homepage": "https://community.panodata.org/t/luftdatenpumpe/21",
         "Issues": "https://github.com/earthobservations/luftdatenpumpe/issues",
         "Releases": "https://github.com/earthobservations/luftdatenpumpe/releases",
