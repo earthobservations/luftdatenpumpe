@@ -49,9 +49,10 @@ extras = {
 setup(
     name="luftdatenpumpe",
     version="0.21.1",
-    description="Process live and historical data from luftdaten.info, IRCELINE and OpenAQ. Filter by "
-    "station-id, sensor-id and sensor-type, apply reverse geocoding, store into time-series "
-    "and RDBMS databases, publish to MQTT, output as JSON, or visualize in Grafana.",
+    description="Acquire and process live and historical air quality data without efforts. "
+    "Filter by station-id, sensor-id and sensor-type, apply reverse geocoding, store into time-series "
+    "and RDBMS databases, publish to MQTT, output as JSON, or visualize in Grafana. "
+    "Data sources: Sensor.Community (luftdaten.info), IRCELINE, and OpenAQ.",
     long_description=README,
     license="AGPL 3, EUPL 1.2",
     classifiers=[
