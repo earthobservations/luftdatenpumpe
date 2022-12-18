@@ -1,6 +1,6 @@
-###############################
-Testimonials for Luftdatenpumpe
-###############################
+#######
+Gallery
+#######
 
 Some example installations, usually running live data feeds through them.
 

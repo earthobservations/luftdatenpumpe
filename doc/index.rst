@@ -12,6 +12,21 @@ Luftdatenpumpe
    :caption: Contents:
 
 
+*****
+About
+*****
+
+Process live and historical data from `sensor.community`_ (formerly
+`luftdaten.info`_), `IRCELINE`_, and `OpenAQ`_.
+
+Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
+store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
+publish to MQTT_ or just output as JSON.
+
+The :doc:`Luftdatenpumpe README <README>` has more details about features,
+screenshots, and basic usage information.
+
+
 ******************
 Main documentation
 ******************
@@ -21,21 +36,21 @@ Main documentation
 
    setup/index
    usage
-   ldi-schema
-   models/ldi/README
-   models/irceline/README
+   gallery
 
 
-****************
-More information
-****************
+*******
+Details
+*******
 
 .. toctree::
    :maxdepth: 1
 
-   testimonials
    postgis
    mqtt
+   ldi-schema
+   models/ldi/README
+   models/irceline/README
 
 
 ***********
@@ -45,6 +60,7 @@ Development
 .. toctree::
    :maxdepth: 1
 
+   CHANGES
    backlog
 
 
@@ -55,9 +71,9 @@ Research
 .. toctree::
    :maxdepth: 1
 
-   research/open-data
+   research/tech-radar
    research/other-projects
-   tech-radar
+   research/open-data
 
 
 Indices and tables
@@ -66,3 +82,14 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. _InfluxDB: https://github.com/influxdata/influxdb
+.. _IRCELINE: https://www.irceline.be/en/documentation/open-data
+.. _luftdaten.info: https://luftdaten.info/
+.. _MQTT: https://mqtt.org/
+.. _OpenAQ: https://openaq.org/
+.. _PostGIS: https://postgis.net/
+.. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
+.. _sensor.community: https://sensor.community/en/
+.. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
