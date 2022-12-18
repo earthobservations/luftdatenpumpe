@@ -101,8 +101,8 @@ setup(
     url="https://github.com/earthobservations/luftdatenpumpe",
     # https://github.com/pypi/warehouse/blob/01f87cfd/warehouse/templates/packaging/detail.html#L20-L58
     project_urls={
-        "Changelog": "https://github.com/earthobservations/luftdatenpumpe/blob/main/CHANGES.rst",
-        "Documentation": "https://github.com/earthobservations/luftdatenpumpe/tree/main/doc",
+        "Changelog": "https://luftdatenpumpe.readthedocs.io/CHANGES.html",
+        "Documentation": "https://luftdatenpumpe.readthedocs.io/",
         "Download": "https://pypi.org/project/luftdatenpumpe/#files",
         "Homepage": "https://community.panodata.org/t/luftdatenpumpe/21",
         "Issues": "https://github.com/earthobservations/luftdatenpumpe/issues",
