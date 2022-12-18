@@ -1,9 +1,9 @@
 # Sandbox
 black
 isort
-pyproject-flake8
-flake8<5
+poethepoet<1
 proselint
+ruff
 
 # Release
 build

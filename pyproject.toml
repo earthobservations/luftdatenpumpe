@@ -1,17 +1,23 @@
+# ==================
+# Tool configuration
+# ==================
+
 [tool.black]
 line-length = 120
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+]
 
 [tool.isort]
 profile = "black"
 line_length = 120
 multi_line_output = 3
-
-[tool.flake8]
-max-line-length = 120
-per-file-ignores = """
-    luftdatenpumpe/commands.py: E501
-    luftdatenpumpe/source/rdbms.py: E501
-"""
 
 [tool.pytest.ini_options]
 minversion = "2.0"
@@ -22,11 +28,29 @@ xfail_strict = true
 markers = [
 ]
 
-[tool.coverage.run]
-omit = [
-    "tests/*",
+[tool.ruff]
+line-length = 120
+extend-exclude = [
+  "var",
 ]
 
-[tool.coverage.report]
-fail_under = 0
-show_missing = true
+
+# ===================
+# Tasks configuration
+# ===================
+
+[tool.poe.tasks]
+build = {cmd="python -m build"}
+format = [
+  {cmd="black ."},
+  {cmd="isort ."},
+]
+lint = [
+  {cmd="ruff ."},
+  {cmd="black --check ."},
+  {cmd="isort --check ."},
+  {cmd="proselint *.rst doc/**/*.rst"}
+]
+test = [
+  {cmd="pytest"},
+]
