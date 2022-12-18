@@ -20,6 +20,7 @@ Details
 *******
 
 See also:
+
 - http://postgis.net/workshops/postgis-intro/geography.html
 - http://postgis.net/workshops/postgis-intro/knn.html
 
@@ -31,10 +32,12 @@ If your data is global or covers a continental region, you may find that
 GEOGRAPHY allows you to build a system without having to worry about
 projection details. You store your data in longitude/latitude, and use
 the functions that have been defined on GEOGRAPHY.
+
 -- https://postgis.net/docs/using_postgis_dbmanagement.html#PostGIS_GeographyVSGeometry
 
 4.2.3.1. Do you calculate on the sphere or the spheroid?
 By default, all distance and area calculations are done on the spheroid.
+
 -- https://postgis.net/docs/using_postgis_dbmanagement.html#idm1387
 
 

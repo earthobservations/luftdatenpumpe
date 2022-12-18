@@ -1,3 +1,5 @@
+:orphan:
+
 .. image:: https://github.com/earthobservations/luftdatenpumpe/workflows/Tests/badge.svg
     :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
     :alt: CI outcome
