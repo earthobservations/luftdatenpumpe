@@ -253,6 +253,20 @@ Grafana
         SHOW TAG VALUES CARDINALITY WITH KEY = station_id;
 
 
+*************
+Documentation
+*************
+
+- [o] poe docs-html
+- [o] poe docs-linkcheck: ``cd docs; sphinx-build -b linkcheck . _build``
+- [o] Update links in README.rst
+- [o] Development: Add README and CHANGELOG, CONTRIBUTORS
+- [o] Testimonials => Gallery. Fix links to https://vmm.panodata.net/
+- [o] --help => Usage
+- [o] Copy plugin
+- [o] Refer to PostgreSQL "trust"-based authentication
+
+
 ****
 Done
 ****

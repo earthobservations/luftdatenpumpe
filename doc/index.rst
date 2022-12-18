@@ -27,15 +27,16 @@ The :doc:`Luftdatenpumpe README <README>` has more details about features,
 screenshots, and basic usage information.
 
 
-******************
-Main documentation
-******************
+********
+Handbook
+********
 
 .. toctree::
    :maxdepth: 1
 
+   Introduction <README>
    setup/index
-   usage
+   Usage <usage>
    gallery
 
 
@@ -76,8 +77,9 @@ Research
    research/open-data
 
 
+******************
 Indices and tables
-==================
+******************
 
 * :ref:`genindex`
 * :ref:`modindex`

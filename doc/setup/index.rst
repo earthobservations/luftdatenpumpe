@@ -1,15 +1,15 @@
-####################
-Luftdatenpumpe setup
-####################
+#####
+Setup
+#####
 
 The whole system is based on Grafana, InfluxDB, PostGIS, and Redis.
 This section of the documentation will guide you through all steps
-to setup and configure the corresponding subsystems.
+to setup and configure/provision the corresponding services.
 
 
-**********
-Main setup
-**********
+******************************
+Installation and configuration
+******************************
 
 .. toctree::
     :maxdepth: 1
@@ -18,19 +18,28 @@ Main setup
     ldview-applications
     ldview-databases
     ldview-grafana-base
-    ldview-cronjob
 
 
-****************
-More information
-****************
+*******
+Options
+*******
 
 .. toctree::
     :maxdepth: 1
 
-    ldview-grafana-vmm
+    ldview-cronjob
     data-loss-monitoring
-    influxdb
+    ldview-grafana-vmm
+
+
+*****
+Notes
+*****
+
+.. toctree::
+    :maxdepth: 1
+
     postgresql
+    influxdb
     redis
     virtualenv

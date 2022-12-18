@@ -1,3 +1,5 @@
+.. highlight:: bash
+
 ################################
 Luftdaten-Viewer Grafana for VMM
 ################################

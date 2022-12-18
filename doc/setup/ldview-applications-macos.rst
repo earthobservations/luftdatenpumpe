@@ -7,5 +7,5 @@ Install
 *******
 ::
 
-    brew install influxdb postgis redis grafana
+    brew install grafana influxdb postgis redis
 
