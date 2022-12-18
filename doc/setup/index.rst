@@ -13,6 +13,7 @@ Installation and configuration
 
 .. toctree::
     :maxdepth: 1
+    :numbered:
 
     luftdatenpumpe
     ldview-applications
