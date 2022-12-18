@@ -1,52 +1,93 @@
 :orphan:
 
-.. image:: https://github.com/earthobservations/luftdatenpumpe/workflows/Tests/badge.svg
-    :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
-    :alt: CI outcome
-
-.. image:: https://readthedocs.org/projects/luftdatenpumpe/badge/
-    :target: https://luftdatenpumpe.readthedocs.io/
-    :alt: Documentation build status
-
-.. image:: https://codecov.io/gh/earthobservations/luftdatenpumpe/branch/main/graph/badge.svg
-    :target: https://codecov.io/gh/earthobservations/luftdatenpumpe
-    :alt: Test suite code coverage
-
-.. image:: https://pepy.tech/badge/luftdatenpumpe/month
-    :target: https://pepy.tech/project/luftdatenpumpe/
-    :alt: PyPI downloads per month
-
-.. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
-    :alt: Package version on PyPI
-
-.. image:: https://img.shields.io/pypi/status/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
-    :alt: Project status (alpha, beta, stable)
-
-.. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
-    :target: https://pypi.org/project/luftdatenpumpe/
-    :alt: Supported Python versions
-
-.. image:: https://img.shields.io/pypi/l/luftdatenpumpe.svg
-    :target: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE
-    :alt: Project license
-
-|
+.. luftdatenpumpe-readme:
 
 ##############
 Luftdatenpumpe
 ##############
 
-.. image:: https://assets.okfn.org/images/ok_buttons/od_80x15_red_green.png
-    :target: https://okfn.org/opendata/
+.. container:: align-center
 
-.. image:: https://assets.okfn.org/images/ok_buttons/oc_80x15_blue.png
-    :target: https://okfn.org/opendata/
+    .. figure:: https://raw.githubusercontent.com/earthobservations/luftdatenpumpe/main/doc/logo.svg
+        :alt: Luftdatenpumpe logo
+        :width: 240px
+        :target: .
 
-.. image:: https://assets.okfn.org/images/ok_buttons/os_80x15_orange_grey.png
-    :target: https://okfn.org/opendata/
+    |
 
+    *Processing live and historical air quality data for humans.*
+
+    .. image:: https://assets.okfn.org/images/ok_buttons/oc_80x15_blue.png
+        :target: https://okfn.org/opendata/
+
+    .. image:: https://assets.okfn.org/images/ok_buttons/od_80x15_red_green.png
+        :target: https://okfn.org/opendata/
+
+    .. image:: https://assets.okfn.org/images/ok_buttons/ok_80x15_red_green.png
+        :target: https://okfn.org/opendata/
+
+    .. image:: https://assets.okfn.org/images/ok_buttons/os_80x15_orange_grey.png
+        :target: https://okfn.org/opendata/
+
+- **Status**
+
+  .. image:: https://github.com/earthobservations/luftdatenpumpe/workflows/Tests/badge.svg
+      :target: https://github.com/earthobservations/luftdatenpumpe/actions?workflow=Tests
+      :alt: CI outcome
+
+  .. image:: https://readthedocs.org/projects/luftdatenpumpe/badge/
+      :target: https://luftdatenpumpe.readthedocs.io/
+      :alt: Documentation build status
+
+  .. image:: https://codecov.io/gh/earthobservations/luftdatenpumpe/branch/main/graph/badge.svg
+      :target: https://codecov.io/gh/earthobservations/luftdatenpumpe
+      :alt: Test suite code coverage
+
+  .. image:: https://img.shields.io/pypi/v/luftdatenpumpe.svg
+      :target: https://pypi.org/project/luftdatenpumpe/
+      :alt: Package version on PyPI
+
+  .. image:: https://img.shields.io/pypi/l/luftdatenpumpe.svg
+      :target: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE
+      :alt: Project license
+
+  .. image:: https://img.shields.io/pypi/status/luftdatenpumpe.svg
+      :target: https://pypi.org/project/luftdatenpumpe/
+      :alt: Project status (alpha, beta, stable)
+
+- **Usage**
+
+  .. image:: https://pepy.tech/badge/luftdatenpumpe/month
+      :target: https://pepy.tech/project/luftdatenpumpe/
+      :alt: PyPI downloads per month
+
+- **Compatibility**
+
+  .. image:: https://img.shields.io/badge/Grafana-5.x%20--%208.x-blue.svg
+      :target: https://github.com/grafana/grafana
+      :alt: Supported Grafana versions
+
+  .. image:: https://img.shields.io/badge/InfluxDB-1.x-blue.svg
+      :target: https://github.com/influxdata/influxdb
+      :alt: Supported InfluxDB versions
+
+  .. image:: https://img.shields.io/badge/Mosquitto-1.x%2C%202.x-blue.svg
+      :target: https://github.com/eclipse/mosquitto
+      :alt: Supported Mosquitto versions
+
+  .. image:: https://img.shields.io/badge/PostgreSQL-13%2C%2014%2C%2015-blue.svg
+      :target: https://www.postgresql.org/
+      :alt: Supported PostgreSQL versions
+
+  .. image:: https://img.shields.io/badge/PostGIS-3.x-blue.svg
+      :target: https://postgis.net/
+      :alt: Supported PostGIS versions
+
+  .. image:: https://img.shields.io/pypi/pyversions/luftdatenpumpe.svg
+      :target: https://pypi.org/project/luftdatenpumpe/
+      :alt: Supported Python versions
+
+|
 
 *****
 About
