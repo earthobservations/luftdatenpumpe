@@ -41,6 +41,8 @@ extend-exclude = [
 
 [tool.poe.tasks]
 build = {cmd="python -m build"}
+docs-html = {cmd="sh -c 'cd doc && make html'"}
+docs-linkcheck = {cmd="sh -c 'cd doc && make linkcheck'"}
 format = [
   {cmd="black ."},
   {cmd="isort ."},

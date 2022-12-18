@@ -59,16 +59,6 @@ test-coverage: install-tests
 release: bumpversion push build upload
 
 
-# -------------
-# Documentation
-# -------------
-
-# Build the documentation
-docs-html: install-doctools
-	touch doc/index.rst
-	export SPHINXBUILD="`pwd`/$(sphinx)"; cd doc; make html
-
-
 # ===============
 # Utility targets
 # ===============
@@ -83,9 +73,6 @@ build:
 
 upload:
 	$(twine) upload --skip-existing dist/*{.tar.gz,.whl}
-
-install-doctools: setup-virtualenv
-	@$(pip) install --quiet --requirement requirements-docs.txt --upgrade
 
 install-releasetools: setup-virtualenv
 	@$(pip) install --quiet --requirement requirements-release.txt --upgrade
