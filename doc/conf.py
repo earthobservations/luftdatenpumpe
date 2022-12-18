@@ -32,3 +32,6 @@ html_static_path = ['_static']
 
 # -- More options
 todo_include_todos = True
+linkcheck_ignore = [
+    #r'https://community.hiveeyes.org/.*'
+]

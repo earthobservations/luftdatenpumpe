@@ -22,7 +22,7 @@ Introduction
 ============
 Use this Icinga configuration object to monitor your data source. You will
 need to find out about your Grafana data source index. Here, it is "10", see
-https://daq.example.org/grafana/api/datasources/proxy/10/query.
+``https://daq.example.org/grafana/api/datasources/proxy/10/query``.
 
 It has probably on the output of the command when creating the respective data source in Grafana::
 

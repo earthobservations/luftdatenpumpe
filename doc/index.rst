@@ -86,7 +86,7 @@ Indices and tables
 
 .. _InfluxDB: https://github.com/influxdata/influxdb
 .. _IRCELINE: https://www.irceline.be/en/documentation/open-data
-.. _luftdaten.info: https://luftdaten.info/
+.. _luftdaten.info: https://web.archive.org/web/20220604103954/https://luftdaten.info/
 .. _MQTT: https://mqtt.org/
 .. _OpenAQ: https://openaq.org/
 .. _PostGIS: https://postgis.net/

@@ -60,37 +60,45 @@ Misc
 - http://aircitizen.org/en/
 - http://www.openmaps.online/LuftdatenInfoTimeslider/
 - https://github.com/OpenDEM/LuftdatenInfoTimeslider
-- https://smartplatform.readthedocs.io/
-- https://buildmedia.readthedocs.org/media/pdf/smartplatform/latest/smartplatform.pdf
-- https://justobjects.nl/category/smartemission/
-- https://justobjects.nl/emit-6-airsenseur-calibration/
-- https://smartemission.nl/
-- https://data.smartemission.nl/
-- https://data.smartemission.nl/smartapp/
-- https://data.smartemission.nl/heron
-- https://heron-mc.org/
-- https://data.smartemission.nl/grafana/d/kHCobhViz/allsensordata
-- https://data.smartemission.nl/grafana-dc/d/HVSBmbHmz/airsenseur-netherlands-deploy
 - https://github.com/luftdata
 - https://luftdata.se/
 - https://plugins.qgis.org/plugins/SOSClient/
 - https://github.com/ruben-mv/SOSClient/blob/master/sos/sos.py
 - https://pypi.org/project/OWSLib/
-- http://geopython.github.io/OWSLib/
+- https://geopython.github.io/OWSLib/
 - https://github.com/geopython/OWSLib/blob/master/owslib/sos.py
-- http://geopython.github.io/OWSLib/#sos-2-0
+- https://geopython.github.io/OWSLib/usage.html#sos-2-0
 - https://github.com/peterataylor/OWSLib-SOS-example
 - https://nbviewer.jupyter.org/github/peterataylor/OWSLib-SOS-example/blob/master/owslib-sos-notebook.ipynb
 
 
-RIVM The Netherlands
-====================
-Sensor Observation Service (SOS) and data management for Air Quality data from RIVM The Netherlands
+The Netherlands
+===============
+
+Smartplatform
+-------------
+- https://smartplatform.readthedocs.io/
+- https://buildmedia.readthedocs.org/media/pdf/smartplatform/latest/smartplatform.pdf
+- https://web.archive.org/web/20210724005627/https://justobjects.nl/category/smartemission/
+- https://justobjects.nl/emit-6-airsenseur-calibration/
+- https://smartemission.ruhosting.nl/
+- https://web.archive.org/web/20201129035112/https://data.smartemission.nl/
+- https://web.archive.org/web/20180531165312/http://data.smartemission.nl/smartapp/
+- https://web.archive.org/web/20180602065938/http://data.smartemission.nl/heron/
+- https://heron-mc.org/
+- https://smartplatform.readthedocs.io/
+- ``https://data.smartemission.nl/grafana/d/kHCobhViz/allsensordata``
+- ``https://data.smartemission.nl/grafana-dc/d/HVSBmbHmz/airsenseur-netherlands-deploy``
+- ``https://data.smartemission.nl/grafana/``
+- ``https://data.smartemission.nl/grafana-dc/``
+
+
+RIVM
+----
+Sensor Observation Service (SOS) and data management for Air Quality data from
+RIVM The Netherlands.
 
 - https://sospilot.readthedocs.io/en/latest/data.html
 - https://sospilot.readthedocs.io/en/latest/weather.html
 - https://github.com/Geonovum/sospilot/issues/17
-- https://data.smartemission.nl/
-- https://data.smartemission.nl/grafana/
-- https://data.smartemission.nl/grafana-dc/
 - https://inspire.rivm.nl/sos/eaq/service?service=SOS&request=GetCapabilities

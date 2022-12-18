@@ -21,7 +21,8 @@ Dashboards
 
 References
 ==========
-- https://luftdaten.info/
+- https://web.archive.org/web/20220604103954/https://luftdaten.info/
+- https://sensor.community/
 - https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 - https://community.hiveeyes.org/t/ldi-data-plane-v2/1412
 
@@ -41,13 +42,13 @@ Implemented by `irceline.py <https://github.com/earthobservations/luftdatenpumpe
 
 Dashboards
 ==========
-- `Luftdaten-Viewer » IRCELINE » Map <https://vmm.hiveeyes.org/grafana/d/0UZNL2zZz/luftdaten-viewer-irceline-map>`_
-- `Luftdaten-Viewer » IRCELINE » Trend <https://vmm.hiveeyes.org/grafana/d/z8p4L2zZk/luftdaten-viewer-irceline-trend>`_
+- `Luftdaten-Viewer » IRCELINE » Map <https://vmm.panodata.net/grafana/d/CM5mTOZWk/luftdaten-viewer-irceline-map>`_
+- `Luftdaten-Viewer » IRCELINE » Trend <https://vmm.panodata.net/grafana/d/JzSioOWWz/luftdaten-viewer-irceline-trend>`_
 
 References
 ==========
 - http://www.irceline.be/en
-- http://deus.irceline.be/
+- https://web.archive.org/web/20211129062716/http://deus.irceline.be/
 - https://en.vmm.be/
-- https://project-corona.eu/
+- https://web.archive.org/web/20210112053937/https://project-corona.eu/default.aspx
 - http://geo.irceline.be/sos/static/doc/api-doc/
