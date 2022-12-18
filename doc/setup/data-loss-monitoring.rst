@@ -1,3 +1,5 @@
+.. highlight:: bash
+
 #####################################
 Luftdaten-Viewer data loss monitoring
 #####################################

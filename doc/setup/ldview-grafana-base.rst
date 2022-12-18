@@ -1,9 +1,11 @@
+.. highlight:: bash
+
 ########################
 Luftdaten-Viewer Grafana
 ########################
 
 This walkthrough brings everything in place to visualize the data feed of
-`sensor.community`_, formerly `luftdaten.info`_, using `Grafana`_.
+`Sensor.Community`_, formerly ``luftdaten.info``, using `Grafana`_.
 
 
 ************
@@ -26,7 +28,9 @@ The map component for Grafana used within this setup is the `Panodata Map Panel`
 Because it is not a built-in plugin, and not available on the `Grafana plugin catalog`_,
 it is not signed. To allow using unsigned plugins starting with Grafana 7.x, please use
 the `allow_loading_unsigned_plugins`_ configuration setting, which is located within
-the ``[plugins]`` section of ``/etc/grafana/grafana.ini``::
+the ``[plugins]`` section of ``/etc/grafana/grafana.ini``.
+
+.. code-block:: ini
 
     allow_loading_unsigned_plugins = panodata-map-panel
 
@@ -40,7 +44,7 @@ Finally, restart your Grafana instance::
 
     systemctl restart grafana-server
 
-.. note::
+.. warning::
 
     Please note this procedure has been confirmed to work with Grafana versions up
     to Grafana 8.x. It has not been verified on the most recent Grafana 9.x version.
@@ -189,4 +193,4 @@ Create dashboard with map and table panels::
 .. _Grafana plugin catalog: https://grafana.com/grafana/plugins/
 .. _luftdaten.info: https://luftdaten.info
 .. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
-.. _sensor.community: https://sensor.community/en/
+.. _Sensor.Community: https://sensor.community/en/

@@ -52,7 +52,7 @@ Luftdatenpumpe
 About
 *****
 
-Process live and historical data from `sensor.community`_ (formerly
+Process live and historical data from `Sensor.Community`_ (formerly
 `luftdaten.info`_), `IRCELINE`_, and `OpenAQ`_.
 
 Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
@@ -234,7 +234,7 @@ Icons and pictograms
 .. _PostgreSQL: https://www.postgresql.org/
 .. _PostGIS: https://postgis.net/
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
-.. _sensor.community: https://sensor.community/en/
+.. _Sensor.Community: https://sensor.community/en/
 .. _SQLAlchemy: https://www.sqlalchemy.org/
 .. _The Hiveeyes Project: https://hiveeyes.org/
 .. _TSDB: https://en.wikipedia.org/wiki/Time_series_database

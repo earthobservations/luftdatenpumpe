@@ -1,3 +1,5 @@
+.. highlight:: bash
+
 ##########################
 Luftdaten-Viewer Databases
 ##########################
@@ -35,8 +37,8 @@ Connect to PostGIS::
 
     psql postgres://postgres@localhost:5432
 
-When working on a classic Linux host, where PostGIS is installed as a system
-service, this command might be needed to connect::
+When aiming to connect to PostGIS on a classic Linux host, where PostGIS is
+installed as a system service, those commands might work better::
 
     su - postgres
     psql
@@ -61,6 +63,10 @@ Create users::
     CREATE ROLE grafana WITH LOGIN PASSWORD 'readonly';
     \q
 
+
+Import data
+===========
+
 Pre-flight checks::
 
     psql postgres://luftdatenpumpe@localhost:5432/weatherbase
@@ -68,11 +74,11 @@ Pre-flight checks::
 Run ``luftdatenpumpe`` for the first time to manifest database schema::
 
     luftdatenpumpe stations \
-        --network=ldi --station=49,1033 --reverse-geocode \
+        --network=ldi --station="49,1033" --reverse-geocode \
         --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
     luftdatenpumpe stations \
-        --network=irceline --station=1030,1751 --reverse-geocode \
+        --network=irceline --station="1030,1751" --reverse-geocode \
         --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
 Create database view and grant permissions to "grafana" user::
@@ -138,7 +144,7 @@ Create and provision InfluxDB database
 ======================================
 ::
 
-    luftdatenpumpe readings --network=ldi --station=49,1033 \
+    luftdatenpumpe readings --network=ldi --station="49,1033" \
         --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 

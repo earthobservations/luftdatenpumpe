@@ -6,7 +6,8 @@ Luftdatenpumpe PostGIS tutorial
 ************
 Introduction
 ************
-Luftdatenpumpe uses a PostGIS ``POINT`` to store the geoposition of LDI stations.
+
+Luftdatenpumpe uses a PostGIS ``POINT`` to store the geolocation of LDI stations.
 
 In the query expression examples displayed below, we use the geocoordinates
 ``POINT(9.1800132 48.7784485)`` for Stuttgart, Germany.
@@ -96,6 +97,7 @@ In order to save on repeating this ``POINT`` coordinates here, we can alias it i
 
 Mixing in OSM/Nominatim
 =======================
+
 As these expressions use the constraint ``osm_city = 'Stuttgart'``, OSM data is involved.
 Centroid of OSM input coordinates
 
@@ -140,6 +142,7 @@ Centroid of OSM input coordinates
 *******************************
 Accessing the OSM/Nominatim API
 *******************************
+
 By using the PostgreSQL extension `pgsql-http`_, which is effectively a
 »HTTP client for PostgreSQL«, you can directly access the Nominatim HTTP API
 for asking for a ``geotext`` field from a specified city or other location
@@ -186,3 +189,15 @@ Match within range
     WHERE ST_DWithin(geopoint, stuttgart.position, 3000)
     ORDER BY geopoint <-> stuttgart.position;
 
+
+**************************************
+Using the local database with OSM data
+**************************************
+
+Using the ``--reverse-geocode`` option, Luftdatenpumpe will query Nominatim on
+its own behalf, and will populate the PostGIS database with information from OSM.
+
+This data can be queried conveniently without having to reach out to Nominatim
+using `pgsql-http`_.
+
+.. todo:: Show some example queries.
