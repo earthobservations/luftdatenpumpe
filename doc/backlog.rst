@@ -19,7 +19,7 @@ Iteration +0
 - [o] Announce on https://forum.sensor.community/
   https://community.panodata.org/t/luftdatenpumpe/21
 - [o] Sandbox: Use Docker Compose for starting auxiliary services
-
+- [o] Completely migrate from LDI to SC, including backwards-compatibility.
 
 
 ************
@@ -55,14 +55,14 @@ Iteration +2
 - [o] Data plane refactoring
 
   - Fused/combined data model of sensors vs. data/readings
-- [x] IRCELINE: Progressively/chunked fetching of timeseries information - not all at once!
+- [x] IRCELINE: Progressively/chunked fetching of timeseries information - not all at once.
 - [o] Refactor Markdown documentation in Grafana Dashboards
 - [o] Improve IRCELINE data processing efficiency
 - [o] Error with invalid timestamps when requesting IRCELINE: "statusCode" error
-- [o] Grafana: Drill-down to detail view via circle
+- [o] Grafana: Drill down to detail view via circle
   https://vmm.hiveeyes.org/grafana/d/gG-dP2kWk/luftdaten-viewer-ldi-trend?var-ldi_station_id=8667
 - [o] Grafana: Enhanced popover with structured (meta)data transfer
-- [o] Grafana: Drill-down to detail view via popover
+- [o] Grafana: Drill down to detail view via popover
 - [o] As the Panodata Map Panel (ex. Grafana Worldmap Panel) decodes the geohash to lat/lon
   using ``decodeGeoHash()`` anyway, let's go back to storing the position as lat/lon again.
 - [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
@@ -262,9 +262,11 @@ Documentation
 - [o] Update links in README.rst
 - [o] Development: Add README and CHANGELOG, CONTRIBUTORS
 - [o] Testimonials => Gallery. Fix links to https://vmm.panodata.net/
-- [o] --help => Usage
-- [o] Copy plugin
+- [x] --help => Usage
+- [o] Copy code snippet plugin
 - [o] Refer to PostgreSQL "trust"-based authentication
+- [o] Change copyright name
+- [o] Update CONTRIBUTORS
 
 
 ****
@@ -331,7 +333,7 @@ All the machinery
 
 More
 ====
-- [x] Fix fix fix::
+- [x] Fixed::
 
     2019-01-21 02:54:44,787 [luftdatenpumpe.core           ] WARNING: Could not make reading from {'sensordatavalues': [{'value': '81.40', 'value_type': 'humidity', 'id': 5790214143}, {'value': '0.20', 'value_type': 'temperature', 'id': 5790214142}], 'sensor': {'sensor_type': {'name': 'DHT22', 'manufacturer': 'various', 'id': 9}, 'pin': '7', 'id': 19755}, 'timestamp': '2019-01-21 01:50:56', 'id': 2724801826, 'location': {'longitude': '', 'latitude': '47.8120', 'altitude': '58.0', 'country': 'DE'}, 'sampling_rate': None}.
     Traceback (most recent call last):

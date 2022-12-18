@@ -20,7 +20,7 @@ may want to look into configuring `Trust Authentication`_ for PostgreSQL.
     apply. This method should only be used when there is adequate
     operating-system-level protection on connections to the server.
 
-    ``trust`` authentication is appropriate and very convenient for local
+    ``trust`` authentication is appropriate and convenient for local
     connections on a single-user workstation.
 
 

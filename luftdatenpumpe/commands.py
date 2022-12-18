@@ -40,9 +40,9 @@ def run():
       --sensor=<sensors>            Filter data by given sensor ids, comma-separated.
       --sensor-type=<sensor-types>  Filter data by given sensor types, comma-separated.
       --timespan=<timespan>         Filter readings by time range, only for SOS API (e.g. IRCELINE).
-      --reverse-geocode             Compute geographical address using the Nominatim reverse geocoder
+      --reverse-geocode             Compute geographic address using the Nominatim reverse geocoder
       --target=<target>             Data output target
-      --target-fieldmap=<fieldmap>  Fieldname mapping for "json+flex" target
+      --target-fieldmap=<fieldmap>  Field name mapping for "json+flex" target
       --disable-nominatim-cache     Disable Nominatim reverse geocoder cache
       --progress                    Show progress bar
       --version                     Show version information
@@ -82,7 +82,7 @@ def run():
       luftdatenpumpe stations --network=openaq
       luftdatenpumpe readings --network=openaq --country=IN,PK
 
-    Heads up!
+    Heads up:
 
       From now on, let's pretend we always want to operate on data coming from the
       sensor network "luftdaten.info", which is identified by "--network=ldi". To
@@ -163,7 +163,7 @@ def run():
       luftdatenpumpe readings --station=49,1033 --target=json+stream://sys.stderr --target=mqtt://localhost/luftdaten.info --target=influxdb://luftdatenpumpe@localhost/luftdaten_info
 
 
-    """
+    """  # noqa:E501
 
     # Bootstrap application.
     application = Application(name=__appname__, version=__version__, docopt_recipe=run.__doc__)

@@ -67,7 +67,7 @@ def stations_from_rdbms(dsuri, prefix):
                 }
             ]
         }
-    """
+    """  # noqa:E501
 
     for station in fetch_from_rdbms(dsuri, prefix):
         entry = {

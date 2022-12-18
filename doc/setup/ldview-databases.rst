@@ -207,3 +207,4 @@ Database content
     time count_P1 count_P2 count_humidity count_temperature
     ---- -------- -------- -------------- -----------------
     0    4        4        4              4
+
