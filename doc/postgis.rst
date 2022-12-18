@@ -38,7 +38,7 @@ the functions that have been defined on GEOGRAPHY.
 4.2.3.1. Do you calculate on the sphere or the spheroid?
 By default, all distance and area calculations are done on the spheroid.
 
--- https://postgis.net/docs/using_postgis_dbmanagement.html#idm1387
+-- https://postgis.net/docs/using_postgis_dbmanagement.html#idm1644
 
 
 .. highlight:: sql

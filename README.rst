@@ -226,7 +226,7 @@ Icons and pictograms
 .. _jq: https://stedolan.github.io/jq/
 .. _OpenAQ: https://openaq.org/
 .. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
-.. _luftdaten.info: https://luftdaten.info/
+.. _luftdaten.info: https://web.archive.org/web/20220604103954/https://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe
 .. _MQTT: https://mqtt.org/
 .. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
@@ -246,5 +246,5 @@ Icons and pictograms
 .. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
 .. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana-base.rst
 .. _Luftdatenpumpe PostGIS tutorial: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/postgis.rst
-.. _Python virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/virtualenv.rst
+.. _Python virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/virtualenv.rst
 .. _Testimonials for Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/testimonials.rst

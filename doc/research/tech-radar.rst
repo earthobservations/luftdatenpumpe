@@ -9,9 +9,10 @@ References
 
 luftdaten.info
 ==============
-- http://luftdaten.info/
-- http://archive.luftdaten.info/
-- http://deutschland.maps.luftdaten.info/
+- https://web.archive.org/web/20220604103954/https://luftdaten.info/
+- https://sensor.community/
+- https://archive.luftdaten.info/
+- https://deutschland.maps.luftdaten.info/
 
 Resources
 =========
@@ -25,13 +26,18 @@ Resources
 
 SE Data Platform
 ================
-- https://data.smartemission.nl/
+- https://web.archive.org/web/20201129035112/https://data.smartemission.nl/
 - https://smartplatform.readthedocs.io/
 - https://smartplatform.readthedocs.io/en/latest/api.html
 - https://github.com/smartemission/docker-se-stetl
-
-- https://data.smartemission.nl/grafana/
-- https://data.smartemission.nl/grafana-dc/
+- https://justobjects.nl/
+- https://github.com/Geonovum
+- https://www.geonovum.nl/themas/testbed-ogc-apis
+- https://www.geonovum.nl/themas/kennisplatform-apis
+- https://osgeo.nl/
+- https://geotoko.nl/
+- https://nlextract.nl/
+- https://github.com/nlextract/NLExtract
 
 
 JRC
@@ -60,6 +66,6 @@ Databases
 Software and services
 ---------------------
 - https://github.com/grafana/grafana
-- https://grafana.com/plugins/grafana-worldmap-panel
+- https://grafana.com/grafana/plugins/grafana-worldmap-panel/
 - https://en.wikipedia.org/wiki/Geohash
 - https://nominatim.org/

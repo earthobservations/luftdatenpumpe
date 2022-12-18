@@ -66,7 +66,7 @@ Iteration +2
 - [o] As the Panodata Map Panel (ex. Grafana Worldmap Panel) decodes the geohash to lat/lon
   using ``decodeGeoHash()`` anyway, let's go back to storing the position as lat/lon again.
 - [o] Use Grafana Folder "Luftdatenpumpe" for storing dashboards.
-- [o] When acquiring data from specific sensors, use API endpoints like http://api.luftdaten.info/v1/sensor/25735/
+- [o] When acquiring data from specific sensors, use API endpoints like ``http://api.luftdaten.info/v1/sensor/25735/``.
 - [o] Look at world air quality data
 
 
@@ -161,7 +161,7 @@ Iteration +5
 ************
 Iteration +6
 ************
-- [o] Use https://grafana.com/plugins/ryantxu-ajax-panel to show other content
+- [o] Use https://grafana.com/grafana/plugins/ryantxu-ajax-panel/ to show other content
 - [o] What to do with high P1/P2 values > 1.000 and more?
 - [o] CSV import: Add more sensor types
 - [o] Link from sticky overlay to station trend dashboard
@@ -202,7 +202,7 @@ Email address for Nominatim
     If you are making large numbers of request please include a valid email address or alternatively include your email address as part of the User-Agent string.
     This information will be kept confidential and only used to contact you in the event of a problem, see Usage Policy for more details.
 
-    https://wiki.openstreetmap.org/wiki/Nominatim#Example_with_format.3Djsonv2
+    https://wiki.openstreetmap.org/wiki/Nominatim
 
 
 ************
@@ -229,7 +229,7 @@ Iteration +8
 - [o] OSM: Italia only has 3-letter state names like CAL, CAM, LOM, etc.
 - [o] Add PostgREST
 - [o] Grafana: Link to https://www.madavi.de/sensor/graph.php and/or
-  - http://deutschland.maps.luftdaten.info/#13/50.9350/13.3913 and/or
+  - ``http://deutschland.maps.luftdaten.info/#13/50.9350/13.3913`` and/or
   - https://maps.luftdaten.info/grafana/d-solo/000000004/single-sensor-view?orgId=1&panelId=1&var-node=18267
   somehow?
 - [o] After importing historical data, make a video from the expanding map
