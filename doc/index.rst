@@ -16,12 +16,14 @@ Luftdatenpumpe
 About
 *****
 
-Process live and historical data from `sensor.community`_ (formerly
-`luftdaten.info`_), `IRCELINE`_, and `OpenAQ`_.
+Acquire and process live and historical air quality data without efforts.
 
 Filter by station-id, sensor-id and sensor-type, apply reverse geocoding,
-store into TSDB_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
-publish to MQTT_ or just output as JSON.
+store into time-series_ and RDBMS_ databases (InfluxDB_ and PostGIS_),
+publish to MQTT_, output as JSON, or visualize in `Grafana`_.
+
+Data sources: `Sensor.Community`_ (`luftdaten.info`_), `IRCELINE`_, and
+`OpenAQ`_.
 
 The :doc:`Luftdatenpumpe README <README>` has more details about features,
 screenshots, and basic usage information.
@@ -70,6 +72,7 @@ Research
    research/tech-radar
 
 
+.. _Grafana: https://github.com/grafana/grafana
 .. _InfluxDB: https://github.com/influxdata/influxdb
 .. _IRCELINE: https://www.irceline.be/en/documentation/open-data
 .. _luftdaten.info: https://web.archive.org/web/20220604103954/https://luftdaten.info/
@@ -78,4 +81,4 @@ Research
 .. _PostGIS: https://postgis.net/
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _sensor.community: https://sensor.community/en/
-.. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
+.. _time-series: https://en.wikipedia.org/wiki/Time_series_database
