@@ -40,6 +40,18 @@ Handbook
    gallery
 
 
+***********
+Development
+***********
+
+.. toctree::
+   :maxdepth: 1
+
+   CONTRIBUTORS
+   CHANGES
+   backlog
+
+
 *******
 Details
 *******
@@ -52,17 +64,6 @@ Details
    ldi-schema
    models/ldi/README
    models/irceline/README
-
-
-***********
-Development
-***********
-
-.. toctree::
-   :maxdepth: 1
-
-   CHANGES
-   backlog
 
 
 ********

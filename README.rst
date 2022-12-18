@@ -170,8 +170,9 @@ At least, you should verify the installation succeeded by running::
 
     luftdatenpumpe --version
 
-However, you might have to resolve some prerequisites so you want to follow
-the detailed installation instructions at `install Luftdatenpumpe`_.
+At `install Luftdatenpumpe`_, you will find more detailed installation instructions
+about how to install and configure auxiliary services, and eventually resolve some
+prerequisites.
 
 
 ****************
@@ -195,26 +196,40 @@ panel-widgets like outlined in the "Testimonials" section.
 - `Luftdaten-Viewer Grafana`_
 
 
-*******
+*******************
+Project information
+*******************
+
+Contributions
+=============
+
+Any kind of contribution, feedback, or patch, is much welcome. `Create an
+issue`_ or submit a patch if you think we should include a new feature, or to
+report or fix a bug.
+
+Resources
+=========
+
+- `Source code <https://github.com/earthobservations/luftdatenpumpe>`_
+- `Documentation <https://luftdatenpumpe.readthedocs.io/>`_
+- `Python Package Index (PyPI) <https://pypi.org/project/luftdatenpumpe/>`_
+
 License
-*******
+=======
 
-This project is licensed under the terms of the GNU AGPL license.
+The project is licensed under the terms of the GNU AGPL license, see `LICENSE`_.
 
-
-********************
 Content attributions
-********************
-
-The copyright of particular images and pictograms are held by their respective owners, unless otherwise noted.
-
-Icons and pictograms
 ====================
+
+The copyright of particular images and pictograms are held by their respective
+owners, unless otherwise noted.
+
 - `Water Pump Free Icon <https://www.onlinewebfonts.com/icon/97990>`_ from
   `Icon Fonts <https://www.onlinewebfonts.com/icon/>`_ is licensed by CC BY 3.0.
 
 
-
+.. _Create an issue: https://github.com/earthobservations/luftdatenpumpe/issues/new
 .. _dataset: https://dataset.readthedocs.io/
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 .. _Geohash: https://en.wikipedia.org/wiki/Geohash
@@ -222,12 +237,13 @@ Icons and pictograms
 .. _InfluxDB: https://github.com/influxdata/influxdb
 .. _IRCELINE: https://www.irceline.be/en/documentation/open-data
 .. _jq: https://stedolan.github.io/jq/
-.. _OpenAQ: https://openaq.org/
-.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
+.. _LICENSE: https://github.com/earthobservations/luftdatenpumpe/blob/main/LICENSE
 .. _luftdaten.info: https://web.archive.org/web/20220604103954/https://luftdaten.info/
 .. _Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe
 .. _MQTT: https://mqtt.org/
 .. _Nominatim: https://wiki.openstreetmap.org/wiki/Nominatim
+.. _OpenAQ: https://openaq.org/
+.. _OpenStreetMap: https://en.wikipedia.org/wiki/OpenStreetMap
 .. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _PostgreSQL: https://www.postgresql.org/
 .. _PostGIS: https://postgis.net/
