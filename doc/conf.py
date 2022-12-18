@@ -7,9 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Luftdatenpumpe"
-copyright = "2022, Andreas Motl"
-author = "Andreas Motl"
-release = "0.21.1"
+copyright = "2022, The Earth Observations Developers"
+author = "The Earth Observations Developers"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
