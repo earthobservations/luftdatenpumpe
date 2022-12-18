@@ -15,10 +15,10 @@ $(eval bumpversion  := $(venvpath)/bin/bumpversion)
 $(eval twine        := $(venvpath)/bin/twine)
 $(eval sphinx       := $(venvpath)/bin/sphinx-build)
 $(eval coverage     := $(venvpath)/bin/coverage)
-$(eval flake8       := $(venvpath)/bin/pflake8)
 $(eval black        := $(venvpath)/bin/black)
 $(eval isort        := $(venvpath)/bin/isort)
 $(eval proselint    := $(venvpath)/bin/proselint)
+$(eval poe          := $(venvpath)/bin/poe)
 
 
 # Setup Python virtualenv
@@ -101,12 +101,10 @@ install-tests: setup-virtualenv
 # ----------------------
 
 format: setup-virtualenv
-	$(black) .
-	$(isort) .
+	$(poe) format
 
 lint: setup-virtualenv
-	$(flake8) luftdatenpumpe tests
-	$(proselint) *.rst doc/**/*.rst
+	$(poe) lint
 
 
 # -------
