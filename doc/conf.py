@@ -15,6 +15,8 @@ author = "The Earth Observations Developers"
 
 extensions = [
     "sphinx.ext.todo",
+    "sphinx_copybutton",
+    "sphinx_tabs.tabs",
 ]
 
 templates_path = ["_templates"]
@@ -33,3 +35,10 @@ todo_include_todos = True
 linkcheck_ignore = [
     # r'https://community.hiveeyes.org/.*'
 ]
+sphinx_tabs_valid_builders = ["linkcheck"]
+
+# Configure Sphinx-copybutton
+copybutton_remove_prompts = True
+copybutton_line_continuation_character = "\\"
+copybutton_prompt_text = r">>> |\.\.\. |\$ |sh\$ |PS> |cr> |mysql> |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True

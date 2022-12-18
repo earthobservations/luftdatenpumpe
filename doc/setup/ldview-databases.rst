@@ -74,25 +74,45 @@ Pre-flight checks::
 
     psql postgres://luftdatenpumpe@localhost:5432/weatherbase
 
-Run ``luftdatenpumpe`` for the first time to manifest database schema::
+Run ``luftdatenpumpe`` for the first time to manifest the database schema.
 
-    luftdatenpumpe stations \
-        --network=ldi --station="49,1033" --reverse-geocode \
-        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+.. tabs::
 
-    luftdatenpumpe stations \
-        --network=irceline --station="1030,1751" --reverse-geocode \
-        --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+    .. tab:: LDI
 
-Create database view and grant permissions to "grafana" user::
+        ::
 
-    luftdatenpumpe database --network=ldi \
-        --target=postgresql://luftdatenpumpe@localhost/weatherbase \
-        --create-view --grant-user=grafana
+            luftdatenpumpe stations \
+                --network=ldi --station="49,1033" --reverse-geocode \
+                --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
 
-    luftdatenpumpe database --network=irceline \
-        --target=postgresql://luftdatenpumpe@localhost/weatherbase \
-        --create-view --grant-user=grafana
+    .. tab:: IRCELINE
+
+        ::
+
+            luftdatenpumpe stations \
+                --network=irceline --station="1030,1751" --reverse-geocode \
+                --target=postgresql://luftdatenpumpe@localhost/weatherbase --progress
+
+Create database view and grant permissions to "grafana" user.
+
+.. tabs::
+
+    .. tab:: LDI
+
+        ::
+
+            luftdatenpumpe database --network=ldi \
+                --target=postgresql://luftdatenpumpe@localhost/weatherbase \
+                --create-view --grant-user=grafana
+
+    .. tab:: IRCELINE
+
+        ::
+
+            luftdatenpumpe database --network=irceline \
+                --target=postgresql://luftdatenpumpe@localhost/weatherbase \
+                --create-view --grant-user=grafana
 
 .. note::
 
@@ -102,6 +122,7 @@ Create database view and grant permissions to "grafana" user::
 
 Sanity checks
 =============
+
 Let's have a look if everything worked.
 
 

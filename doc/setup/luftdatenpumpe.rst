@@ -41,7 +41,9 @@ Troubleshooting
 
     So, you might try to do things like::
 
+        # Announce path to icu4c.
         $ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+
+        # To verify if that works, run:
         $ pkg-config --modversion icu-i18n
-        63.1
 
