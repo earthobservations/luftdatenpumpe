@@ -24,6 +24,9 @@ to follow this tutorial. It is InfluxDB, PostGIS, and Redis::
     make postgis-start
     make redis-start
 
+When running in production mode, you may need to configure your services to
+provide convenient authentication. On this matter, please have a look at
+:ref:`postgresql-authentication`.
 
 
 *******
