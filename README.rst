@@ -237,6 +237,21 @@ panel-widgets like outlined in the "Testimonials" section.
 - `Luftdaten-Viewer Grafana`_
 
 
+**************
+Other projects
+**************
+
+Sensor.Community public data aggregator
+=======================================
+
+Visualize recent sensor data on a world map for Sensor.Community and for different
+other official networks, like EEA, Luchtmeetnet, Atmo AURA/Sud/Occitanie, and
+Umweltbundesamt.
+
+- https://github.com/pjgueno/SCPublicData
+- https://forum.sensor.community/t/scraping-pm-data-help-needed/1448
+
+
 *******************
 Project information
 *******************
