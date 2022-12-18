@@ -181,10 +181,8 @@ Luftdaten-Viewer
 About
 =====
 Using Luftdatenpumpe, you can build user-friendly interactive GIS systems
-on top of PostGIS, InfluxDB and Grafana. We are calling this "Luftdaten-Viewer".
-
-Without further ado, you might enjoy reading about existing "Luftdaten-Viewer"
-installations at `Testimonials for Luftdatenpumpe`_.
+on top of PostGIS, InfluxDB and Grafana. This setup is called "Luftdaten-Viewer",
+and some example scenarios can be inspected at `Luftdatenpumpe gallery`_.
 
 Instructions
 ============
@@ -239,12 +237,12 @@ Icons and pictograms
 .. _The Hiveeyes Project: https://hiveeyes.org/
 .. _TSDB: https://en.wikipedia.org/wiki/Time_series_database
 
-.. _luftdatenpumpe --help: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/usage.rst
-.. _install Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/luftdatenpumpe.rst
-.. _Luftdaten-Viewer Applications: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-applications.rst
-.. _Luftdaten-Viewer Cron Job: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-cronjob.rst
-.. _Luftdaten-Viewer Databases: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-databases.rst
-.. _Luftdaten-Viewer Grafana: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/ldview-grafana-base.rst
-.. _Luftdatenpumpe PostGIS tutorial: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/postgis.rst
-.. _Python virtualenv: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/setup/virtualenv.rst
-.. _Testimonials for Luftdatenpumpe: https://github.com/earthobservations/luftdatenpumpe/blob/main/doc/testimonials.rst
+.. _install Luftdatenpumpe: https://luftdatenpumpe.readthedocs.io/setup/luftdatenpumpe.html
+.. _luftdatenpumpe --help: https://luftdatenpumpe.readthedocs.io/usage.html
+.. _Luftdaten-Viewer Applications: https://luftdatenpumpe.readthedocs.io/setup/ldview-applications.html
+.. _Luftdaten-Viewer Cron Job: https://luftdatenpumpe.readthedocs.io/setup/ldview-cronjob.html
+.. _Luftdaten-Viewer Databases: https://luftdatenpumpe.readthedocs.io/setup/ldview-databases.html
+.. _Luftdaten-Viewer Grafana: https://luftdatenpumpe.readthedocs.io/setup/ldview-grafana-base.html
+.. _Luftdatenpumpe gallery: https://luftdatenpumpe.readthedocs.io/gallery.html
+.. _Luftdatenpumpe PostGIS tutorial: https://luftdatenpumpe.readthedocs.io/postgis.html
+.. _Python virtualenv: https://luftdatenpumpe.readthedocs.io/setup/virtualenv.html
