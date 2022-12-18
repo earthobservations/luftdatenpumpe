@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Luftdatenpumpe"
-copyright = "2022, The Earth Observations Developers"
+copyright = "2017-2022, The Earth Observations Developers"
 author = "The Earth Observations Developers"
 
 # -- General configuration ---------------------------------------------------

@@ -266,9 +266,10 @@ report or fix a bug.
 Resources
 =========
 
-- `Source code <https://github.com/earthobservations/luftdatenpumpe>`_
-- `Documentation <https://luftdatenpumpe.readthedocs.io/>`_
-- `Python Package Index (PyPI) <https://pypi.org/project/luftdatenpumpe/>`_
+- `Source code`_
+- `Documentation`_
+- `Community Forum`_
+- `Python Package Index (PyPI)`_
 
 License
 =======
@@ -285,8 +286,10 @@ owners, unless otherwise noted.
   `Icon Fonts <https://www.onlinewebfonts.com/icon/>`_ is licensed by CC BY 3.0.
 
 
+.. _Community Forum: https://community.panodata.org/t/luftdatenpumpe/21
 .. _Create an issue: https://github.com/earthobservations/luftdatenpumpe/issues/new
 .. _dataset: https://dataset.readthedocs.io/
+.. _Documentation: https://luftdatenpumpe.readthedocs.io/
 .. _Erneuerung der Luftdatenpumpe: https://community.hiveeyes.org/t/erneuerung-der-luftdatenpumpe/1199
 .. _Geohash: https://en.wikipedia.org/wiki/Geohash
 .. _Grafana: https://github.com/grafana/grafana
@@ -303,8 +306,10 @@ owners, unless otherwise noted.
 .. _Panodata Map Panel: https://community.panodata.org/t/panodata-map-panel-for-grafana/121
 .. _PostgreSQL: https://www.postgresql.org/
 .. _PostGIS: https://postgis.net/
+.. _Python Package Index (PyPI): https://pypi.org/project/luftdatenpumpe/
 .. _RDBMS: https://en.wikipedia.org/wiki/Relational_database_management_system
 .. _Sensor.Community: https://sensor.community/en/
+.. _Source code: https://github.com/earthobservations/luftdatenpumpe
 .. _SQLAlchemy: https://www.sqlalchemy.org/
 .. _The Hiveeyes Project: https://hiveeyes.org/
 .. _time-series: https://en.wikipedia.org/wiki/Time_series_database
