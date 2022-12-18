@@ -3,6 +3,19 @@ Data models for luftdaten.info network
 ######################################
 
 
+*******************
+API and data schema
+*******************
+
+Please have a look at the upstream documentation first:
+
+- https://github.com/opendata-stuttgart/meta/wiki/APIs
+- https://github.com/opendata-stuttgart/meta/wiki/EN-APIs
+
+:doc:`schema` has more information and example documents about LDI's
+official data schema in JSON format.
+
+
 ********
 Upstream
 ********

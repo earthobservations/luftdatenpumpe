@@ -1,3 +1,5 @@
+:orphan:
+
 LDI data schema
 ===============
 The data schema offered by `https://api.luftdaten.info/static/v1/data.json` looks like this.

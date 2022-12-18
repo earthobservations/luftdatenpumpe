@@ -55,7 +55,6 @@ Development
    CHANGES
    backlog
 
-   ldi-schema
    models/ldi/README
    models/irceline/README
 
