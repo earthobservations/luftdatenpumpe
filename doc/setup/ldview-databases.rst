@@ -55,11 +55,6 @@ Enable PostGIS extension::
 
     CREATE EXTENSION postgis;
 
-Optionally drop users first::
-
-    DROP ROLE IF EXISTS luftdatenpumpe;
-    DROP ROLE IF EXISTS grafana;
-
 Create users::
 
     CREATE ROLE luftdatenpumpe WITH LOGIN;

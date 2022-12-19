@@ -34,7 +34,7 @@ setup-virtualenv:
 # Run the main test suite
 test:
 	@test -e $(pytest) || $(MAKE) install-tests
-	@$(pytest) tests -m 'not slow' --show-capture=all --verbose
+	$(poe) test
 
 test-refresh: install-tests test
 
