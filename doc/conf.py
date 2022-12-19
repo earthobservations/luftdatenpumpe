@@ -17,6 +17,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx_copybutton",
     "sphinx_tabs.tabs",
+    "sphinxext.opengraph",
 ]
 
 templates_path = ["_templates"]
