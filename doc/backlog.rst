@@ -12,14 +12,24 @@ Iteration +0
 - [x] Code formatting, satisfy linter
 - [x] Render ``luftdatenpumpe --help`` to documentation
 - [x] Release 0.21.0
-- [o] Add support for EEA
+- [x] Add rendered documentation at https://luftdatenpumpe.readthedocs.io/
+- [o] Problem with sensor ID reference in new synthesized geolocation fields
+  https://github.com/earthobservations/luftdatenpumpe/issues/57
+- [o] Release 0.22.0
+- [o] Support for InfluxDB 2.x
+- [o] Support for Grafana 9.x
+- [o] Support for EEA
 
   - Stations list: Compute ``AirPollutant`` from ``AirPollutantCode``
 - [o] Add more tests
-- [o] Announce on https://forum.sensor.community/
-  https://community.panodata.org/t/luftdatenpumpe/21
+- [o] Announcements
+
+  - https://forum.sensor.community/
+  - https://community.panodata.org/t/luftdatenpumpe/21
 - [o] Sandbox: Use Docker Compose for starting auxiliary services
-- [o] Completely migrate from LDI to SC, including backwards-compatibility.
+- [o] Shipping: Provide container images
+- [o] Completely migrate from ``LDI`` to ``SC``, including backwards-compatibility
+- [o] EEA, Luchtmeetnet, UmweltBundesamt
 
 
 ************
@@ -257,16 +267,26 @@ Grafana
 Documentation
 *************
 
-- [o] poe docs-html
-- [o] poe docs-linkcheck: ``cd docs; sphinx-build -b linkcheck . _build``
-- [o] Update links in README.rst
-- [o] Development: Add README and CHANGELOG, CONTRIBUTORS
-- [o] Testimonials => Gallery. Fix links to https://vmm.panodata.net/
+- [x] poe docs-html
+- [x] poe docs-linkcheck: ``cd docs; sphinx-build -b linkcheck . _build``
+- [x] Update links in README.rst
+- [x] Development: Add README and CHANGELOG
+- [x] Section about development / contributions
+- [x] Add and update CONTRIBUTORS
+- [x] Testimonials => Gallery. Fix links to https://vmm.panodata.net/
 - [x] --help => Usage
-- [o] Copy code snippet plugin
-- [o] Refer to PostgreSQL "trust"-based authentication
-- [o] Change copyright name
-- [o] Update CONTRIBUTORS
+- [x] Refer to PostgreSQL "trust"-based authentication
+- [x] Change copyright name
+- [x] Add ``sphinx-copybutton`` and ``sphinx-tabs``
+- [x] Remove version number at left top?
+- [/] Trim left-hand menu
+- [x] Copyright year
+- [x] Other projects: Add SCxxx
+- [x] Interlink with forum
+- [/] Use sphinx-inline-tabs
+- [x] Add sphinxext-opengraph
+- [o] Improve gallery
+- [o] Add a bit of eye candy to landing page
 
 
 ****
