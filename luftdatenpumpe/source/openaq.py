@@ -246,6 +246,7 @@ class OpenAQPumpe(AbstractLuftdatenPumpe):
         # Fetch data from remote API.
         log.info("Requesting latest data from OpenAQ")
 
+        # TODO: Use `openaq.OpenAQ(version="v2")`.
         api = openaq.OpenAQ()
 
         # Example.
