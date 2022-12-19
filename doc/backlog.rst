@@ -285,8 +285,8 @@ Documentation
 - [x] Interlink with forum
 - [/] Use sphinx-inline-tabs
 - [x] Add sphinxext-opengraph
-- [o] Improve gallery
-- [o] Add a bit of eye candy to landing page
+- [x] Improve gallery
+- [x] Add a bit of eye candy to the landing page
 
 
 ****
