@@ -18,7 +18,7 @@ requires = [
     "tablib[pandas]<4",
     "py-openaq<2",
     # Caching
-    "requests-cache<1",
+    "requests-cache<2",
     "dogpile.cache<2",
     "redis<9",
     # Adapters
