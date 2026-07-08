@@ -10,7 +10,7 @@ requires = [
     # Core
     "appdirs<2",
     "docopt<1",
-    "munch<3",
+    "munch<5",
     "setuptools<82",
     "tqdm<5",
     # Acquisition
