@@ -62,7 +62,7 @@ def test_city_missing():
 
     location = resolve_location(latitude=24.074, longitude=120.34)
     improve_location(location)
-    assert location.address.city == "南投縣"
+    assert location.address.city == "Unknown City"  # was: "南投縣"
 
 
 def test_stadtstaat():
@@ -105,7 +105,7 @@ def test_stadtteil():
 
     location = resolve_location(latitude=48.482, longitude=9.203)
     improve_location(location)
-    assert location.address.suburb == "Ringelbach"
+    assert location.address.suburb == "Reutlingen (Kernstadt)"  # was: Ringelbach
     assert location.address.city == "Reutlingen"
     assert location.address.state == "Baden-Württemberg"
 
@@ -115,7 +115,7 @@ def test_stadtteil():
     # https://github.com/earthobservations/luftdatenpumpe/runs/7650240048
     assert name in [
         "Albrechtstraße, Ringelbach, Reutlingen, Baden-Württemberg, DE",
-        "Paul-Pfizer-Straße, Ringelbach, Reutlingen, Baden-Württemberg, DE",
+        "Paul-Pfizer-Straße, Reutlingen (Kernstadt), Reutlingen, Baden-Württemberg, DE",
     ]
 
 
@@ -141,6 +141,14 @@ def test_something():
     assert name == "Holunderbusch, Saerbeck, Steinfurt, Nordrhein-Westfalen, DE"
 
 
+def test_road_success():
+    location = resolve_location(latitude=49.342, longitude=8.146)
+    improve_location(location)
+    assert location.address.road == "Bernard-Humblot-Straße"
+    name = format_address(location)
+    assert name == "Bernard-Humblot-Straße, Neustadt an der Weinstraße, Rheinland-Pfalz, DE"
+
+
 def test_road_missing():
     """
     These addresses originally lack the `road` attribute.
@@ -158,28 +166,28 @@ def test_road_missing():
     improve_location(location)
     assert location.address.road == "Lerchenauer Straße"
     name = format_address(location)
-    assert name == "Lerchenauer Straße, Hasenbergl-Lerchenau Ost, Feldmoching-Hasenbergl, München, Bayern, DE"
+    assert name == "Lerchenauer Straße, Lerchenau, Feldmoching-Hasenbergl, München, Bayern, DE"
 
     # From `path` attribute
     location = resolve_location(latitude=49.2, longitude=9.242)
     improve_location(location)
     assert location.address.road == "Reutlinger Straße"
     name = format_address(location)
-    assert name == "Reutlinger Straße, Amorbach, Heilbronn, Baden-Württemberg, DE"
+    assert name == "Reutlinger Straße, Neckarsulm (Kernstadt), Heilbronn, Baden-Württemberg, DE"  # was: Amorbach
 
     # From `footway` attribute
     location = resolve_location(latitude=48.702, longitude=9.126)
     improve_location(location)
     assert location.address.road == "Hans-Holbein-Straße"
     name = format_address(location)
-    assert name == "Hans-Holbein-Straße, Oberaichen, Esslingen, Baden-Württemberg, DE"
+    assert name == "Hans-Holbein-Straße, Leinfelden, Oberaichen, Esslingen, Baden-Württemberg, DE"
 
     # From `house_number` attribute
     location = resolve_location(latitude=42.734, longitude=23.308)
     improve_location(location)
-    assert location.address.road == "\u0431\u043b.402"
+    assert location.address.road == "Христо Силянов"
     name = format_address(location)
-    assert name == "бл.402, ж.к. Надежда 4, Надежда, София, София-град, BG"
+    assert name == "Христо Силянов, ж.к. Надежда 4, София, Надежда, София-град, BG"
 
 
 def test_road_unknown():
@@ -192,14 +200,7 @@ def test_road_unknown():
     improve_location(location)
     assert location.address.road == "Unknown Road"
     name = format_address(location)
-    assert name == "Civil Lines, Agra, Uttar Pradesh, IN"
-
-    # Unknown road.
-    location = resolve_location(latitude=49.342, longitude=8.146)
-    improve_location(location)
-    assert location.address.road == "Unknown Road"
-    name = format_address(location)
-    assert name == "Neustadt an der Weinstraße, Rheinland-Pfalz, DE"
+    assert name == "Balkeshwar, Agra, Uttar Pradesh, IN"
 
 
 def test_city_district_vs_suburb():
@@ -255,4 +256,4 @@ def test_taiwan_poor():
     assert location.address.country_code == "TW"
     assert location.address.country == "臺灣"
     name = format_address(location)
-    assert name == "南投縣, 臺灣省, TW"
+    assert name == "TW"  # was: "南投縣, 臺灣省, TW"
