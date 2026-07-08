@@ -5,6 +5,10 @@ Changelog
 
 in progress
 ===========
+
+
+2026-07-08 0.22.0
+=================
 - Fix "Luftdaten-Viewer Grafana" documentation section about
   exporting station metadata from PostGIS to JSON file.
   Thanks, @ohobby.
