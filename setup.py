@@ -55,7 +55,7 @@ setup(
     "and RDBMS databases, publish to MQTT, output as JSON, or visualize in Grafana. "
     "Data sources: Sensor.Community (luftdaten.info), IRCELINE, and OpenAQ.",
     long_description=README,
-    license="AGPL 3, EUPL 1.2",
+    license="AGPL-3.0",
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",
@@ -69,8 +69,6 @@ setup(
         "Intended Audience :: Manufacturing",
         "Intended Audience :: Science/Research",
         "Intended Audience :: System Administrators",
-        "License :: OSI Approved :: GNU Affero General Public License v3",
-        "License :: OSI Approved :: European Union Public Licence 1.2 (EUPL 1.2)",
         "Operating System :: POSIX",
         "Operating System :: Unix",
         "Operating System :: MacOS",
