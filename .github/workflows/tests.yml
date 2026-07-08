@@ -49,7 +49,7 @@ jobs:
     steps:
 
       - name: Acquire sources
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: Setup Python
         uses: actions/setup-python@v6
