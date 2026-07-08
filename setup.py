@@ -43,7 +43,7 @@ extras = {
     "test": [
         "pytest>=7,<8",
         "attrs",
-        "pytest-cov<4",
+        "pytest-cov<8",
     ],
 }
 
