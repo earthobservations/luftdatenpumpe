@@ -23,7 +23,7 @@ requires = [
     "redis<5",
     # Adapters
     "paho-mqtt<2",
-    "dataset<2",
+    "dataset<3",
     "psycopg2-binary<3",
     "GeoAlchemy2<1",
     "influxdb<6",
