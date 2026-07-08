@@ -33,7 +33,7 @@ requires = [
     "rfc3339<7",
     # Geospatial
     "geohash2<2",
-    "geopy<2",
+    "geopy<3",
     # Grafana
     "Jinja2<4",
     "MarkupSafe<2.1",
