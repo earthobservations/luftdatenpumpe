@@ -11,7 +11,7 @@ requires = [
     "appdirs<2",
     "docopt<1",
     "munch<5",
-    "setuptools<82",
+    "setuptools<84",
     "tqdm<5",
     # Acquisition
     "requests<3",
