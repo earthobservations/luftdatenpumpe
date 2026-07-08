@@ -27,7 +27,7 @@ requires = [
     "psycopg2-binary<3",
     "GeoAlchemy2<1",
     "influxdb<6",
-    "SQLAlchemy<1.4",
+    "SQLAlchemy<1.5",
     "SQLAlchemy-Utils<1",
     # Date/Time
     "rfc3339<7",
