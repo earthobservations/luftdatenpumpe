@@ -22,7 +22,7 @@ requires = [
     "dogpile.cache<2",
     "redis<5",
     # Adapters
-    "paho-mqtt<2",
+    "paho-mqtt<3",
     "dataset<2",
     "psycopg2-binary<3",
     "GeoAlchemy2<1",
