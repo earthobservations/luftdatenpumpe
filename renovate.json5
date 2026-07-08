@@ -1,0 +1,14 @@
+// config:recommended, but with adjustments.
+// https://docs.renovatebot.com/presets-config/#configrecommended
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "rangeStrategy": "widen",
+  "extends": [
+    "config:recommended",
+    ":disableDependencyDashboard",
+    ":disableRateLimiting"
+  ],
+  "labels": [
+    "dependencies"
+  ]
+}
