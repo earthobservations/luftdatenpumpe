@@ -58,6 +58,7 @@ jobs:
           cache: 'pip'
 
       - name: Run linters
+        if: ${{ matrix.python-version != '3.7' }}
         run: |
           make lint
 
