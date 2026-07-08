@@ -35,7 +35,7 @@ requires = [
     "geohash2<2",
     "geopy<2",
     # Grafana
-    "Jinja2<3",
+    "Jinja2<4",
     "MarkupSafe<2.1",
 ]
 
