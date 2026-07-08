@@ -287,6 +287,16 @@ Documentation
 - [x] Add sphinxext-opengraph
 - [x] Improve gallery
 - [x] Add a bit of eye candy to the landing page
+- [o] Add comment about HTTPie, on pages using the ``http`` command.
+- [o] Refactor "Air quality monitoring" sections from [1] into different page.
+  [1] https://community.panodata.org/t/data-crunching-and-visualization/108
+- [o] Improve "Setup" section. Primarily, it is a standalone program, but is has
+  adapters to integrate with ...
+- [o] Add a few suggestions from https://www.b-list.org/weblog/2022/dec/19/boring-python-code-quality/
+  - See also https://news.ycombinator.com/item?id=34061252
+  - https://pypi.org/project/sphinxcontrib-spelling/
+  - https://interrogate.readthedocs.io/
+- [o] Adjust background color
 
 
 ****
