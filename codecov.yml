@@ -1,0 +1,15 @@
+# https://docs.codecov.io/docs/common-recipe-list
+# https://docs.codecov.io/docs/commit-status#patch-status
+
+coverage:
+  status:
+
+    project:
+      default:
+        target: 25%
+        threshold: 3
+
+    patch:
+      default:
+        target: auto
+        threshold: 3
