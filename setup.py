@@ -41,7 +41,7 @@ requires = [
 
 extras = {
     "test": [
-        "pytest>=7,<8",
+        "pytest>=7,<10",
         "attrs",
         "pytest-cov<4",
     ],
