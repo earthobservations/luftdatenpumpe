@@ -48,10 +48,10 @@ format = [
   {cmd="isort ."},
 ]
 lint = [
-  {cmd="ruff ."},
+  {cmd="ruff check ."},
   {cmd="black --check ."},
   {cmd="isort --check ."},
-  {cmd="proselint *.rst doc/**/*.rst"}
+  {cmd="proselint check *.rst doc/**/*.rst"}
 ]
 test = [
   {cmd="pytest"},
