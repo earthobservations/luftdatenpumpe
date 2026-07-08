@@ -20,7 +20,7 @@ requires = [
     # Caching
     "requests-cache<1",
     "dogpile.cache<2",
-    "redis<5",
+    "redis<9",
     # Adapters
     "paho-mqtt<2",
     "dataset<2",
