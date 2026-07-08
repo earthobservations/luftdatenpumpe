@@ -286,14 +286,12 @@ class RDBMSStorage:
         prefix = self.realm
 
         # Collect fields from osmdata table.
-        osmdata = self.db.query(
-            f"""
+        osmdata = self.db.query(f"""
             SELECT concat(TABLE_NAME, '.', COLUMN_NAME) AS name
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_NAME='{prefix}_osmdata' AND COLUMN_NAME NOT IN ('station_id')
             ORDER BY ORDINAL_POSITION
-        """
-        )
+        """)
         osmdata_columns = []
         for record in osmdata:
             osmdata_columns.append(record["name"])
@@ -371,9 +369,7 @@ class RDBMSStorage:
         sql = """
         GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {user};
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO {user};
-        """.format(
-            user=user
-        )
+        """.format(user=user)
         self.db.query(sql)
 
     def drop_tables(self):
