@@ -36,7 +36,7 @@ requires = [
     "geopy<3",
     # Grafana
     "Jinja2<4",
-    "MarkupSafe<2.1",
+    "MarkupSafe<3.1",
 ]
 
 extras = {
